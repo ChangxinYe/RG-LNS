@@ -145,9 +145,21 @@ Displayed percentages are rounded to one decimal place.
 
 ## Benchmarks
 
-- **ImageNet-LSEJ:** large-scale eroded puzzles with controlled grid sizes and erosion levels.
-- **GAP-3 / GAP-5:** public eroded square-puzzle benchmarks.
-- **JPwLEG-3 / JPwLEG-5:** public eroded square-puzzle benchmarks evaluated under the unfixed-center protocol.
+- **[ImageNet-LSEJ](https://github.com/ChangxinYe/ImageNet-LSEJ):** our large-scale eroded-puzzle benchmark with controlled grid sizes and erosion levels.
+- **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):** public irregularly eroded square-puzzle benchmarks released with PuzzleFlow.
+- **[JPwLEG-3 / JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):** public large-gap square-puzzle benchmarks, evaluated under the unfixed-center protocol in our experiments.
+
+## Acknowledgments
+
+We sincerely thank the authors of the following projects for making their code publicly available. Their official repositories supported our ImageNet-LSEJ-10 baseline evaluation:
+
+- [JigsawGAN](https://github.com/liru0126/JigsawGAN)
+- [JPDVT](https://github.com/JinyangMarkLiu/JPDVT)
+- [DiffAssemble](https://github.com/IIT-PAVIS/DiffAssemble)
+- [FCViT](https://github.com/HiMyNameIsDavidKim/fcvit)
+- [PuzzleFlow](https://github.com/OfirShahar/puzzle-flow-matching)
+
+Baselines for which we could not verify an official public implementation were reproduced or adapted from their papers and are therefore not linked here.
 
 ## Citation
 
