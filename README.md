@@ -12,7 +12,7 @@ The method is evaluated with Gallagher, Pomeranz, and LP initial solvers on Imag
 
 ## Highlights
 
-- **Reliability-guided destroy:** reliable components are extracted from mutual Top-$K$ adjacencies with complete $2\times2$ cycle support. Their internal relations are preserved, while their absolute positions and the remaining placements are released.
+- **Reliability-guided destroy:** reliable components are extracted from mutual Top-K adjacencies with complete $2\times2$ cycle support. Their internal relations are preserved, while their absolute positions and the remaining placements are released.
 - **Structured large neighborhood:** each reliable component is evaluated at its feasible translated positions rather than being fixed at the position selected by the initial solver.
 - **Beam-search repair:** the remaining pieces are completed along multiple promising repair paths.
 - **Full-layout acceptance:** only candidates that strictly improve the same frozen compatibility objective are accepted.
@@ -54,17 +54,17 @@ Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete pr
 
 ### Step 2: Reliable components
 
-For a currently adjacent pair $(i,j)$ in direction $d$, let $r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of $i$, where rank 1 is best. The adjacency is mutual Top-$K$ when
+For a currently adjacent pair $(i,j)$ in direction $d$, let $r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of $i$, where rank 1 is best. The adjacency is mutual Top-K when
 
 ```math
 \max(r_{i\rightarrow j}^{d},\;r_{j\rightarrow i}^{\bar d})\le K.
 ```
 
-where $\bar d$ denotes the opposite direction. A current $2\times2$ block provides cycle support only when all four perimeter adjacencies are mutual Top-$K$. The reliable graph $G_s^{\mathrm{rel}}$ contains the perimeter edges supported by at least one such complete cycle. Its connected components with at least $M$ pieces form
+where $\bar d$ denotes the opposite direction. A current $2\times2$ block provides cycle support only when all four perimeter adjacencies are mutual Top-K. The reliable graph $G_s^{\mathrm{rel}}$ contains the perimeter edges supported by at least one such complete cycle. Its connected components with at least $M$ pieces form
 
 ```math
 \mathcal{C}_s=
-\{Q\in\operatorname{CC}(G_s^{\mathrm{rel}}):|Q|\ge M\}.
+\{Q\in\mathrm{CC}(G_s^{\mathrm{rel}}):|Q|\ge M\}.
 ```
 
 The experiments use $K=3$ and $M=4$.
