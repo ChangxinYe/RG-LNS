@@ -46,9 +46,9 @@ This section gives the complete sample-level classification protocol used to pro
 
 For a complete failed sample $s$, let $\mathbf{x}_i$ and $\mathbf{x}_i^{*}$ be the predicted and ground-truth grid coordinates of piece $i$. The set of pieces at incorrect absolute positions is
 
-$$
-\mathcal{W}_s=\left\{i\in\mathcal{P}:\mathbf{x}_i\neq\mathbf{x}_i^{*}\right\}.
-$$
+```math
+\mathcal{W}_s=\{i\in\mathcal{P}:\mathbf{x}_i\neq\mathbf{x}_i^{*}\}.
+```
 
 Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete prediction considered below.
 
@@ -56,16 +56,16 @@ Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete pr
 
 For a currently adjacent pair $(i,j)$ in direction $d$, let $r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of $i$, where rank 1 is best. The adjacency is mutual Top-$K$ when
 
-$$
-\max\!\left(r_{i\rightarrow j}^{d},\;r_{j\rightarrow i}^{\bar d}\right)\le K,
-$$
+```math
+\max(r_{i\rightarrow j}^{d},\;r_{j\rightarrow i}^{\bar d})\le K.
+```
 
 where $\bar d$ denotes the opposite direction. A current $2\times2$ block provides cycle support only when all four perimeter adjacencies are mutual Top-$K$. The reliable graph $G_s^{\mathrm{rel}}$ contains the perimeter edges supported by at least one such complete cycle. Its connected components with at least $M$ pieces form
 
-$$
+```math
 \mathcal{C}_s=
-\left\{Q\in\operatorname{CC}\!\left(G_s^{\mathrm{rel}}\right):|Q|\ge M\right\}.
-$$
+\{Q\in\operatorname{CC}(G_s^{\mathrm{rel}}):|Q|\ge M\}.
+```
 
 The experiments use $K=3$ and $M=4$.
 
@@ -73,41 +73,41 @@ The experiments use $K=3$ and $M=4$.
 
 For every piece $i$, define the translation needed to move it from its predicted position to its target position as
 
-$$
+```math
 \boldsymbol{\Delta}_i=\mathbf{x}_i^{*}-\mathbf{x}_i.
-$$
+```
 
 A reliable component is a rigidly displaced component when all of its pieces share the same nonzero translation:
 
-$$
+```math
 \mathcal{C}_s^{\mathrm{rig}}=
-\left\{Q\in\mathcal{C}_s:\exists\,\boldsymbol{\delta}\neq\mathbf{0},\;
-\forall i\in Q,\;\boldsymbol{\Delta}_i=\boldsymbol{\delta}\right\}.
-$$
+\{Q\in\mathcal{C}_s:\exists\,\boldsymbol{\delta}\neq\mathbf{0},\;
+\forall i\in Q,\;\boldsymbol{\Delta}_i=\boldsymbol{\delta}\}.
+```
 
 The pieces covered by rigidly displaced components and the pieces outside all reliable components are respectively
 
-$$
+```math
 \mathcal{R}_s=\bigcup_{Q\in\mathcal{C}_s^{\mathrm{rig}}}Q,
 \qquad
 \mathcal{L}_s=\mathcal{P}\setminus\bigcup_{Q\in\mathcal{C}_s}Q.
-$$
+```
 
 We then measure how much of the absolute-position error is explained by each mechanism:
 
-$$
+```math
 q_s^{\mathrm{rig}}=
 \frac{|\mathcal{W}_s\cap\mathcal{R}_s|}{|\mathcal{W}_s|},
 \qquad
 q_s^{\mathrm{low}}=
 \frac{|\mathcal{W}_s\cap\mathcal{L}_s|}{|\mathcal{W}_s|}.
-$$
+```
 
 ### Step 4: Ordered sample-level classification
 
 With the dominance threshold $\tau=0.4$, the failure label is assigned in the following order:
 
-$$
+```math
 y_s=
 \begin{cases}
 \text{Rigid-displacement-dominant},
@@ -117,7 +117,7 @@ y_s=
 \text{Other/mixed failure},
 & \text{otherwise}.
 \end{cases}
-$$
+```
 
 The ordered rule makes the two dominant categories mutually exclusive. Predictions that do not define a complete grid permutation are assigned directly to **Other/mixed failure**.
 
