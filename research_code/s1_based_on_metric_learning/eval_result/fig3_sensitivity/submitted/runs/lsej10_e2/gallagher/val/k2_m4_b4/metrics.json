@@ -1,0 +1,193 @@
+{
+  "method": "s1a4_profiled_large_neighborhood_reassembly_gallagher_initialization",
+  "initial_solver": "Gallagher",
+  "uses_training": false,
+  "uses_e2": false,
+  "uses_e5": false,
+  "uses_ground_truth_for_selection": false,
+  "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement",
+  "beam1_contract": "after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver",
+  "task": "grid10_erode2",
+  "split": "val",
+  "start_index": 0,
+  "end_index_exclusive": 1000,
+  "evaluated_samples": 1000,
+  "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth",
+  "configuration": {
+    "completion_beam_width": 4,
+    "partial_completion_beam_width": 2,
+    "mutual_top_k": 2,
+    "translation_mode": "all",
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "postprocess": true,
+    "score_batch_size": 128,
+    "runtime_warmup_samples": 0,
+    "device": "cuda:0",
+    "save_visuals": false,
+    "visual_limit": 0,
+    "save_predictions": false,
+    "save_completion_details": false,
+    "initial_solver": {}
+  },
+  "status_counts": {
+    "no_strict_e1_improvement": 469,
+    "partial_completed__max_rounds": 41,
+    "max_rounds": 483,
+    "partial_completed__no_strict_e1_improvement": 6,
+    "partial_completed__small_component": 1
+  },
+  "complete_initial_solver_baselines": 952,
+  "complete_after_partial_completion": 1000,
+  "baseline": {
+    "samples": 1000,
+    "perfect_puzzles": 400,
+    "correct_pieces": 73016,
+    "total_pieces": 100000,
+    "PA": 0.4,
+    "AA": 0.7301600000000004,
+    "horizontal_SRA": 0.8783222222222222,
+    "vertical_SRA": 0.8686555555555555,
+    "SRA": 0.8734888888888889
+  },
+  "partial_completion": {
+    "samples": 1000,
+    "perfect_puzzles": 402,
+    "correct_pieces": 74129,
+    "total_pieces": 100000,
+    "PA": 0.402,
+    "AA": 0.7412900000000002,
+    "horizontal_SRA": 0.8813333333333333,
+    "vertical_SRA": 0.8712,
+    "SRA": 0.8762666666666666
+  },
+  "partial_completion_diagnostics": {
+    "beam_width": 2,
+    "applied_samples": 48,
+    "failed_samples": 0,
+    "complete_after_completion": 1000,
+    "repaired_to_perfect": 2,
+    "improved_puzzles": 27,
+    "damaged_puzzles": 5
+  },
+  "s1a3_single_path_reference": {
+    "samples": 1000,
+    "perfect_puzzles": 503,
+    "correct_pieces": 82751,
+    "total_pieces": 100000,
+    "PA": 0.503,
+    "AA": 0.8275100000000004,
+    "horizontal_SRA": 0.905,
+    "vertical_SRA": 0.8969888888888888,
+    "SRA": 0.9009944444444444
+  },
+  "s1a4": {
+    "samples": 1000,
+    "perfect_puzzles": 571,
+    "correct_pieces": 86002,
+    "total_pieces": 100000,
+    "PA": 0.571,
+    "AA": 0.8600200000000002,
+    "horizontal_SRA": 0.9274222222222223,
+    "vertical_SRA": 0.9201222222222222,
+    "SRA": 0.9237722222222222
+  },
+  "comparison": {
+    "improved_puzzles": 422,
+    "damaged_puzzles": 64,
+    "unchanged_puzzles": 514,
+    "changed_predictions": 531,
+    "repaired_to_perfect": 171,
+    "broken_perfect": 0,
+    "accepted_rounds": 524,
+    "accepted_beam_rounds": 338
+  },
+  "incremental_vs_s1a3": {
+    "improved_puzzles": 236,
+    "damaged_puzzles": 59,
+    "unchanged_puzzles": 705,
+    "changed_predictions": 338,
+    "repaired_to_perfect": 70,
+    "broken_perfect": 2
+  },
+  "search_diagnostics": {
+    "evaluated_poses": 6257,
+    "recorded_pose_rows": 6257,
+    "evaluated_completion_hypotheses": 23970,
+    "recorded_completion_rows": 0,
+    "pose_diagnostics_complete": true,
+    "poses_improved_over_s1a3_greedy": 4907,
+    "selected_non_greedy_poses": 338
+  },
+  "runtime": {
+    "unit": "seconds_per_puzzle",
+    "configured_warmup_samples": 0,
+    "warmup_samples": 0,
+    "recorded_samples": 1000,
+    "measured_samples": 1000,
+    "stages": {
+      "compatibility": {
+        "count": 1000,
+        "total": 309.34795955919253,
+        "mean": 0.30934795955919253,
+        "median": 0.30195723149518017,
+        "std": 0.0236887688413895,
+        "p95": 0.34614329639443897
+      },
+      "initial_solver": {
+        "count": 1000,
+        "total": 94.73425342704286,
+        "mean": 0.09473425342704286,
+        "median": 0.08977230300661176,
+        "std": 0.015957145577330016,
+        "p95": 0.12084595974083641
+      },
+      "partial_completion": {
+        "count": 1000,
+        "total": 8.27872773798299,
+        "mean": 0.00827872773798299,
+        "median": 0.0,
+        "std": 0.14328101566813453,
+        "p95": 0.0
+      },
+      "rgls": {
+        "count": 1000,
+        "total": 2301.6816345540137,
+        "mean": 2.3016816345540136,
+        "median": 0.03871744249772746,
+        "std": 6.509949743781468,
+        "p95": 15.984586462096182
+      },
+      "refinement_total": {
+        "count": 1000,
+        "total": 2309.9603622919967,
+        "mean": 2.3099603622919966,
+        "median": 0.03985266200470505,
+        "std": 6.5175280813966765,
+        "p95": 16.244694673603224
+      },
+      "inference_total": {
+        "count": 1000,
+        "total": 2714.042575278232,
+        "mean": 2.7140425752782322,
+        "median": 0.44751624298805837,
+        "std": 6.522163100220663,
+        "p95": 16.65685498465973
+      }
+    }
+  },
+  "elapsed_seconds": 2776.0472487299994,
+  "pa_case_lists": {
+    "repaired": "pa_repaired_images.txt",
+    "broken": "pa_broken_images.txt",
+    "repaired_images": 171,
+    "broken_images": 0
+  },
+  "incremental_pa_case_lists": {
+    "repaired": "pa_repaired_vs_s1a3_images.txt",
+    "broken": "pa_broken_vs_s1a3_images.txt",
+    "repaired_images": 70,
+    "broken_images": 2
+  }
+}

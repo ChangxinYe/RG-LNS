@@ -1,0 +1,67 @@
+ImageNet-LSEJ S1A4 Profiled Large-Neighborhood Reassembly (faithful Python LP initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode5/hard_triplet_d128_s224_k15_2026-08-02-21-16-37/checkpoints/best.pth
+loss_type: hard_triplet
+data_root: /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ
+task/split: grid10_erode5 / test
+samples: [0, 2000) = 2000
+complete_initial_solver_baselines: 1962/2000
+complete_after_partial_completion: 2000/2000
+configuration: beam=4, partial_beam=2, k=3, component=0, min_size=4, rounds=1, postprocess=False
+runtime: device=cuda:0, score_batch_size=128
+artifacts: save_visuals=True, visual_limit=10, save_predictions=True, save_completion_details=True
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement
+initial_solver: faithful Python LP
+initial_solver_config: {'implementation': 'faithful_bmvc2016_type1_python_port', 'postprocess': False, 'top_k': 1, 'refinement_iterations': 5, 'probability_lambda': 5.0, 'minimum_weight': 1e-15, 'match_tolerance': 0.0001, 'rigid_components': True, 'buddy_check': True, 'loop_check': True, 'greedy_stop_threshold': 1.25, 'highs_time_limit': 0.0}
+status: {'max_rounds': 1579, 'no_strict_e1_improvement': 360, 'partial_completed__max_rounds': 33, 'small_component': 23, 'partial_completed__no_strict_e1_improvement': 4, 'partial_completed__small_component': 1}
+
+S1A faithful Python LP baseline:
+  PA=9.1500%
+  AA=39.1545%
+  Horizontal SRA=63.1633%
+  Vertical SRA=62.9939%
+  SRA=63.0786%
+
+Label-free E1 partial-layout completion:
+  PA=9.1500%
+  AA=39.1980%
+  Horizontal SRA=63.2189%
+  Vertical SRA=63.0489%
+  SRA=63.1339%
+  diagnostics={'beam_width': 2, 'applied_samples': 38, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 0, 'improved_puzzles': 13, 'damaged_puzzles': 4}
+
+S1A3 single-path reference (same E1 scores and initial layout):
+  PA=13.5000%
+  AA=46.5250%
+  Horizontal SRA=67.0850%
+  Vertical SRA=66.9706%
+  SRA=67.0278%
+
+S1A4 profiled reassembly:
+  PA=18.6500%
+  AA=50.6020%
+  Horizontal SRA=72.2456%
+  Vertical SRA=71.6939%
+  SRA=71.9697%
+
+Comparison: {'improved_puzzles': 1033, 'damaged_puzzles': 354, 'unchanged_puzzles': 613, 'changed_predictions': 1617, 'repaired_to_perfect': 191, 'broken_perfect': 1, 'accepted_rounds': 1612, 'accepted_beam_rounds': 1348}
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 38, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 0, 'improved_puzzles': 13, 'damaged_puzzles': 4}
+Incremental vs S1A3: {'improved_puzzles': 733, 'damaged_puzzles': 399, 'unchanged_puzzles': 868, 'changed_predictions': 1348, 'repaired_to_perfect': 106, 'broken_perfect': 3}
+Search diagnostics: {'evaluated_poses': 51299, 'recorded_pose_rows': 51299, 'evaluated_completion_hypotheses': 203695, 'recorded_completion_rows': 203695, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 44784, 'selected_non_greedy_poses': 1348}
+PA repaired image list: pa_repaired_images.txt (191)
+PA broken image list: pa_broken_images.txt (1)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (106)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (3)
+elapsed_seconds: 30472.37688
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-60-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 503.50 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.55 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 560.35.03
+CUDA_VISIBLE_DEVICES: not set

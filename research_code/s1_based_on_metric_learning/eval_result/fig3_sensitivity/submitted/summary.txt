@@ -1,0 +1,34 @@
+RG-LNS Hyperparameter Sensitivity Experiment
+================================================================================
+state: completed
+complete: True
+updated_at: 2026-09-08T19:32:27+08:00
+output_root: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773
+benchmarks: ImageNet-LSEJ-10 (2 px)
+solvers: Gallagher
+splits: val
+sweep_mode: one-at-a-time
+sweep_parameters: K, M, B
+default: K=3, M=4, B=4
+K values: [1, 2, 3, 4, 5]
+M values: [4, 6, 8, 10]
+B values: [1, 2, 4, 8]
+unique parameter configurations: 11
+completed evaluator runs: 11/11
+failed evaluator runs: 0
+max_samples: 0 (0 means the complete split)
+
+PA sensitivity (%)
+--------------------------------------------------------------------------------
+ImageNet-LSEJ-10 (2 px) | Gallagher | val
+  K: 1:59.00 | 2:57.10 | 3:55.50 | 4:52.40 | 5:50.50
+  M: 4:55.50 | 6:55.50 | 8:55.50 | 10:55.50
+  B: 1:49.80 | 2:53.10 | 4:55.50 | 8:57.00
+
+Artifacts:
+  results.csv: one row per completed evaluator run
+  sensitivity.csv: OFAT plotting table; the default run is reused per series
+  results.json: complete machine-readable configuration and results
+  plan.json: logical run plan
+  logs/: evaluator stdout/stderr
+  statuses/: attempts and resume signatures

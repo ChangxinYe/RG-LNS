@@ -1,0 +1,216 @@
+{
+  "method": "s1a4_profiled_large_neighborhood_reassembly_pomeranzr10m0s0_initialization",
+  "initial_solver": "Pomeranz CVPR 2011",
+  "uses_training": false,
+  "uses_ground_truth_for_selection": false,
+  "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component placement, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across placements with the same E1 rule and accept only a strict improvement",
+  "beam1_contract": "after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 path",
+  "dataset": "jpleg5",
+  "split": "test",
+  "start_index": 0,
+  "end_index_exclusive": 200,
+  "evaluated_samples": 200,
+  "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth",
+  "configuration": {
+    "completion_beam_width": 4,
+    "partial_completion_beam_width": 2,
+    "mutual_top_k": 3,
+    "translation_mode": "all",
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "postprocess": true,
+    "score_batch_size": 128,
+    "runtime_warmup_samples": 20,
+    "device": "cuda:0",
+    "save_visuals": false,
+    "visual_limit": 0,
+    "save_predictions": false,
+    "save_completion_details": false,
+    "initial_solver": {
+      "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+      "postprocess": true,
+      "restarts": 10,
+      "max_refinement_rounds": 0,
+      "random_seed": 0
+    }
+  },
+  "complete_initial_solver_baselines": 200,
+  "complete_after_partial_completion": 200,
+  "status_counts": {
+    "no_strict_e1_improvement": 126,
+    "max_rounds": 74
+  },
+  "baseline": {
+    "samples": 200,
+    "perfect_puzzles": 60,
+    "correct_pieces": 2153,
+    "total_pieces": 5000,
+    "PA": 0.3,
+    "AA": 0.4306,
+    "horizontal_correct": 3231,
+    "horizontal_total": 4000,
+    "HA": 0.80775,
+    "vertical_correct": 3329,
+    "vertical_total": 4000,
+    "VA": 0.83225,
+    "SRA": 0.82,
+    "neighbor_correct": 6669,
+    "neighbor_total": 8000,
+    "NA": 0.833625
+  },
+  "partial_completion": {
+    "samples": 200,
+    "perfect_puzzles": 60,
+    "correct_pieces": 2153,
+    "total_pieces": 5000,
+    "PA": 0.3,
+    "AA": 0.4306,
+    "horizontal_correct": 3231,
+    "horizontal_total": 4000,
+    "HA": 0.80775,
+    "vertical_correct": 3329,
+    "vertical_total": 4000,
+    "VA": 0.83225,
+    "SRA": 0.82,
+    "neighbor_correct": 6669,
+    "neighbor_total": 8000,
+    "NA": 0.833625
+  },
+  "partial_completion_diagnostics": {
+    "beam_width": 2,
+    "applied_samples": 0,
+    "failed_samples": 0,
+    "complete_after_completion": 200,
+    "repaired_to_perfect": 0,
+    "improved_puzzles": 0,
+    "damaged_puzzles": 0
+  },
+  "s1a3_single_path_reference": {
+    "samples": 200,
+    "perfect_puzzles": 66,
+    "correct_pieces": 2247,
+    "total_pieces": 5000,
+    "PA": 0.33,
+    "AA": 0.4494,
+    "horizontal_correct": 3289,
+    "horizontal_total": 4000,
+    "HA": 0.82225,
+    "vertical_correct": 3395,
+    "vertical_total": 4000,
+    "VA": 0.84875,
+    "SRA": 0.8355,
+    "neighbor_correct": 6782,
+    "neighbor_total": 8000,
+    "NA": 0.84775
+  },
+  "s1a4": {
+    "samples": 200,
+    "perfect_puzzles": 77,
+    "correct_pieces": 2410,
+    "total_pieces": 5000,
+    "PA": 0.385,
+    "AA": 0.482,
+    "horizontal_correct": 3387,
+    "horizontal_total": 4000,
+    "HA": 0.84675,
+    "vertical_correct": 3480,
+    "vertical_total": 4000,
+    "VA": 0.87,
+    "SRA": 0.858375,
+    "neighbor_correct": 6934,
+    "neighbor_total": 8000,
+    "NA": 0.86675
+  },
+  "comparison": {
+    "improved_puzzles": 33,
+    "damaged_puzzles": 11,
+    "unchanged_puzzles": 156,
+    "changed_predictions": 74,
+    "repaired_to_perfect": 18,
+    "broken_perfect": 1,
+    "accepted_rounds": 74,
+    "accepted_beam_rounds": 56
+  },
+  "incremental_vs_s1a3": {
+    "improved_puzzles": 23,
+    "damaged_puzzles": 8,
+    "unchanged_puzzles": 169,
+    "changed_predictions": 56,
+    "repaired_to_perfect": 12,
+    "broken_perfect": 1
+  },
+  "search_diagnostics": {
+    "evaluated_poses": 448,
+    "recorded_pose_rows": 448,
+    "evaluated_completion_hypotheses": 1476,
+    "recorded_completion_rows": 0,
+    "pose_diagnostics_complete": true,
+    "poses_improved_over_s1a3_greedy": 267,
+    "selected_non_greedy_poses": 56
+  },
+  "runtime": {
+    "unit": "seconds_per_puzzle",
+    "configured_warmup_samples": 20,
+    "warmup_samples": 20,
+    "recorded_samples": 200,
+    "measured_samples": 180,
+    "stages": {
+      "compatibility": {
+        "count": 180,
+        "total": 13.918592100962996,
+        "mean": 0.07732551167201665,
+        "median": 0.07697872258722782,
+        "std": 0.001498114129662408,
+        "p95": 0.07880486613139509
+      },
+      "initial_solver": {
+        "count": 180,
+        "total": 15.820947473868728,
+        "mean": 0.08789415263260404,
+        "median": 0.08710686210542917,
+        "std": 0.016282142000163646,
+        "p95": 0.11708974074572319
+      },
+      "partial_completion": {
+        "count": 180,
+        "total": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "std": 0.0,
+        "p95": 0.0
+      },
+      "rgls": {
+        "count": 180,
+        "total": 4.997411917895079,
+        "mean": 0.027763399543861547,
+        "median": 0.005085473880171776,
+        "std": 0.06409524132484937,
+        "p95": 0.15256576314568507
+      },
+      "refinement_total": {
+        "count": 180,
+        "total": 4.997411917895079,
+        "mean": 0.027763399543861547,
+        "median": 0.005085473880171776,
+        "std": 0.06409524132484937,
+        "p95": 0.15256576314568507
+      },
+      "inference_total": {
+        "count": 180,
+        "total": 34.7369514927268,
+        "mean": 0.19298306384848224,
+        "median": 0.1747182495892048,
+        "std": 0.07107965978209524,
+        "p95": 0.3243563794530927
+      }
+    }
+  },
+  "elapsed_seconds": 39.088877484202385,
+  "pa_case_lists": {
+    "repaired_images": 18,
+    "broken_images": 1,
+    "repaired_vs_s1a3_images": 12,
+    "broken_vs_s1a3_images": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "created_at": "2026-09-01T16:05:48+08:00",
+  "project_root": "/data/yecx/Jigsaw_Puzzles_V2",
+  "datasets": [
+    "lsej",
+    "gap",
+    "jpleg"
+  ],
+  "solvers": [
+    "gallagher",
+    "lp",
+    "pomeranz"
+  ],
+  "max_samples": 200,
+  "runtime_warmup_samples": 20,
+  "score_batch_size": 128,
+  "device": "auto",
+  "gpu_id": 0,
+  "completion_beam_width": 4,
+  "partial_completion_beam_width": 2,
+  "mutual_top_k": 3,
+  "min_component_size": 4,
+  "component_index": 0,
+  "refinement_rounds": 1,
+  "save_run_artifacts": false
+}

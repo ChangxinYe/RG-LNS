@@ -1,0 +1,19 @@
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_jpleg_pomeranz_profiled_large_neighborhood_reassembly --dataset jpleg5 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth --start-index 0 --max-samples 200 --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --translation-mode all --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --runtime-warmup-samples 20 --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/jpleg/pomeranz --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25
+
+Pomeranz configuration: {'restarts': 10, 'max_refinement_rounds': 0, 'random_seed': 0}
+在 JPLEG5 test 上评估 S1A4：samples=200, grid=5x5, initial_solver=Pomeranz CVPR 2011, beam=4
+[25/200] sample 24: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 32.00%->32.00%->36.00%->36.00%, AA 40.00%->40.00%->50.24%->53.60%, SRA 80.30%->80.30%->84.20%->85.30%
+[50/200] sample 49: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 24.00%->24.00%->26.00%->30.00%, AA 36.40%->36.40%->40.40%->47.44%, SRA 79.05%->79.05%->81.15%->83.05%
+[75/200] sample 74: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 29.33%->29.33%->33.33%->36.00%, AA 37.71%->37.71%->42.99%->47.63%, SRA 81.03%->81.03%->83.30%->84.70%
+[100/200] sample 99: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.00%->28.00%->32.00%->35.00%, AA 37.48%->37.48%->41.60%->45.56%, SRA 81.05%->81.05%->83.23%->84.80%
+[125/200] sample 124: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 26.40%->26.40%->30.40%->34.40%, AA 39.55%->39.55%->41.79%->46.59%, SRA 81.08%->81.08%->83.10%->85.04%
+[150/200] sample 149: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.33%->29.33%->32.67%->36.67%, AA 41.68%->41.68%->44.05%->46.85%, SRA 81.37%->81.37%->83.22%->85.08%
+[175/200] sample 174: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 30.29%->30.29%->33.71%->37.14%, AA 42.77%->42.77%->44.78%->47.66%, SRA 81.59%->81.59%->83.19%->85.24%
+[200/200] sample 199: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 30.00%->30.00%->33.00%->38.50%, AA 43.06%->43.06%->44.94%->48.20%, SRA 82.00%->82.00%->83.55%->85.84%
+device: cuda:0
+Final PA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 30.0000% -> 30.0000% -> 33.0000% -> 38.5000%
+Final AA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 43.0600% -> 43.0600% -> 44.9400% -> 48.2000%
+Final SRA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 82.0000% -> 82.0000% -> 83.5500% -> 85.8375%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 0, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 0, 'improved_puzzles': 0, 'damaged_puzzles': 0}
+Search diagnostics: {'evaluated_poses': 448, 'recorded_pose_rows': 448, 'evaluated_completion_hypotheses': 1476, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 267, 'selected_non_greedy_poses': 56}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/jpleg/pomeranz

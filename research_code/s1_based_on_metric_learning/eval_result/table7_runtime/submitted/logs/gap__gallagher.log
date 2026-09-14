@@ -1,0 +1,19 @@
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_gap_profiled_large_neighborhood_reassembly --dataset GAP-5 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/GAP_fast --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_gap/GAP-5/hard_triplet_d128_s224_k15_2026-07-31-20-43-26/checkpoints/best.pth --start-index 0 --max-samples 200 --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --translation-mode all --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --runtime-warmup-samples 20 --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/gap/gallagher --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25
+
+Evaluating S1A4 on GAP-5 test: samples=200, grid=5x5, beam=4
+[25/200] sample 24: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 12.00%->12.00%->28.00%->32.00%, AA 33.44%->34.24%->41.28%->46.08%, SRA 63.90%->66.00%->72.30%->74.00%
+[50/200] sample 49: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 14.00%->14.00%->32.00%->38.00%, AA 32.96%->34.00%->44.24%->49.20%, SRA 62.85%->64.05%->71.50%->75.65%
+[75/200] sample 74: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 13.33%->13.33%->29.33%->36.00%, AA 33.07%->33.55%->44.00%->49.33%, SRA 60.50%->61.30%->69.17%->72.63%
+[100/200] sample 99: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 14.00%->14.00%->27.00%->33.00%, AA 32.68%->32.68%->41.56%->45.84%, SRA 60.00%->60.77%->68.73%->71.85%
+[125/200] sample 124: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 14.40%->14.40%->24.80%->29.60%, AA 32.06%->32.06%->39.33%->42.59%, SRA 59.66%->60.30%->67.48%->70.78%
+[150/200] sample 149: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 12.67%->12.67%->22.67%->26.67%, AA 31.25%->31.25%->38.24%->42.35%, SRA 59.50%->60.03%->67.25%->70.82%
+[175/200] sample 174: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 12.00%->12.57%->22.86%->26.29%, AA 30.47%->31.06%->37.65%->41.26%, SRA 60.06%->60.74%->67.73%->71.49%
+[200/200] sample 199: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 14.00%->14.50%->25.00%->28.50%, AA 30.70%->31.44%->38.68%->43.00%, SRA 60.54%->61.18%->68.70%->72.56%
+device: cuda:0
+Final PA (Gallagher -> completion -> S1A3 -> S1A4): 14.0000% -> 14.5000% -> 25.0000% -> 28.5000%
+Final AA (Gallagher -> completion -> S1A3 -> S1A4): 30.7000% -> 31.4400% -> 38.6800% -> 43.0000%
+Final SRA (Gallagher -> completion -> S1A3 -> S1A4): 60.5375% -> 61.1750% -> 68.7000% -> 72.5625%
+Final NA (Gallagher -> completion -> S1A3 -> S1A4): 64.3250% -> 65.3250% -> 71.8375% -> 75.3250%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 19, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 1, 'improved_puzzles': 8, 'damaged_puzzles': 2}
+Search diagnostics: {'evaluated_poses': 1171, 'recorded_pose_rows': 1171, 'evaluated_completion_hypotheses': 4464, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 874, 'selected_non_greedy_poses': 89}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/gap/gallagher

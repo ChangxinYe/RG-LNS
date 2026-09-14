@@ -1,0 +1,5 @@
+﻿variant,label,lsej,gap,jpleg
+vit_t_gallagher,ViT-T + Gallagher,39.200000,15.233333,39.650000
+reliability_guided_destroy,+ Reliability-Guided Destroy,46.650000,18.966667,43.500000
+component_translations,+ Component Translations,48.900000,23.533333,47.950000
+beam_search_completion,+ Beam-Search Completion,53.750000,30.866667,50.800000

@@ -1,0 +1,86 @@
+GAP S1A4 Profiled Large-Neighborhood Reassembly (faithful Python LP initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_gap/GAP-5/hard_triplet_d128_s224_k15_2026-07-31-20-43-26/checkpoints/best.pth
+data_root: /data/yecx/Jigsaw_Puzzles_V2/datasets/GAP_fast
+dataset/split: GAP-5 / test
+samples: 200 (start_index=0)
+complete_initial_solver_baselines: 193/200
+complete_after_partial_completion: 200/200
+configuration: beam=4, partial_beam=2, k=3, translation=all, component=0, min_size=4, rounds=1, postprocess=False, score_batch_size=128
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 path
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component placement, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across placements with the same E1 rule and accept only a strict improvement
+initial_solver: faithful Python LP
+initial_solver_config: {'implementation': 'faithful_bmvc2016_type1_python_port', 'postprocess': False, 'top_k': 1, 'refinement_iterations': 5, 'probability_lambda': 5.0, 'minimum_weight': 1e-15, 'match_tolerance': 0.0001, 'rigid_components': True, 'buddy_check': True, 'loop_check': True, 'greedy_stop_threshold': 1.25, 'highs_time_limit': 0.0}
+status: {'max_rounds': 114, 'no_strict_e1_improvement': 70, 'small_component': 9, 'partial_completed__max_rounds': 6, 'partial_completed__small_component': 1}
+
+S1A faithful Python LP baseline:
+  PA=25.0000%
+  AA=40.8600%
+  HA=64.2500%
+  VA=66.6750%
+  SRA=65.4625%
+  NA=68.8625%
+
+Label-free E1 partial-layout completion:
+  PA=25.0000%
+  AA=40.7800%
+  HA=64.3750%
+  VA=66.9000%
+  SRA=65.6375%
+  NA=69.0875%
+
+S1A3 single-path reference:
+  PA=28.0000%
+  AA=45.1600%
+  HA=68.3000%
+  VA=71.1250%
+  SRA=69.7125%
+  NA=73.1000%
+
+S1A4 profiled reassembly:
+  PA=35.0000%
+  AA=48.7800%
+  HA=72.2750%
+  VA=75.0000%
+  SRA=73.6375%
+  NA=76.3750%
+
+True-Neighbor MRR: 0.772614
+Mean True-Neighbor Rank: 2.193
+True-Neighbor Recall@1: 65.9813%
+True-Neighbor Recall@3: 86.1812%
+True-Neighbor Recall@5: 91.8250%
+True-Neighbor Recall@10: 97.2250%
+True-Neighbor Recall@15: 99.1000%
+
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 7, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 0, 'improved_puzzles': 5, 'damaged_puzzles': 1}
+Comparison: {'improved_puzzles': 62, 'damaged_puzzles': 28, 'unchanged_puzzles': 110, 'changed_predictions': 121, 'repaired_to_perfect': 22, 'broken_perfect': 2, 'accepted_rounds': 120, 'accepted_beam_rounds': 89}
+Incremental vs S1A3: {'improved_puzzles': 40, 'damaged_puzzles': 13, 'unchanged_puzzles': 147, 'changed_predictions': 89, 'repaired_to_perfect': 15, 'broken_perfect': 1}
+Search diagnostics: {'evaluated_poses': 1198, 'recorded_pose_rows': 1198, 'evaluated_completion_hypotheses': 4606, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 949, 'selected_non_greedy_poses': 89}
+PA repaired image list: pa_repaired_images.txt (22)
+PA broken image list: pa_broken_images.txt (2)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (15)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (1)
+
+Stage Runtime
+-------------
+unit=seconds_per_puzzle | warmup=20 | measured=180
+compatibility: mean=0.073884 | median=0.072821 | std=0.004618 | p95=0.075749 | total=13.299157
+initial_solver: mean=0.028635 | median=0.026442 | std=0.011216 | p95=0.045720 | total=5.154250
+partial_completion: mean=0.000189 | median=0.000000 | std=0.000941 | p95=0.000000 | total=0.034013
+rgls: mean=0.132727 | median=0.032659 | std=0.168382 | p95=0.455187 | total=23.890899
+refinement_total: mean=0.132916 | median=0.032659 | std=0.168437 | p95=0.455187 | total=23.924912
+inference_total: mean=0.235435 | median=0.130553 | std=0.174516 | p95=0.567389 | total=42.378319
+
+elapsed_seconds: 50.26993689
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-106-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

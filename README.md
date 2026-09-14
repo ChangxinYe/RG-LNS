@@ -18,9 +18,18 @@ compatibility with Gallagher, Pomeranz, and linear programming (LP) as layout
 optimizers. Experiments are conducted on GAP, JPwLEG-5, and our ImageNet
 Large-Scale Eroded Jigsaw (ImageNet-LSEJ) dataset.
 
-> **Release status.** Source code, configurations, pretrained checkpoints, and
-> ImageNet-LSEJ preparation instructions are being organized for public release
-> in this repository.
+> **Release status.** A provenance-preserving research-code snapshot is now
+> available under [`research_code/`](research_code/). A streamlined interface,
+> environment and data instructions, and pretrained checkpoints are being
+> organized for the public release.
+
+## Research Code
+
+The current snapshot preserves the module layout used for the submitted
+experiments so that cleanup does not silently change the reported results.
+See the [snapshot guide](research_code/README.md),
+[source manifest](research_code/SOURCE_MANIFEST.md), and
+[evaluation-record inventory](research_code/s1_based_on_metric_learning/eval_result/README.md).
 
 ## Motivation
 

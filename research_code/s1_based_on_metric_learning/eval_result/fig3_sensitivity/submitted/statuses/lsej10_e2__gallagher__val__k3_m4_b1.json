@@ -1,0 +1,108 @@
+{
+  "unit_key": "lsej10_e2__gallagher__val__k3_m4_b1",
+  "benchmark": "lsej10_e2",
+  "solver": "gallagher",
+  "split": "val",
+  "parameters": {
+    "k": 3,
+    "m": 4,
+    "b": 1
+  },
+  "state": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "state": "completed",
+      "signature": "d0552893a74f0bce626d293e0b76ae54f799bd024a973ba7538fa668ccb5ab77",
+      "signature_payload": {
+        "unit": {
+          "benchmark": "lsej10_e2",
+          "solver": "gallagher",
+          "split": "val",
+          "parameters": {
+            "k": 3,
+            "m": 4,
+            "b": 1
+          }
+        },
+        "evaluation": {
+          "max_samples": 0,
+          "partial_completion_beam_width": 2,
+          "component_index": 0,
+          "refinement_rounds": 1,
+          "score_batch_size": 128,
+          "translation_mode": "all"
+        },
+        "data_root": "/data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ",
+        "checkpoint": {
+          "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth",
+          "size": 67558484,
+          "mtime_ns": 1785134966841926169
+        },
+        "evaluator": {
+          "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/s1a4_eval_lsej_profiled_large_neighborhood_reassembly.py",
+          "size": 60708,
+          "mtime_ns": 1788249813366231282
+        }
+      },
+      "started_at": "2026-09-08T18:00:08+08:00",
+      "command": [
+        "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python",
+        "-m",
+        "s1_based_on_metric_learning.s1a4_eval_lsej_profiled_large_neighborhood_reassembly",
+        "--task",
+        "grid10_erode2",
+        "--split",
+        "val",
+        "--data-root",
+        "/data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ",
+        "--checkpoint",
+        "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth",
+        "--start-index",
+        "0",
+        "--max-samples",
+        "0",
+        "--mutual-top-k",
+        "3",
+        "--min-component-size",
+        "4",
+        "--completion-beam-width",
+        "1",
+        "--partial-completion-beam-width",
+        "2",
+        "--translation-mode",
+        "all",
+        "--component-index",
+        "0",
+        "--refinement-rounds",
+        "1",
+        "--score-batch-size",
+        "128",
+        "--device",
+        "auto",
+        "--gpu-id",
+        "0",
+        "--output-dir",
+        "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773/runs/lsej10_e2/gallagher/val/k3_m4_b1",
+        "--save-visuals",
+        "false",
+        "--visual-limit",
+        "0",
+        "--save-predictions",
+        "false",
+        "--save-completion-details",
+        "false",
+        "--progress-interval",
+        "25",
+        "--runtime-warmup-samples",
+        "0"
+      ],
+      "command_text": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_lsej_profiled_large_neighborhood_reassembly --task grid10_erode2 --split val --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth --start-index 0 --max-samples 0 --mutual-top-k 3 --min-component-size 4 --completion-beam-width 1 --partial-completion-beam-width 2 --translation-mode all --component-index 0 --refinement-rounds 1 --score-batch-size 128 --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773/runs/lsej10_e2/gallagher/val/k3_m4_b1 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25 --runtime-warmup-samples 0",
+      "log_path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773/logs/lsej10_e2__gallagher__val__k3_m4_b1__20260908_180008_143042.log",
+      "result_dir": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773/runs/lsej10_e2/gallagher/val/k3_m4_b1",
+      "metrics_path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773/runs/lsej10_e2/gallagher/val/k3_m4_b1/metrics.json",
+      "finished_at": "2026-09-08T18:14:20+08:00",
+      "elapsed_seconds": 852.045490043005
+    }
+  ]
+}

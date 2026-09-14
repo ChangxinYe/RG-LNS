@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+
+# Environments and local configuration
+.env
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Large model and array artifacts
+*.ckpt
+*.pt
+*.pth
+*.npy
+*.npz
+
+# Retain the compact prediction archives included with the evaluation records.
+!research_code/s1_based_on_metric_learning/eval_result/**/*.npy
+!research_code/s1_based_on_metric_learning/eval_result/**/*.npz

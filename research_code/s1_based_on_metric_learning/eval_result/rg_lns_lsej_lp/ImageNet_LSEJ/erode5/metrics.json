@@ -1,0 +1,148 @@
+{
+  "method": "s1a4_profiled_large_neighborhood_reassembly_lpfaithful_initialization",
+  "initial_solver": "faithful Python LP",
+  "uses_training": false,
+  "uses_e2": false,
+  "uses_e5": false,
+  "uses_ground_truth_for_selection": false,
+  "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement",
+  "beam1_contract": "after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver",
+  "task": "grid10_erode5",
+  "split": "test",
+  "start_index": 0,
+  "end_index_exclusive": 2000,
+  "evaluated_samples": 2000,
+  "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode5/hard_triplet_d128_s224_k15_2026-08-02-21-16-37/checkpoints/best.pth",
+  "configuration": {
+    "completion_beam_width": 4,
+    "partial_completion_beam_width": 2,
+    "mutual_top_k": 3,
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "postprocess": false,
+    "score_batch_size": 128,
+    "device": "cuda:0",
+    "save_visuals": true,
+    "visual_limit": 10,
+    "save_predictions": true,
+    "save_completion_details": true,
+    "initial_solver": {
+      "implementation": "faithful_bmvc2016_type1_python_port",
+      "postprocess": false,
+      "top_k": 1,
+      "refinement_iterations": 5,
+      "probability_lambda": 5.0,
+      "minimum_weight": 1e-15,
+      "match_tolerance": 0.0001,
+      "rigid_components": true,
+      "buddy_check": true,
+      "loop_check": true,
+      "greedy_stop_threshold": 1.25,
+      "highs_time_limit": 0.0
+    }
+  },
+  "status_counts": {
+    "max_rounds": 1579,
+    "no_strict_e1_improvement": 360,
+    "partial_completed__max_rounds": 33,
+    "small_component": 23,
+    "partial_completed__no_strict_e1_improvement": 4,
+    "partial_completed__small_component": 1
+  },
+  "complete_initial_solver_baselines": 1962,
+  "complete_after_partial_completion": 2000,
+  "baseline": {
+    "samples": 2000,
+    "perfect_puzzles": 183,
+    "correct_pieces": 78309,
+    "total_pieces": 200000,
+    "PA": 0.0915,
+    "AA": 0.3915449999999984,
+    "horizontal_SRA": 0.6316333333333334,
+    "vertical_SRA": 0.6299388888888889,
+    "SRA": 0.6307861111111112
+  },
+  "partial_completion": {
+    "samples": 2000,
+    "perfect_puzzles": 183,
+    "correct_pieces": 78396,
+    "total_pieces": 200000,
+    "PA": 0.0915,
+    "AA": 0.39197999999999833,
+    "horizontal_SRA": 0.6321888888888889,
+    "vertical_SRA": 0.6304888888888889,
+    "SRA": 0.6313388888888889
+  },
+  "partial_completion_diagnostics": {
+    "beam_width": 2,
+    "applied_samples": 38,
+    "failed_samples": 0,
+    "complete_after_completion": 2000,
+    "repaired_to_perfect": 0,
+    "improved_puzzles": 13,
+    "damaged_puzzles": 4
+  },
+  "s1a3_single_path_reference": {
+    "samples": 2000,
+    "perfect_puzzles": 270,
+    "correct_pieces": 93050,
+    "total_pieces": 200000,
+    "PA": 0.135,
+    "AA": 0.46524999999999855,
+    "horizontal_SRA": 0.67085,
+    "vertical_SRA": 0.6697055555555556,
+    "SRA": 0.6702777777777778
+  },
+  "s1a4": {
+    "samples": 2000,
+    "perfect_puzzles": 373,
+    "correct_pieces": 101204,
+    "total_pieces": 200000,
+    "PA": 0.1865,
+    "AA": 0.5060199999999989,
+    "horizontal_SRA": 0.7224555555555555,
+    "vertical_SRA": 0.7169388888888889,
+    "SRA": 0.7196972222222222
+  },
+  "comparison": {
+    "improved_puzzles": 1033,
+    "damaged_puzzles": 354,
+    "unchanged_puzzles": 613,
+    "changed_predictions": 1617,
+    "repaired_to_perfect": 191,
+    "broken_perfect": 1,
+    "accepted_rounds": 1612,
+    "accepted_beam_rounds": 1348
+  },
+  "incremental_vs_s1a3": {
+    "improved_puzzles": 733,
+    "damaged_puzzles": 399,
+    "unchanged_puzzles": 868,
+    "changed_predictions": 1348,
+    "repaired_to_perfect": 106,
+    "broken_perfect": 3
+  },
+  "search_diagnostics": {
+    "evaluated_poses": 51299,
+    "recorded_pose_rows": 51299,
+    "evaluated_completion_hypotheses": 203695,
+    "recorded_completion_rows": 203695,
+    "pose_diagnostics_complete": true,
+    "poses_improved_over_s1a3_greedy": 44784,
+    "selected_non_greedy_poses": 1348
+  },
+  "elapsed_seconds": 30472.376876290888,
+  "pa_case_lists": {
+    "repaired": "pa_repaired_images.txt",
+    "broken": "pa_broken_images.txt",
+    "repaired_images": 191,
+    "broken_images": 1
+  },
+  "incremental_pa_case_lists": {
+    "repaired": "pa_repaired_vs_s1a3_images.txt",
+    "broken": "pa_broken_vs_s1a3_images.txt",
+    "repaired_images": 106,
+    "broken_images": 3
+  }
+}

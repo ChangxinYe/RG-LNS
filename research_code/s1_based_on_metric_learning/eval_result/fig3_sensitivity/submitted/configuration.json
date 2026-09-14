@@ -1,0 +1,122 @@
+{
+  "experiment": "s1a4_hyperparameter_sensitivity_experiment",
+  "created_at": "2026-09-08T12:32:43+08:00",
+  "config_file": null,
+  "benchmarks": [
+    "lsej10_e2"
+  ],
+  "solvers": [
+    "gallagher"
+  ],
+  "splits": [
+    "val"
+  ],
+  "sweep_parameters": [
+    "k",
+    "m",
+    "b"
+  ],
+  "sweep_mode": "one-at-a-time",
+  "default_parameters": {
+    "k": 3,
+    "m": 4,
+    "b": 4
+  },
+  "values": {
+    "k": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "m": [
+      4,
+      6,
+      8,
+      10
+    ],
+    "b": [
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "unique_parameter_configurations": [
+    {
+      "k": 3,
+      "m": 4,
+      "b": 4
+    },
+    {
+      "k": 1,
+      "m": 4,
+      "b": 4
+    },
+    {
+      "k": 2,
+      "m": 4,
+      "b": 4
+    },
+    {
+      "k": 4,
+      "m": 4,
+      "b": 4
+    },
+    {
+      "k": 5,
+      "m": 4,
+      "b": 4
+    },
+    {
+      "k": 3,
+      "m": 6,
+      "b": 4
+    },
+    {
+      "k": 3,
+      "m": 8,
+      "b": 4
+    },
+    {
+      "k": 3,
+      "m": 10,
+      "b": 4
+    },
+    {
+      "k": 3,
+      "m": 4,
+      "b": 1
+    },
+    {
+      "k": 3,
+      "m": 4,
+      "b": 2
+    },
+    {
+      "k": 3,
+      "m": 4,
+      "b": 8
+    }
+  ],
+  "unique_parameter_configuration_count": 11,
+  "total_evaluator_runs": 11,
+  "max_samples": 0,
+  "device": "auto",
+  "gpu_id": 0,
+  "score_batch_size": 128,
+  "progress_interval": 25,
+  "partial_completion_beam_width": 2,
+  "component_index": 0,
+  "refinement_rounds": 1,
+  "save_run_artifacts": false,
+  "data_roots": {
+    "lsej": "/data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ",
+    "gap": "/data/yecx/Jigsaw_Puzzles_V2/datasets/GAP_fast",
+    "jpleg": "/data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset"
+  },
+  "checkpoints": {
+    "lsej10_e2": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth"
+  }
+}

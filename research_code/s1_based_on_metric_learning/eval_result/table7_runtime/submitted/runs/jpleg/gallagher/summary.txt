@@ -1,0 +1,77 @@
+JPwLEG S1A4 Profiled Large-Neighborhood Reassembly (Gallagher initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth
+dataset/split: jpleg5 / test
+samples: [0, 200) = 200
+complete_initial_solver_baselines: 191/200
+complete_after_partial_completion: 200/200
+configuration: beam=4, partial_beam=2, k=3, translation=all, component=0, min_size=4, rounds=1, postprocess=True
+initial_solver: Gallagher
+initial_solver_config: {}
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 path
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component placement, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across placements with the same E1 rule and accept only a strict improvement
+status: {'no_strict_e1_improvement': 100, 'max_rounds': 89, 'partial_completed__max_rounds': 7, 'small_component': 2, 'partial_completed__no_strict_e1_improvement': 2}
+
+S1A Gallagher baseline:
+  PA=31.0000%
+  AA=44.0600%
+  HA=78.4500%
+  VA=79.6500%
+  SRA=79.0500%
+  NA=80.8375%
+
+Label-free E1 partial-layout completion:
+  PA=31.5000%
+  AA=44.5200%
+  HA=78.9250%
+  VA=80.3000%
+  SRA=79.6125%
+  NA=81.4750%
+
+S1A3 single-path reference:
+  PA=38.5000%
+  AA=49.7600%
+  HA=82.9250%
+  VA=85.4750%
+  SRA=84.2000%
+  NA=85.4125%
+
+S1A4 profiled reassembly:
+  PA=41.5000%
+  AA=52.7000%
+  HA=85.7250%
+  VA=87.8500%
+  SRA=86.7875%
+  NA=87.6500%
+
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 9, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 1, 'improved_puzzles': 3, 'damaged_puzzles': 1}
+Comparison: {'improved_puzzles': 42, 'damaged_puzzles': 15, 'unchanged_puzzles': 143, 'changed_predictions': 98, 'repaired_to_perfect': 21, 'broken_perfect': 0, 'accepted_rounds': 96, 'accepted_beam_rounds': 51}
+Incremental vs S1A3: {'improved_puzzles': 17, 'damaged_puzzles': 5, 'unchanged_puzzles': 178, 'changed_predictions': 51, 'repaired_to_perfect': 7, 'broken_perfect': 1}
+Search diagnostics: {'evaluated_poses': 584, 'recorded_pose_rows': 584, 'evaluated_completion_hypotheses': 2027, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 380, 'selected_non_greedy_poses': 51}
+PA repaired image list: pa_repaired_images.txt (21)
+PA broken image list: pa_broken_images.txt (0)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (7)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (1)
+
+Stage Runtime
+-------------
+unit=seconds_per_puzzle | warmup=20 | measured=180
+compatibility: mean=0.078031 | median=0.077774 | std=0.001390 | p95=0.080092 | total=14.045627
+initial_solver: mean=0.014359 | median=0.013780 | std=0.002280 | p95=0.018531 | total=2.584533
+partial_completion: mean=0.000288 | median=0.000000 | std=0.001449 | p95=0.000192 | total=0.051887
+rgls: mean=0.047714 | median=0.005795 | std=0.100936 | p95=0.289020 | total=8.588562
+refinement_total: mean=0.048002 | median=0.006146 | std=0.101035 | p95=0.290914 | total=8.640449
+inference_total: mean=0.140392 | median=0.099336 | std=0.102346 | p95=0.383160 | total=25.270609
+
+elapsed_seconds: 28.56630408
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-106-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

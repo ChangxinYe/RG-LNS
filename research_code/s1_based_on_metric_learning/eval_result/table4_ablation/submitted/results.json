@@ -1,0 +1,130 @@
+{
+  "experiment": "table5_cumulative_rg_lns_ablation",
+  "state": "completed",
+  "complete": true,
+  "updated_at": "2026-08-31T17:03:23+08:00",
+  "output_root": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601",
+  "datasets": [
+    {
+      "key": "lsej",
+      "display_name": "ImageNet-LSEJ-10 (2 px)",
+      "data_root": "/data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ",
+      "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth",
+      "expected_samples": 2000
+    },
+    {
+      "key": "gap",
+      "display_name": "GAP-5",
+      "data_root": "/data/yecx/Jigsaw_Puzzles_V2/datasets/GAP_fast",
+      "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_gap/GAP-5/hard_triplet_d128_s224_k15_2026-07-31-20-43-26/checkpoints/best.pth",
+      "expected_samples": 3000
+    },
+    {
+      "key": "jpleg",
+      "display_name": "JPwLEG-5",
+      "data_root": "/data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset",
+      "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth",
+      "expected_samples": 2000
+    }
+  ],
+  "configuration": {
+    "initial_solver": "Gallagher",
+    "max_samples": 0,
+    "mutual_top_k": 3,
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "partial_completion_beam_width": 2,
+    "score_batch_size": 128,
+    "device": "auto",
+    "gpu_id": 0
+  },
+  "variants": [
+    {
+      "key": "reliability_destroy_fixed_b1",
+      "label": "Reliability-Guided Destroy",
+      "translation_mode": "fixed",
+      "completion_beam_width": 1
+    },
+    {
+      "key": "full_rg_lns_b4",
+      "label": "Full RG-LNS (B=4)",
+      "translation_mode": "all",
+      "completion_beam_width": 4
+    }
+  ],
+  "rows": [
+    {
+      "key": "vit_t_gallagher",
+      "label": "ViT-T + Gallagher",
+      "pa": {
+        "lsej": {
+          "fraction": 0.392,
+          "percent": 39.2
+        },
+        "gap": {
+          "fraction": 0.15233333333333332,
+          "percent": 15.233333333333333
+        },
+        "jpleg": {
+          "fraction": 0.3965,
+          "percent": 39.65
+        }
+      }
+    },
+    {
+      "key": "reliability_guided_destroy",
+      "label": "+ Reliability-Guided Destroy",
+      "pa": {
+        "lsej": {
+          "fraction": 0.4665,
+          "percent": 46.650000000000006
+        },
+        "gap": {
+          "fraction": 0.18966666666666668,
+          "percent": 18.96666666666667
+        },
+        "jpleg": {
+          "fraction": 0.435,
+          "percent": 43.5
+        }
+      }
+    },
+    {
+      "key": "component_translations",
+      "label": "+ Component Translations",
+      "pa": {
+        "lsej": {
+          "fraction": 0.489,
+          "percent": 48.9
+        },
+        "gap": {
+          "fraction": 0.23533333333333334,
+          "percent": 23.533333333333335
+        },
+        "jpleg": {
+          "fraction": 0.4795,
+          "percent": 47.949999999999996
+        }
+      }
+    },
+    {
+      "key": "beam_search_completion",
+      "label": "+ Beam-Search Completion",
+      "pa": {
+        "lsej": {
+          "fraction": 0.5375,
+          "percent": 53.75
+        },
+        "gap": {
+          "fraction": 0.30866666666666664,
+          "percent": 30.866666666666664
+        },
+        "jpleg": {
+          "fraction": 0.508,
+          "percent": 50.8
+        }
+      }
+    }
+  ]
+}
