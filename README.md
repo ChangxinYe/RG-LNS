@@ -2,65 +2,123 @@
 
 **Reliability-Guided Large Neighborhood Search for Eroded Jigsaw Puzzle Reassembly**
 
+**Paper status:** Under review at ICASSP 2027.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-RG-LNS is a plug-and-play layout refinement method for eroded square jigsaw puzzles. It starts from the output of an existing solver, preserves reliable internal structures, destroys unreliable placement decisions, and repairs the layout through feasible component translations and beam-search completion. A candidate is accepted only when it strictly improves the frozen full-layout compatibility objective.
+RG-LNS formulates the correction of assembled eroded-jigsaw layouts as a
+separate combinatorial optimization problem under fixed directional
+compatibility. Our framework decouples visual perception from spatial
+reasoning: a ViT-Tiny (ViT-T) model learns directional compatibility between
+pieces, while RG-LNS corrects the resulting layouts without retraining the
+visual model.
 
-The method is evaluated with Gallagher, Pomeranz, and LP initial solvers on ImageNet-LSEJ, GAP, and JPwLEG. We also provide a strong ViT-Tiny directional compatibility baseline trained with metric learning.
+We construct three two-stage baselines by pairing the same frozen ViT-T
+compatibility with Gallagher, Pomeranz, and linear programming (LP) as layout
+optimizers. Experiments are conducted on GAP, JPwLEG-5, and our ImageNet
+Large-Scale Eroded Jigsaw (ImageNet-LSEJ) dataset.
 
-> **Release status.** The source code, configurations, pretrained checkpoints, and dataset instructions are being organized for public release in this repository.
-
-## Highlights
-
-- **Reliability-guided destroy:** reliable components are extracted from mutual Top-K adjacencies with complete $2\times2$ cycle support. Their internal relations are preserved, while their absolute positions and the remaining placements are released.
-- **Structured large neighborhood:** each reliable component is evaluated at its feasible translated positions rather than being fixed at the position selected by the initial solver.
-- **Beam-search repair:** the remaining pieces are completed along multiple promising repair paths.
-- **Full-layout acceptance:** only candidates that strictly improve the same frozen compatibility objective are accepted.
-- **Cross-solver refinement:** RG-LNS can refine different initial solvers without replacing them.
+> **Release status.** Source code, configurations, pretrained checkpoints, and
+> ImageNet-LSEJ preparation instructions are being organized for public release
+> in this repository.
 
 ## Motivation
 
-Existing solvers often recover many correct local adjacencies but still fail to organize them into the correct complete layout. Our failure analysis reveals two dominant patterns.
+Even when a complete puzzle layout is incorrect, it can retain many correct
+local relationships. Our empirical analysis identifies two dominant failure
+modes.
 
-### 1. Rigid displacement of reliable components
+### 1. Region shift
 
-The reliable component in the initial result preserves its internal arrangement but appears at an incorrect global position. The cyan outline marks the same component in the solver result and its target position.
-
-<p align="center">
-  <img src="assets/motivation_1.png" width="100%" alt="Rigidly displaced reliable component and its refinement">
-</p>
-
-### 2. Errors concentrated in low-reliability regions
-
-In many failed reconstructions, most of the puzzle is already supported by reliable adjacencies, while the remaining errors are concentrated in regions with weak mutual rankings or without complete cycle support.
+Some regions preserve the correct relative positions among their pieces but
+are displaced as a whole. The cyan outline below marks the same region in the
+initial layout and its target location.
 
 <p align="center">
-  <img src="assets/motivation_2.png" width="100%" alt="Errors concentrated in low-reliability regions">
+  <img src="assets/motivation_1.png" width="100%" alt="Example of region shift">
 </p>
 
-## Extended Failure Taxonomy for Table 1
+### 2. Local ambiguity
 
-This section gives the complete sample-level classification protocol used to produce Table 1 of the paper. The three categories are applied to **all failed predictions** of each initial solver and therefore form a disjoint partition whose counts sum to the total number of failures.
+Multiple neighboring pieces can exhibit high visual similarity, making their
+relative spatial positions difficult to infer. The reliability map below
+highlights where the available neighboring relationships provide insufficient
+support for an unambiguous arrangement.
+
+<p align="center">
+  <img src="assets/motivation_2.png" width="100%" alt="Example of local ambiguity">
+</p>
+
+## Method Overview
+
+RG-LNS addresses these two failure modes through reliability-guided destroy
+and repair.
+
+1. **Directional compatibility.** The four edges of each piece are mapped to a
+   shared canonical orientation and embedded by a frozen ViT-T model.
+2. **Reliability-guided destroy.** Mutually strong piece matches supported by
+   surrounding pieces are grouped into reliable regions. The internal
+   arrangement of the largest reliable region is preserved, while its absolute
+   location and the positions of the remaining pieces are released. This
+   defines a structured large neighborhood.
+3. **Region translation.** The repair operator explores every feasible
+   translation of the preserved region, directly addressing region shifts.
+4. **Beam-search completion.** For each translation, the remaining pieces are
+   placed while multiple layout hypotheses are retained. Newly formed
+   adjacencies provide richer compatibility information for distinguishing
+   locally ambiguous arrangements.
+5. **Evaluation and acceptance.** Completed layouts are evaluated by a fixed
+   compatibility objective, and a candidate is accepted only when it strictly
+   improves the current layout.
+
+## Main Results
+
+RG-LNS consistently improves all three ViT-T-based baselines across the three
+datasets. Its best perfect accuracy (PA) exceeds the strongest competing result
+by:
+
+- **33.4 percentage points** on GAP-5 (33.7% vs. 0.3%);
+- **28.2 percentage points** on JPwLEG-5 (60.7% vs. 32.5%); and
+- **37.7 percentage points** on ImageNet-LSEJ (55.9% vs. 18.2%).
+
+On the ImageNet-LSEJ failures used for our analysis, RG-LNS repairs
+19.3–42.1% of failures attributed to region shift and 13.9–26.8% of those
+attributed to local ambiguity across the three baselines.
+
+## Failure Taxonomy for Table 1
+
+This section documents the deterministic sample-level classification used to
+produce Table 1 of the paper. The three labels are applied to all failed
+predictions from each baseline and form a disjoint partition.
 
 ### Step 1: Absolute-position errors
 
-For a complete failed sample $s$, let $\mathbf{x}_i$ and $\mathbf{x}_i^{*}$ be the predicted and ground-truth grid coordinates of piece $i$. The set of pieces at incorrect absolute positions is
+For a complete failed sample $s$, let $\mathbf{x}_i$ and
+$\mathbf{x}_i^{*}$ be the predicted and ground-truth grid coordinates of piece
+$i$. The set of pieces at incorrect absolute positions is
 
 ```math
 \mathcal{W}_s=\{i\in\mathcal{P}:\mathbf{x}_i\neq\mathbf{x}_i^{*}\}.
 ```
 
-Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete prediction considered below.
+Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete
+prediction considered below.
 
 ### Step 2: Reliable components
 
-For a currently adjacent pair $(i,j)$ in direction $d$, let $r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of $i$, where rank 1 is best. The adjacency is mutual Top-K when
+For a currently adjacent pair $(i,j)$ in direction $d$, let
+$r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of
+$i$, where rank 1 is best. The adjacency is mutual Top-$K$ when
 
 ```math
-\max(r_{i\rightarrow j}^{d},\;r_{j\rightarrow i}^{\bar d})\le K.
+\max(r_{i\rightarrow j}^{d},\;r_{j\rightarrow i}^{\bar d})\le K,
 ```
 
-where $\bar d$ denotes the opposite direction. A current $2\times2$ block provides cycle support only when all four perimeter adjacencies are mutual Top-K. The reliable graph $G_s^{\mathrm{rel}}$ contains the perimeter edges supported by at least one such complete cycle. Its connected components with at least $M$ pieces form
+where $\bar d$ denotes the opposite direction. A current $2\times2$ block
+provides cycle support only when all four perimeter adjacencies are mutual
+Top-$K$. The reliability graph $G_s^{\mathrm{rel}}$ contains the perimeter
+edges supported by at least one such complete cycle. Its connected components
+with at least $M$ pieces form
 
 ```math
 \mathcal{C}_s=
@@ -69,89 +127,97 @@ where $\bar d$ denotes the opposite direction. A current $2\times2$ block provid
 
 The experiments use $K=3$ and $M=4$.
 
-### Step 3: Rigidly displaced and low-reliability pieces
+### Step 3: Evidence for the two failure modes
 
-For every piece $i$, define the translation needed to move it from its predicted position to its target position as
+For every piece $i$, define the translation needed to move it from its
+predicted position to its target position as
 
 ```math
 \boldsymbol{\Delta}_i=\mathbf{x}_i^{*}-\mathbf{x}_i.
 ```
 
-A reliable component is a rigidly displaced component when all of its pieces share the same nonzero translation:
+A reliable component provides evidence of region shift when all of its pieces
+share the same nonzero translation:
 
 ```math
-\mathcal{C}_s^{\mathrm{rig}}=
+\mathcal{C}_s^{\mathrm{shift}}=
 \{Q\in\mathcal{C}_s:\exists\,\boldsymbol{\delta}\neq\mathbf{0},\;
 \forall i\in Q,\;\boldsymbol{\Delta}_i=\boldsymbol{\delta}\}.
 ```
 
-The pieces covered by rigidly displaced components and the pieces outside all reliable components are respectively
+Let $\mathcal{R}_s$ contain the pieces covered by shifted reliable components,
+and let $\mathcal{L}_s$ contain the pieces outside every reliable component:
 
 ```math
-\mathcal{R}_s=\bigcup_{Q\in\mathcal{C}_s^{\mathrm{rig}}}Q,
+\mathcal{R}_s=\bigcup_{Q\in\mathcal{C}_s^{\mathrm{shift}}}Q,
 \qquad
 \mathcal{L}_s=\mathcal{P}\setminus\bigcup_{Q\in\mathcal{C}_s}Q.
 ```
 
-We then measure how much of the absolute-position error is explained by each mechanism:
+We measure how much of the absolute-position error is explained by each type
+of evidence:
 
 ```math
-q_s^{\mathrm{rig}}=
+q_s^{\mathrm{shift}}=
 \frac{|\mathcal{W}_s\cap\mathcal{R}_s|}{|\mathcal{W}_s|},
 \qquad
-q_s^{\mathrm{low}}=
+q_s^{\mathrm{local}}=
 \frac{|\mathcal{W}_s\cap\mathcal{L}_s|}{|\mathcal{W}_s|}.
 ```
 
 ### Step 4: Ordered sample-level classification
 
-With the dominance threshold $\tau=0.4$, the failure label is assigned in the following order:
+With the dominance threshold $\tau=0.4$, the failure label is assigned in the
+following order:
 
 ```math
 y_s=
 \begin{cases}
-\text{Rigid-displacement-dominant},
-& q_s^{\mathrm{rig}}\ge\tau,\\[2pt]
-\text{Low-reliability-error-dominant},
-& q_s^{\mathrm{rig}}<\tau\ \text{and}\ q_s^{\mathrm{low}}\ge\tau,\\[2pt]
-\text{Other/mixed failure},
+\text{Region shift},
+& q_s^{\mathrm{shift}}\ge\tau,\\[2pt]
+\text{Local ambiguity},
+& q_s^{\mathrm{shift}}<\tau\ \text{and}\ q_s^{\mathrm{local}}\ge\tau,\\[2pt]
+\text{Other failure},
 & \text{otherwise}.
 \end{cases}
 ```
 
-The ordered rule makes the two dominant categories mutually exclusive. Predictions that do not define a complete grid permutation are assigned directly to **Other/mixed failure**.
+The ordered rule makes the two dominant categories mutually exclusive.
+Predictions that do not define a complete grid permutation are assigned
+directly to **Other failure**.
 
 ### Table 1 results
 
-The following results are obtained on ImageNet-LSEJ-10 with 2-pixel erosion. All three initial solvers use our frozen ViT-Tiny directional compatibility.
+The following results are obtained on ImageNet-LSEJ ($10\times10$) with
+2-pixel erosion. All three baselines use the same frozen ViT-T directional
+compatibility.
 
 | Failure type | Gallagher | Pomeranz | LP |
 |:--|--:|--:|--:|
-| Rigid-displacement-dominant | 202 (16.6%) | 107 (10.3%) | 135 (12.3%) |
-| Low-reliability-error-dominant | 731 (60.1%) | 742 (71.6%) | 823 (74.7%) |
-| Other/mixed failure | 283 (23.3%) | 188 (18.1%) | 144 (13.1%) |
-| **All failed predictions** | **1,216 (100%)** | **1,037 (100%)** | **1,102 (100%)** |
+| Region shift | 202 (16.6%) | 107 (10.3%) | 135 (12.3%) |
+| Local ambiguity | 731 (60.1%) | 742 (71.6%) | 823 (74.7%) |
+| Other failures | 283 (23.3%) | 188 (18.1%) | 144 (13.1%) |
+| **Total** | **1,216 (100%)** | **1,037 (100%)** | **1,102 (100%)** |
 
 Displayed percentages are rounded to one decimal place.
 
-## Method at a Glance
-
-1. Transform the four edges of every piece into a shared canonical orientation.
-2. Extract directional embeddings with the trained ViT-Tiny encoder and construct the compatibility tensor.
-3. Obtain an initial layout from an existing solver.
-4. Build reliable components and apply the reliability-guided destroy operator.
-5. Repair each structured neighborhood with feasible component translations and beam-search completion.
-6. Evaluate complete layouts and accept a candidate only if it strictly improves the frozen objective.
-
 ## Benchmarks
 
-- **[ImageNet-LSEJ](https://github.com/ChangxinYe/ImageNet-LSEJ):** our large-scale eroded-puzzle benchmark with controlled grid sizes and erosion levels.
-- **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):** public irregularly eroded square-puzzle benchmarks released with PuzzleFlow.
-- **[JPwLEG-3 / JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):** public large-gap square-puzzle benchmarks, evaluated under the unfixed-center protocol in our experiments.
+- **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):**
+  public $3\times3$ and $5\times5$ benchmarks with irregular eroded
+  fragments.
+- **[JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):**
+  a public $5\times5$ benchmark with large gaps, evaluated under the
+  no-fixed-center protocol.
+- **[ImageNet-LSEJ](https://github.com/ChangxinYe/ImageNet-LSEJ):** our
+  $10\times10$ benchmark derived from ImageNet, with $50\times50$-pixel pieces
+  under 2- and 5-pixel erosion.
 
 ## Acknowledgments
 
-We sincerely thank the authors of the following projects for making their code publicly available. Their official repositories supported our ImageNet-LSEJ-10 baseline evaluation:
+We thank the authors of the following projects for making their code publicly
+available. Their implementations supported our ImageNet-LSEJ baseline
+evaluation:
 
 - [JigsawGAN](https://github.com/liru0126/JigsawGAN)
 - [JPDVT](https://github.com/JinyangMarkLiu/JPDVT)
@@ -159,7 +225,7 @@ We sincerely thank the authors of the following projects for making their code p
 - [FCViT](https://github.com/HiMyNameIsDavidKim/fcvit)
 - [PuzzleFlow](https://github.com/OfirShahar/puzzle-flow-matching)
 
-Baselines for which we could not verify an official public implementation were reproduced or adapted from their papers and are therefore not linked here.
+Other baselines were reproduced by following their original papers.
 
 ## Citation
 
