@@ -69,9 +69,10 @@ datasets/ImageNet_LSEJ/configs
 datasets/ImageNet_LSEJ/images
 ```
 
-Training writes complete run directories below `checkpoints/train_<dataset>/`.
-Copy the selected paper checkpoints to stable names under
-`checkpoints/compatibility/`:
+The six model files are available in the public
+[v0.1.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v0.1.0).
+Download the files you need and place them under the repository root exactly
+as shown below:
 
 ```text
 checkpoints/
@@ -85,10 +86,20 @@ checkpoints/
     └── lsej_grid10_erode5_best.pth
 ```
 
-The pretrained file initializes Stage-I training. The five compatibility
-checkpoints are the task-specific models used for paper evaluation and can be
-loaded directly with `--checkpoint`; evaluation does not reload the pretrained
-initialization.
+| Download | Save as, relative to the repository root | Used for |
+|:--|:--|:--|
+| [ViT-Tiny pretrained weights](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth) | `checkpoints/pretrained/vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth` | Training initialization |
+| [GAP-3 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/gap3_best.pth) | `checkpoints/compatibility/gap3_best.pth` | GAP-3 evaluation |
+| [GAP-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/gap5_best.pth) | `checkpoints/compatibility/gap5_best.pth` | GAP-5 evaluation |
+| [JPwLEG-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/jpleg5_best.pth) | `checkpoints/compatibility/jpleg5_best.pth` | JPwLEG-5 evaluation |
+| [ImageNet-LSEJ erode2 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/lsej_grid10_erode2_best.pth) | `checkpoints/compatibility/lsej_grid10_erode2_best.pth` | `grid10_erode2` evaluation |
+| [ImageNet-LSEJ erode5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/lsej_grid10_erode5_best.pth) | `checkpoints/compatibility/lsej_grid10_erode5_best.pth` | `grid10_erode5` evaluation |
+
+For evaluation, only the checkpoint matching the dataset or task is needed;
+pass its local path with `--checkpoint` as in the commands below. The
+pretrained ViT-Tiny file is needed when training Stage I from scratch.
+`checkpoints/` is ignored by Git, so downloaded weights stay local. Training
+writes complete run directories under `checkpoints/train_<dataset>/`.
 
 ## Main commands
 
