@@ -1,0 +1,19 @@
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_jpleg_lp_profiled_large_neighborhood_reassembly --dataset jpleg5 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth --start-index 0 --max-samples 200 --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --translation-mode all --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --runtime-warmup-samples 20 --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/jpleg/lp --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25
+
+LP configuration: {'top_k': 1, 'refinement_iterations': 5, 'probability_lambda': 5.0, 'minimum_weight': 1e-15, 'match_tolerance': 0.0001, 'rigid_components': True, 'buddy_check': True, 'loop_check': True, 'greedy_stop_threshold': 1.25, 'highs_time_limit': 0.0}
+在 JPLEG5 test 上评估 S1A4：samples=200, grid=5x5, initial_solver=faithful Python LP, beam=4
+[25/200] sample 24: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.00%->44.00%->48.00%->52.00%, AA 59.04%->59.04%->66.24%->69.28%, SRA 81.10%->81.10%->84.10%->88.20%
+[50/200] sample 49: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.00%->28.00%->34.00%->44.00%, AA 45.28%->47.36%->53.52%->56.96%, SRA 77.45%->78.80%->82.20%->85.85%
+[75/200] sample 74: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 33.33%->34.67%->40.00%->50.67%, AA 50.77%->52.43%->56.59%->59.36%, SRA 79.47%->80.67%->83.27%->86.50%
+[100/200] sample 99: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 35.00%->36.00%->40.00%->50.00%, AA 52.04%->53.28%->56.64%->58.88%, SRA 79.77%->80.67%->83.35%->86.40%
+[125/200] sample 124: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 37.60%->39.20%->42.40%->50.40%, AA 53.95%->55.10%->58.82%->60.26%, SRA 80.62%->81.52%->84.42%->86.98%
+[150/200] sample 149: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.00%->39.33%->42.67%->51.33%, AA 54.16%->55.12%->59.23%->61.39%, SRA 80.48%->81.23%->84.48%->87.37%
+[175/200] sample 174: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.86%->40.00%->42.86%->50.29%, AA 54.01%->54.86%->57.71%->59.63%, SRA 80.34%->80.99%->83.63%->86.37%
+[200/200] sample 199: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.50%->41.50%->44.50%->52.50%, AA 54.82%->55.74%->58.46%->61.18%, SRA 80.51%->81.14%->84.12%->86.99%
+device: cuda:0
+Final PA (faithful Python LP -> completion -> S1A3 -> S1A4): 40.5000% -> 41.5000% -> 44.5000% -> 52.5000%
+Final AA (faithful Python LP -> completion -> S1A3 -> S1A4): 54.8200% -> 55.7400% -> 58.4600% -> 61.1800%
+Final SRA (faithful Python LP -> completion -> S1A3 -> S1A4): 80.5125% -> 81.1375% -> 84.1250% -> 86.9875%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 9, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 2, 'improved_puzzles': 9, 'damaged_puzzles': 0}
+Search diagnostics: {'evaluated_poses': 742, 'recorded_pose_rows': 742, 'evaluated_completion_hypotheses': 2701, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 514, 'selected_non_greedy_poses': 66}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/jpleg/lp

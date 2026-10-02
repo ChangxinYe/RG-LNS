@@ -1,0 +1,95 @@
+started_at: 2026-08-31T15:27:31+08:00
+cwd: /data/yecx/Jigsaw_Puzzles_V2
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_lsej_profiled_large_neighborhood_reassembly --task grid10_erode2 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth --start-index 0 --max-samples 0 --translation-mode all --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/lsej/full_rg_lns_b4 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25 --loss-type hard_triplet
+
+[25/2000] LSEJ_000167: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.00%->44.00%->52.00%->56.00%, AA 71.36%->71.36%->84.12%->90.60%, SRA 85.71%->85.71%->88.98%->92.33%
+[50/2000] LSEJ_000318: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 46.00%->46.00%->56.00%->60.00%, AA 72.80%->74.66%->86.40%->91.24%, SRA 87.80%->88.00%->90.70%->93.93%
+[75/2000] LSEJ_000476: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.00%->45.33%->56.00%->60.00%, AA 74.47%->77.04%->85.13%->89.40%, SRA 88.73%->89.01%->91.09%->93.92%
+[100/2000] LSEJ_000638: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 45.00%->46.00%->56.00%->61.00%, AA 75.07%->77.08%->85.58%->89.89%, SRA 88.96%->89.24%->91.46%->94.12%
+[125/2000] LSEJ_000795: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 48.80%->49.60%->60.80%->64.80%, AA 77.15%->79.27%->87.15%->90.65%, SRA 89.96%->90.29%->92.58%->94.78%
+[150/2000] LSEJ_000942: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 47.33%->48.00%->58.67%->64.67%, AA 76.10%->78.13%->87.11%->91.48%, SRA 89.19%->89.50%->92.21%->94.99%
+[175/2000] LSEJ_001085: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 45.14%->45.71%->57.14%->63.43%, AA 75.51%->77.26%->86.08%->90.13%, SRA 88.64%->88.94%->91.71%->94.47%
+[200/2000] LSEJ_001241: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 45.00%->45.50%->59.00%->64.50%, AA 75.64%->77.63%->86.75%->90.34%, SRA 88.69%->89.05%->92.00%->94.52%
+[225/2000] LSEJ_001389: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 45.33%->45.78%->59.56%->64.89%, AA 75.64%->77.85%->86.70%->90.08%, SRA 88.82%->89.23%->92.25%->94.70%
+[250/2000] LSEJ_001545: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 46.40%->46.80%->59.60%->64.80%, AA 75.69%->77.70%->86.69%->89.88%, SRA 88.62%->89.08%->92.01%->94.31%
+[275/2000] LSEJ_001693: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 46.91%->47.27%->59.64%->65.45%, AA 76.81%->78.64%->87.10%->90.10%, SRA 88.95%->89.37%->92.15%->94.40%
+[300/2000] LSEJ_001844: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 47.33%->47.67%->59.33%->65.00%, AA 77.16%->78.84%->87.42%->90.09%, SRA 89.21%->89.60%->92.33%->94.54%
+[325/2000] LSEJ_002006: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 48.31%->48.62%->60.62%->65.85%, AA 77.45%->79.17%->87.29%->89.98%, SRA 89.18%->89.58%->92.22%->94.34%
+[350/2000] LSEJ_002149: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 49.14%->49.43%->60.86%->66.00%, AA 77.56%->79.15%->87.64%->90.21%, SRA 89.35%->89.72%->92.40%->94.40%
+[375/2000] LSEJ_002305: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 49.87%->50.13%->61.33%->66.13%, AA 77.55%->79.03%->87.84%->90.30%, SRA 89.54%->89.89%->92.56%->94.49%
+[400/2000] LSEJ_002451: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 49.25%->49.50%->60.25%->65.50%, AA 76.77%->78.32%->87.30%->89.70%, SRA 89.30%->89.65%->92.44%->94.35%
+[425/2000] LSEJ_002599: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 48.00%->48.24%->59.06%->64.47%, AA 76.46%->77.93%->86.92%->89.17%, SRA 89.13%->89.47%->92.23%->94.12%
+[450/2000] LSEJ_002749: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 47.56%->47.78%->58.67%->64.00%, AA 76.80%->78.19%->86.91%->89.19%, SRA 89.23%->89.56%->92.33%->94.19%
+[475/2000] LSEJ_002897: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 46.95%->47.16%->58.11%->63.58%, AA 76.55%->77.88%->87.12%->89.38%, SRA 89.17%->89.49%->92.34%->94.21%
+[500/2000] LSEJ_003045: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 46.80%->47.00%->58.20%->63.60%, AA 76.42%->77.68%->86.86%->89.03%, SRA 89.35%->89.65%->92.49%->94.28%
+[525/2000] LSEJ_003185: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 46.86%->47.05%->58.29%->64.00%, AA 76.60%->77.80%->86.94%->89.40%, SRA 89.39%->89.69%->92.52%->94.38%
+[550/2000] LSEJ_003334: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 47.09%->47.27%->58.91%->64.55%, AA 76.75%->77.90%->87.09%->89.45%, SRA 89.44%->89.72%->92.56%->94.36%
+[575/2000] LSEJ_003493: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 47.13%->47.48%->58.96%->64.35%, AA 76.81%->78.08%->87.13%->89.46%, SRA 89.50%->89.82%->92.54%->94.29%
+[600/2000] LSEJ_003657: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 47.83%->48.17%->59.17%->64.67%, AA 76.84%->78.14%->87.13%->89.58%, SRA 89.55%->89.87%->92.56%->94.34%
+[625/2000] LSEJ_003802: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 48.00%->48.32%->59.36%->64.96%, AA 76.95%->78.20%->87.18%->89.72%, SRA 89.53%->89.84%->92.58%->94.37%
+[650/2000] LSEJ_003939: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 48.00%->48.31%->59.85%->65.38%, AA 77.12%->78.33%->87.60%->90.05%, SRA 89.69%->89.98%->92.76%->94.50%
+[675/2000] LSEJ_004089: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 48.00%->48.30%->59.56%->64.89%, AA 77.52%->78.68%->87.65%->90.03%, SRA 89.81%->90.10%->92.81%->94.51%
+[700/2000] LSEJ_004224: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 47.57%->47.86%->58.86%->64.14%, AA 77.30%->78.42%->87.26%->89.67%, SRA 89.67%->89.94%->92.65%->94.38%
+[725/2000] LSEJ_004390: partial_completed__max_rounds, rounds=1/1, completion=profiled_beam:1, PA 46.90%->47.17%->58.07%->63.45%, AA 76.93%->78.01%->86.68%->89.07%, SRA 89.41%->89.67%->92.35%->94.07%
+[750/2000] LSEJ_004533: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 46.40%->46.67%->57.20%->62.53%, AA 76.35%->77.39%->86.15%->88.58%, SRA 89.27%->89.53%->92.26%->93.98%
+[775/2000] LSEJ_004680: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 46.06%->46.32%->56.77%->62.06%, AA 76.17%->77.25%->85.83%->88.20%, SRA 89.12%->89.42%->92.14%->93.84%
+[800/2000] LSEJ_004830: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 45.38%->45.62%->56.12%->61.38%, AA 75.97%->77.04%->85.38%->87.94%, SRA 88.88%->89.20%->91.86%->93.57%
+[825/2000] LSEJ_004985: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 44.97%->45.21%->55.88%->61.21%, AA 75.68%->76.71%->85.02%->87.53%, SRA 88.78%->89.10%->91.76%->93.45%
+[850/2000] LSEJ_005115: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 45.18%->45.41%->55.76%->60.94%, AA 76.05%->77.05%->85.14%->87.58%, SRA 88.91%->89.21%->91.82%->93.46%
+[875/2000] LSEJ_005283: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 45.49%->45.71%->55.89%->61.14%, AA 76.10%->77.18%->85.20%->87.71%, SRA 89.05%->89.35%->91.93%->93.56%
+[900/2000] LSEJ_005438: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.89%->45.11%->55.11%->60.67%, AA 75.10%->76.15%->84.23%->87.07%, SRA 88.78%->89.08%->91.64%->93.34%
+[925/2000] LSEJ_005573: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 44.65%->44.86%->54.70%->60.32%, AA 75.00%->76.03%->84.09%->87.04%, SRA 88.69%->88.99%->91.54%->93.26%
+[950/2000] LSEJ_005717: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.42%->44.63%->54.32%->59.79%, AA 74.76%->75.85%->83.96%->86.87%, SRA 88.70%->88.99%->91.58%->93.27%
+[975/2000] LSEJ_005858: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 44.00%->44.21%->54.26%->59.69%, AA 74.53%->75.60%->83.68%->86.66%, SRA 88.58%->88.88%->91.46%->93.18%
+[1000/2000] LSEJ_006011: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 43.80%->44.00%->54.10%->59.60%, AA 74.17%->75.22%->83.40%->86.35%, SRA 88.44%->88.73%->91.28%->93.02%
+[1025/2000] LSEJ_006154: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 43.32%->43.51%->53.56%->59.02%, AA 74.09%->75.11%->83.29%->86.16%, SRA 88.35%->88.63%->91.23%->92.96%
+[1050/2000] LSEJ_006306: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 42.86%->43.05%->53.14%->58.67%, AA 73.93%->74.92%->83.06%->85.97%, SRA 88.14%->88.42%->91.04%->92.78%
+[1075/2000] LSEJ_006441: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 42.98%->43.16%->53.12%->58.60%, AA 73.94%->74.92%->83.00%->85.86%, SRA 88.16%->88.45%->91.02%->92.77%
+[1100/2000] LSEJ_006599: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 42.55%->42.73%->52.55%->58.09%, AA 73.94%->74.92%->83.03%->85.93%, SRA 88.18%->88.49%->91.03%->92.77%
+[1125/2000] LSEJ_006755: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 42.04%->42.22%->52.00%->57.60%, AA 73.76%->74.72%->82.83%->85.73%, SRA 88.12%->88.42%->90.96%->92.72%
+[1150/2000] LSEJ_006902: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 41.57%->41.74%->51.39%->57.04%, AA 73.57%->74.51%->82.72%->85.63%, SRA 88.00%->88.30%->90.87%->92.64%
+[1175/2000] LSEJ_007060: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 41.53%->41.70%->51.57%->57.11%, AA 73.71%->74.63%->82.76%->85.64%, SRA 88.04%->88.35%->90.91%->92.65%
+[1200/2000] LSEJ_007197: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 41.50%->41.67%->51.50%->57.00%, AA 73.69%->74.60%->82.58%->85.48%, SRA 87.93%->88.24%->90.77%->92.52%
+[1225/2000] LSEJ_007353: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 41.39%->41.55%->51.43%->56.73%, AA 73.38%->74.20%->82.44%->85.39%, SRA 87.82%->88.14%->90.67%->92.48%
+[1250/2000] LSEJ_007511: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 41.04%->41.20%->50.96%->56.32%, AA 73.05%->73.87%->82.13%->85.08%, SRA 87.68%->88.00%->90.53%->92.32%
+[1275/2000] LSEJ_007659: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 41.02%->41.18%->50.82%->56.08%, AA 73.09%->73.90%->82.11%->85.01%, SRA 87.65%->87.97%->90.47%->92.26%
+[1300/2000] LSEJ_007811: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.69%->40.85%->50.69%->56.00%, AA 73.13%->73.92%->82.10%->84.98%, SRA 87.69%->88.01%->90.52%->92.29%
+[1325/2000] LSEJ_007952: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.68%->40.83%->50.49%->55.70%, AA 72.76%->73.56%->81.80%->84.70%, SRA 87.58%->87.89%->90.43%->92.22%
+[1350/2000] LSEJ_008095: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.81%->40.96%->50.67%->55.85%, AA 72.78%->73.56%->81.74%->84.76%, SRA 87.67%->87.97%->90.47%->92.30%
+[1375/2000] LSEJ_008246: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.65%->40.80%->50.47%->55.64%, AA 72.77%->73.60%->81.72%->84.70%, SRA 87.74%->88.04%->90.52%->92.35%
+[1400/2000] LSEJ_008399: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.43%->40.57%->50.21%->55.36%, AA 72.70%->73.51%->81.62%->84.60%, SRA 87.73%->88.03%->90.48%->92.32%
+[1425/2000] LSEJ_008554: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.49%->40.63%->50.25%->55.58%, AA 72.90%->73.69%->81.78%->84.73%, SRA 87.78%->88.08%->90.54%->92.36%
+[1450/2000] LSEJ_008707: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.21%->40.34%->49.86%->55.10%, AA 72.80%->73.58%->81.70%->84.60%, SRA 87.67%->87.96%->90.41%->92.25%
+[1475/2000] LSEJ_008845: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.27%->40.41%->49.97%->55.12%, AA 72.74%->73.51%->81.54%->84.44%, SRA 87.57%->87.87%->90.30%->92.12%
+[1500/2000] LSEJ_008983: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.27%->40.40%->50.00%->55.27%, AA 72.69%->73.44%->81.60%->84.49%, SRA 87.53%->87.82%->90.28%->92.10%
+[1525/2000] LSEJ_009119: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 40.20%->40.33%->49.90%->55.15%, AA 72.59%->73.33%->81.38%->84.36%, SRA 87.45%->87.73%->90.19%->92.01%
+[1550/2000] LSEJ_009276: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.87%->40.00%->49.48%->54.65%, AA 72.57%->73.30%->81.30%->84.29%, SRA 87.40%->87.68%->90.15%->91.98%
+[1575/2000] LSEJ_009420: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.56%->39.68%->49.02%->54.16%, AA 72.19%->72.95%->80.92%->84.00%, SRA 87.14%->87.46%->89.95%->91.82%
+[1600/2000] LSEJ_009567: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 39.44%->39.56%->48.94%->54.06%, AA 72.30%->73.05%->80.98%->84.02%, SRA 87.15%->87.46%->89.97%->91.82%
+[1625/2000] LSEJ_009719: partial_completed__no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.32%->39.51%->48.92%->54.15%, AA 72.35%->73.10%->81.08%->84.12%, SRA 87.16%->87.48%->89.99%->91.85%
+[1650/2000] LSEJ_009875: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.39%->39.58%->48.85%->54.06%, AA 72.25%->72.98%->81.04%->84.20%, SRA 87.13%->87.46%->90.02%->91.88%
+[1675/2000] LSEJ_010016: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.10%->39.28%->48.48%->53.61%, AA 72.16%->72.90%->80.92%->84.05%, SRA 87.04%->87.38%->89.93%->91.79%
+[1700/2000] LSEJ_010182: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 39.18%->39.35%->48.59%->53.71%, AA 72.28%->73.01%->81.03%->84.13%, SRA 87.08%->87.42%->89.96%->91.83%
+[1725/2000] LSEJ_010336: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.07%->39.25%->48.41%->53.45%, AA 72.15%->72.87%->80.84%->83.88%, SRA 86.96%->87.30%->89.85%->91.70%
+[1750/2000] LSEJ_010488: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.97%->39.14%->48.34%->53.31%, AA 72.06%->72.72%->80.65%->83.72%, SRA 86.81%->87.17%->89.73%->91.61%
+[1775/2000] LSEJ_010645: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.59%->38.76%->47.89%->52.79%, AA 71.82%->72.48%->80.30%->83.50%, SRA 86.67%->87.04%->89.60%->91.50%
+[1800/2000] LSEJ_010800: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.11%->38.28%->47.39%->52.39%, AA 71.58%->72.23%->80.08%->83.37%, SRA 86.46%->86.82%->89.41%->91.31%
+[1825/2000] LSEJ_010953: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.58%->38.74%->47.89%->52.82%, AA 71.71%->72.35%->80.30%->83.55%, SRA 86.59%->86.95%->89.52%->91.41%
+[1850/2000] LSEJ_011099: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.76%->38.92%->48.11%->53.08%, AA 71.90%->72.53%->80.44%->83.65%, SRA 86.71%->87.06%->89.63%->91.50%
+[1875/2000] LSEJ_011254: partial_completed__max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 38.99%->39.15%->48.53%->53.44%, AA 71.93%->72.55%->80.57%->83.75%, SRA 86.82%->87.18%->89.75%->91.59%
+[1900/2000] LSEJ_011404: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.00%->39.16%->48.58%->53.47%, AA 71.94%->72.55%->80.58%->83.83%, SRA 86.81%->87.17%->89.74%->91.60%
+[1925/2000] LSEJ_011553: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.91%->39.06%->48.52%->53.40%, AA 71.88%->72.49%->80.57%->83.80%, SRA 86.75%->87.10%->89.70%->91.58%
+[1950/2000] LSEJ_011700: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 38.51%->38.67%->48.10%->52.97%, AA 71.62%->72.24%->80.35%->83.56%, SRA 86.59%->86.94%->89.54%->91.45%
+[1975/2000] LSEJ_011843: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.78%->38.94%->48.41%->53.27%, AA 71.85%->72.46%->80.54%->83.73%, SRA 86.68%->87.02%->89.63%->91.52%
+[2000/2000] LSEJ_011998: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.20%->39.35%->48.90%->53.75%, AA 72.09%->72.70%->80.74%->83.90%, SRA 86.79%->87.13%->89.72%->91.59%
+device: cuda:0
+Final PA (Gallagher -> completion -> S1A3 -> S1A4): 39.2000% -> 39.3500% -> 48.9000% -> 53.7500%
+Final AA (Gallagher -> completion -> S1A3 -> S1A4): 72.0925% -> 72.6955% -> 80.7350% -> 83.8970%
+Final SRA (Gallagher -> completion -> S1A3 -> S1A4): 86.7869% -> 87.1269% -> 89.7189% -> 91.5889%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 108, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 3, 'improved_puzzles': 57, 'damaged_puzzles': 9}
+Search diagnostics: {'evaluated_poses': 9938, 'recorded_pose_rows': 9938, 'evaluated_completion_hypotheses': 37453, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 7550, 'selected_non_greedy_poses': 696}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/lsej/full_rg_lns_b4
+
+finished_at: 2026-08-31T16:39:52+08:00
+return_code: 0
+elapsed_seconds: 4340.965

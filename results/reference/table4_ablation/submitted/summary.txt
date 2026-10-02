@@ -1,0 +1,33 @@
+Table 5: cumulative RG-LNS ablation
+================================================================================
+state: completed
+complete: True
+updated_at: 2026-08-31T17:03:23+08:00
+output_root: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601
+datasets: ImageNet-LSEJ-10 (2 px), GAP-5, JPwLEG-5
+device/gpu_id: auto/0
+max_samples: 0 (0 means the complete test split)
+configuration: K=3, component=0, min_size=4, rounds=1, partial_beam=2
+completed evaluator runs: 6/6
+metric: PA (%)
+
+Variant                      | ImageNet-LSEJ-10 (2 px) |      GAP-5 |   JPwLEG-5
+--------------------------------------------------------------------------------
+ViT-T + Gallagher            |                    39.2 |       15.2 |       39.6
++ Reliability-Guided Destroy |                    46.7 |       19.0 |       43.5
++ Component Translations     |                    48.9 |       23.5 |       47.9
++ Beam-Search Completion     |                    53.8 |       30.9 |       50.8
+
+Cumulative variant definitions:
+  Reliable components: reciprocal Top-K edges supported by complete 2x2 cycles
+  + Reliability-Guided Destroy: fixed component position, greedy completion (B=1)
+  + Component Translations: all legal component translations, greedy completion (B=1)
+  + Beam-Search Completion: all legal component translations, beam width B=4
+  All RG-LNS rows share the same partial-layout completion and strict E1 acceptance rule.
+
+MGC + Gallagher is intentionally excluded because it is an external compatibility baseline,
+not an ablation of the frozen ViT-T compatibility and RG-LNS modules.
+
+The unrounded PA fractions and percentages are stored in results.json.
+Each evaluator command and its stdout/stderr are stored under logs/.
+Per-run state and attempt history are stored under statuses/.

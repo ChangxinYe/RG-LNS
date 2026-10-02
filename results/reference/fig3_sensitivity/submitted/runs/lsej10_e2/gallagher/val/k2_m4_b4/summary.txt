@@ -1,0 +1,78 @@
+ImageNet-LSEJ S1A4 Profiled Large-Neighborhood Reassembly (Gallagher initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth
+loss_type: hard_triplet
+data_root: /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ
+task/split: grid10_erode2 / val
+samples: [0, 1000) = 1000
+complete_initial_solver_baselines: 952/1000
+complete_after_partial_completion: 1000/1000
+configuration: beam=4, partial_beam=2, k=2, translation=all, component=0, min_size=4, rounds=1, postprocess=True
+runtime: device=cuda:0, score_batch_size=128
+artifacts: save_visuals=False, visual_limit=0, save_predictions=False, save_completion_details=False
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement
+initial_solver: Gallagher
+initial_solver_config: {}
+status: {'no_strict_e1_improvement': 469, 'partial_completed__max_rounds': 41, 'max_rounds': 483, 'partial_completed__no_strict_e1_improvement': 6, 'partial_completed__small_component': 1}
+
+S1A Gallagher baseline:
+  PA=40.0000%
+  AA=73.0160%
+  Horizontal SRA=87.8322%
+  Vertical SRA=86.8656%
+  SRA=87.3489%
+
+Label-free E1 partial-layout completion:
+  PA=40.2000%
+  AA=74.1290%
+  Horizontal SRA=88.1333%
+  Vertical SRA=87.1200%
+  SRA=87.6267%
+  diagnostics={'beam_width': 2, 'applied_samples': 48, 'failed_samples': 0, 'complete_after_completion': 1000, 'repaired_to_perfect': 2, 'improved_puzzles': 27, 'damaged_puzzles': 5}
+
+S1A3 single-path reference (same E1 scores and initial layout):
+  PA=50.3000%
+  AA=82.7510%
+  Horizontal SRA=90.5000%
+  Vertical SRA=89.6989%
+  SRA=90.0994%
+
+S1A4 profiled reassembly:
+  PA=57.1000%
+  AA=86.0020%
+  Horizontal SRA=92.7422%
+  Vertical SRA=92.0122%
+  SRA=92.3772%
+
+Comparison: {'improved_puzzles': 422, 'damaged_puzzles': 64, 'unchanged_puzzles': 514, 'changed_predictions': 531, 'repaired_to_perfect': 171, 'broken_perfect': 0, 'accepted_rounds': 524, 'accepted_beam_rounds': 338}
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 48, 'failed_samples': 0, 'complete_after_completion': 1000, 'repaired_to_perfect': 2, 'improved_puzzles': 27, 'damaged_puzzles': 5}
+Incremental vs S1A3: {'improved_puzzles': 236, 'damaged_puzzles': 59, 'unchanged_puzzles': 705, 'changed_predictions': 338, 'repaired_to_perfect': 70, 'broken_perfect': 2}
+Search diagnostics: {'evaluated_poses': 6257, 'recorded_pose_rows': 6257, 'evaluated_completion_hypotheses': 23970, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 4907, 'selected_non_greedy_poses': 338}
+PA repaired image list: pa_repaired_images.txt (171)
+PA broken image list: pa_broken_images.txt (0)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (70)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (2)
+
+Stage Runtime
+-------------
+unit=seconds_per_puzzle | warmup=0 | measured=1000
+compatibility: mean=0.309348 | median=0.301957 | std=0.023689 | p95=0.346143 | total=309.347960
+initial_solver: mean=0.094734 | median=0.089772 | std=0.015957 | p95=0.120846 | total=94.734253
+partial_completion: mean=0.008279 | median=0.000000 | std=0.143281 | p95=0.000000 | total=8.278728
+rgls: mean=2.301682 | median=0.038717 | std=6.509950 | p95=15.984586 | total=2301.681635
+refinement_total: mean=2.309960 | median=0.039853 | std=6.517528 | p95=16.244695 | total=2309.960362
+inference_total: mean=2.714043 | median=0.447516 | std=6.522163 | p95=16.656855 | total=2714.042575
+
+elapsed_seconds: 2776.047249
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

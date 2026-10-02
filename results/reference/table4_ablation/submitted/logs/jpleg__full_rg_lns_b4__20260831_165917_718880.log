@@ -1,0 +1,96 @@
+started_at: 2026-08-31T16:59:17+08:00
+cwd: /data/yecx/Jigsaw_Puzzles_V2
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_jpleg_profiled_large_neighborhood_reassembly --dataset jpleg5 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth --start-index 0 --max-samples 0 --translation-mode all --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/full_rg_lns_b4 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25
+
+在 JPLEG5 test 上评估 S1A4：samples=2000, grid=5x5, initial_solver=Gallagher, beam=4
+[25/2000] sample 24: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 40.00%->40.00%->44.00%->48.00%, AA 51.68%->51.68%->54.24%->61.60%, SRA 81.80%->81.80%->86.70%->87.90%
+[50/2000] sample 49: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.00%->28.00%->32.00%->36.00%, AA 40.40%->41.76%->39.04%->46.48%, SRA 77.55%->78.10%->83.05%->85.35%
+[75/2000] sample 74: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 33.33%->33.33%->38.67%->41.33%, AA 44.69%->45.60%->45.28%->50.67%, SRA 79.80%->80.17%->84.37%->86.67%
+[100/2000] sample 99: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.00%->31.00%->37.00%->39.00%, AA 45.20%->45.12%->48.08%->50.48%, SRA 79.03%->79.35%->84.58%->86.70%
+[125/2000] sample 124: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.20%->32.00%->36.80%->39.20%, AA 45.44%->45.54%->48.13%->51.55%, SRA 79.36%->79.82%->84.54%->86.80%
+[150/2000] sample 149: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.33%->32.00%->38.00%->40.67%, AA 45.52%->45.60%->48.96%->51.97%, SRA 79.48%->79.87%->84.63%->87.10%
+[175/2000] sample 174: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.43%->32.00%->38.29%->40.57%, AA 44.96%->45.49%->49.42%->52.14%, SRA 78.87%->79.34%->84.09%->86.43%
+[200/2000] sample 199: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.00%->31.50%->38.50%->41.50%, AA 44.06%->44.52%->49.76%->52.70%, SRA 79.05%->79.61%->84.20%->86.79%
+[225/2000] sample 224: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 31.11%->31.56%->39.11%->42.67%, AA 42.81%->43.22%->50.01%->52.78%, SRA 78.58%->79.18%->83.93%->86.47%
+[250/2000] sample 249: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 29.60%->30.00%->39.60%->43.20%, AA 42.11%->42.70%->50.50%->53.76%, SRA 77.79%->78.38%->83.73%->86.34%
+[275/2000] sample 274: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 29.09%->29.45%->38.91%->42.91%, AA 41.96%->42.50%->50.11%->53.82%, SRA 77.64%->78.17%->83.83%->86.42%
+[300/2000] sample 299: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 29.33%->29.67%->39.00%->43.00%, AA 42.52%->42.84%->50.55%->54.05%, SRA 77.80%->78.40%->83.97%->86.57%
+[325/2000] sample 324: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.23%->29.54%->38.15%->42.46%, AA 41.76%->42.31%->49.82%->53.74%, SRA 77.53%->78.25%->83.75%->86.41%
+[350/2000] sample 349: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 28.29%->28.57%->37.71%->42.00%, AA 41.60%->42.11%->49.99%->53.98%, SRA 77.00%->77.67%->83.30%->86.12%
+[375/2000] sample 374: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.80%->29.07%->37.87%->42.40%, AA 42.23%->42.71%->50.20%->54.27%, SRA 76.67%->77.37%->83.01%->85.99%
+[400/2000] sample 399: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 28.00%->28.25%->37.00%->41.25%, AA 41.45%->41.90%->49.27%->53.10%, SRA 76.24%->76.89%->82.59%->85.49%
+[425/2000] sample 424: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 28.47%->28.71%->37.18%->41.88%, AA 41.64%->42.06%->49.15%->53.45%, SRA 76.04%->76.66%->82.62%->85.61%
+[450/2000] sample 449: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.89%->29.11%->38.22%->42.89%, AA 41.88%->42.28%->50.19%->54.35%, SRA 76.02%->76.67%->82.82%->85.76%
+[475/2000] sample 474: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 29.47%->29.68%->38.74%->43.58%, AA 42.59%->42.97%->50.69%->54.95%, SRA 76.26%->76.87%->82.98%->85.86%
+[500/2000] sample 499: partial_completed__max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 29.80%->30.00%->38.40%->43.20%, AA 42.72%->43.08%->50.30%->54.57%, SRA 76.32%->76.92%->82.88%->85.80%
+[525/2000] sample 524: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 29.33%->29.52%->38.10%->42.86%, AA 42.36%->42.70%->49.62%->54.06%, SRA 76.10%->76.68%->82.71%->85.69%
+[550/2000] sample 549: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.45%->29.64%->38.00%->42.73%, AA 42.27%->42.61%->49.32%->53.80%, SRA 76.14%->76.71%->82.61%->85.61%
+[575/2000] sample 574: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.22%->29.39%->37.74%->42.78%, AA 42.25%->42.72%->49.31%->53.86%, SRA 76.02%->76.62%->82.51%->85.64%
+[600/2000] sample 599: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.33%->29.50%->37.83%->43.17%, AA 42.23%->42.68%->49.52%->54.11%, SRA 75.94%->76.51%->82.53%->85.71%
+[625/2000] sample 624: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.60%->29.76%->38.08%->43.68%, AA 42.31%->42.75%->49.31%->54.19%, SRA 76.07%->76.62%->82.60%->85.86%
+[650/2000] sample 649: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.92%->29.08%->37.69%->43.38%, AA 41.52%->41.94%->48.87%->53.86%, SRA 75.88%->76.44%->82.50%->85.82%
+[675/2000] sample 674: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 28.59%->28.74%->37.19%->42.81%, AA 41.40%->41.81%->48.65%->53.52%, SRA 75.83%->76.40%->82.39%->85.74%
+[700/2000] sample 699: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.14%->29.29%->37.71%->43.14%, AA 41.95%->42.37%->49.38%->54.09%, SRA 76.21%->76.78%->82.65%->85.87%
+[725/2000] sample 724: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 29.38%->29.52%->38.34%->43.86%, AA 42.26%->42.65%->49.91%->54.71%, SRA 76.53%->77.08%->82.94%->86.12%
+[750/2000] sample 749: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 30.40%->30.53%->39.07%->44.53%, AA 43.04%->43.42%->50.55%->55.27%, SRA 76.88%->77.41%->83.19%->86.34%
+[775/2000] sample 774: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.61%->31.74%->40.00%->45.29%, AA 44.07%->44.45%->51.55%->56.11%, SRA 77.34%->77.89%->83.56%->86.61%
+[800/2000] sample 799: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 31.75%->31.87%->40.00%->45.12%, AA 44.27%->44.65%->51.67%->56.08%, SRA 77.41%->77.96%->83.53%->86.52%
+[825/2000] sample 824: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 32.61%->32.73%->40.85%->45.82%, AA 44.74%->45.21%->52.30%->56.58%, SRA 77.83%->78.40%->83.81%->86.72%
+[850/2000] sample 849: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 33.18%->33.29%->41.29%->46.12%, AA 45.24%->45.70%->52.91%->56.96%, SRA 78.15%->78.70%->84.04%->86.89%
+[875/2000] sample 874: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 33.49%->33.60%->41.71%->46.40%, AA 45.59%->46.05%->53.20%->57.14%, SRA 78.32%->78.88%->84.20%->86.99%
+[900/2000] sample 899: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 34.00%->34.11%->42.33%->46.89%, AA 46.11%->46.51%->53.64%->57.47%, SRA 78.59%->79.15%->84.44%->87.16%
+[925/2000] sample 924: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 34.27%->34.38%->42.49%->47.03%, AA 46.28%->46.67%->53.80%->57.57%, SRA 78.81%->79.37%->84.56%->87.24%
+[950/2000] sample 949: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 34.21%->34.32%->42.63%->47.37%, AA 46.37%->46.75%->54.00%->57.72%, SRA 79.02%->79.57%->84.72%->87.38%
+[975/2000] sample 974: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 34.46%->34.56%->42.87%->47.49%, AA 46.68%->47.06%->54.20%->57.91%, SRA 79.14%->79.68%->84.82%->87.43%
+[1000/2000] sample 999: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 34.80%->34.90%->43.10%->47.60%, AA 46.85%->47.22%->54.28%->57.81%, SRA 79.34%->79.88%->84.92%->87.47%
+[1025/2000] sample 1024: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 35.12%->35.22%->43.41%->47.71%, AA 46.99%->47.35%->54.43%->57.79%, SRA 79.43%->79.95%->84.96%->87.45%
+[1050/2000] sample 1049: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 35.43%->35.52%->43.90%->48.19%, AA 47.30%->47.71%->54.75%->58.13%, SRA 79.52%->80.04%->85.01%->87.51%
+[1075/2000] sample 1074: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 35.91%->36.00%->44.47%->48.65%, AA 47.62%->48.03%->55.17%->58.47%, SRA 79.80%->80.30%->85.23%->87.67%
+[1100/2000] sample 1099: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 36.00%->36.09%->44.73%->48.91%, AA 47.57%->47.97%->55.37%->58.60%, SRA 79.85%->80.33%->85.29%->87.70%
+[1125/2000] sample 1124: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 35.91%->36.00%->44.62%->48.71%, AA 47.53%->47.93%->55.32%->58.47%, SRA 79.91%->80.39%->85.29%->87.67%
+[1150/2000] sample 1149: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 36.26%->36.35%->44.87%->48.87%, AA 47.86%->48.24%->55.48%->58.56%, SRA 80.06%->80.53%->85.38%->87.74%
+[1175/2000] sample 1174: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 36.34%->36.43%->44.94%->48.85%, AA 47.81%->48.19%->55.36%->58.45%, SRA 80.15%->80.63%->85.40%->87.73%
+[1200/2000] sample 1199: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 36.50%->36.58%->45.08%->48.92%, AA 47.96%->48.33%->55.44%->58.47%, SRA 80.37%->80.83%->85.54%->87.82%
+[1225/2000] sample 1224: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 37.06%->37.14%->45.55%->49.39%, AA 48.38%->48.74%->55.77%->58.82%, SRA 80.59%->81.04%->85.73%->87.99%
+[1250/2000] sample 1249: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 37.12%->37.20%->45.76%->49.60%, AA 48.36%->48.71%->55.86%->58.92%, SRA 80.70%->81.15%->85.85%->88.09%
+[1275/2000] sample 1274: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 37.33%->37.49%->45.96%->49.80%, AA 48.48%->48.91%->55.94%->59.07%, SRA 80.84%->81.30%->85.96%->88.18%
+[1300/2000] sample 1299: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 37.69%->37.85%->46.31%->50.08%, AA 48.68%->49.10%->56.16%->59.23%, SRA 81.06%->81.50%->86.13%->88.30%
+[1325/2000] sample 1324: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 37.89%->38.04%->46.49%->50.26%, AA 48.87%->49.28%->56.36%->59.38%, SRA 81.16%->81.60%->86.21%->88.36%
+[1350/2000] sample 1349: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.22%->38.37%->46.81%->50.59%, AA 49.12%->49.53%->56.57%->59.60%, SRA 81.34%->81.77%->86.36%->88.48%
+[1375/2000] sample 1374: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 38.40%->38.55%->46.91%->50.69%, AA 49.23%->49.66%->56.51%->59.57%, SRA 81.42%->81.86%->86.39%->88.51%
+[1400/2000] sample 1399: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 38.43%->38.57%->46.86%->50.57%, AA 49.09%->49.51%->56.32%->59.30%, SRA 81.55%->81.98%->86.44%->88.55%
+[1425/2000] sample 1424: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.81%->38.95%->47.23%->50.88%, AA 49.47%->49.88%->56.58%->59.51%, SRA 81.72%->82.14%->86.55%->88.64%
+[1450/2000] sample 1449: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.90%->39.03%->47.31%->50.90%, AA 49.60%->50.00%->56.61%->59.55%, SRA 81.83%->82.25%->86.62%->88.69%
+[1475/2000] sample 1474: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 38.98%->39.12%->47.39%->50.92%, AA 49.59%->49.99%->56.62%->59.51%, SRA 81.94%->82.35%->86.71%->88.74%
+[1500/2000] sample 1499: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.20%->39.40%->47.73%->51.20%, AA 49.88%->50.29%->56.94%->59.78%, SRA 82.08%->82.50%->86.83%->88.83%
+[1525/2000] sample 1524: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.08%->39.28%->47.54%->50.95%, AA 49.67%->50.07%->56.63%->59.42%, SRA 82.12%->82.54%->86.85%->88.81%
+[1550/2000] sample 1549: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.10%->39.29%->47.48%->50.84%, AA 49.64%->50.04%->56.50%->59.32%, SRA 82.22%->82.64%->86.90%->88.84%
+[1575/2000] sample 1574: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.11%->39.30%->47.49%->50.86%, AA 49.59%->49.98%->56.47%->59.25%, SRA 82.30%->82.71%->86.96%->88.90%
+[1600/2000] sample 1599: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.06%->39.25%->47.38%->50.69%, AA 49.44%->49.82%->56.29%->58.96%, SRA 82.34%->82.74%->86.99%->88.91%
+[1625/2000] sample 1624: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.32%->39.51%->47.57%->50.89%, AA 49.54%->49.92%->56.35%->59.04%, SRA 82.44%->82.83%->87.05%->88.97%
+[1650/2000] sample 1649: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 39.45%->39.64%->47.76%->51.03%, AA 49.64%->50.01%->56.46%->59.12%, SRA 82.52%->82.91%->87.12%->89.02%
+[1675/2000] sample 1674: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.40%->39.58%->47.58%->50.93%, AA 49.48%->49.85%->56.21%->58.91%, SRA 82.52%->82.91%->87.07%->88.97%
+[1700/2000] sample 1699: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.53%->39.76%->47.76%->51.06%, AA 49.57%->49.95%->56.27%->58.94%, SRA 82.63%->83.02%->87.17%->89.03%
+[1725/2000] sample 1724: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.42%->39.65%->47.65%->50.90%, AA 49.43%->49.80%->56.14%->58.78%, SRA 82.63%->83.02%->87.18%->89.01%
+[1750/2000] sample 1749: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 39.49%->39.71%->47.77%->50.97%, AA 49.46%->49.83%->56.19%->58.80%, SRA 82.74%->83.12%->87.26%->89.06%
+[1775/2000] sample 1774: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.66%->39.89%->47.89%->51.10%, AA 49.55%->49.91%->56.23%->58.86%, SRA 82.86%->83.24%->87.33%->89.13%
+[1800/2000] sample 1799: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.61%->39.83%->47.89%->51.06%, AA 49.46%->49.82%->56.16%->58.76%, SRA 82.93%->83.31%->87.39%->89.16%
+[1825/2000] sample 1824: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.62%->39.84%->47.89%->51.01%, AA 49.40%->49.76%->56.12%->58.68%, SRA 82.97%->83.34%->87.40%->89.15%
+[1850/2000] sample 1849: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.51%->39.73%->47.84%->50.92%, AA 49.31%->49.66%->56.06%->58.59%, SRA 83.01%->83.38%->87.43%->89.16%
+[1875/2000] sample 1874: max_rounds, rounds=1/1, completion=s1a3_greedy:0, PA 39.52%->39.79%->47.84%->50.88%, AA 49.27%->49.63%->56.00%->58.49%, SRA 83.10%->83.48%->87.50%->89.21%
+[1900/2000] sample 1899: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.79%->40.05%->48.11%->51.11%, AA 49.50%->49.85%->56.20%->58.66%, SRA 83.19%->83.57%->87.57%->89.26%
+[1925/2000] sample 1924: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.84%->40.16%->48.21%->51.17%, AA 49.54%->49.92%->56.32%->58.77%, SRA 83.25%->83.65%->87.63%->89.30%
+[1950/2000] sample 1949: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.79%->40.10%->48.15%->51.08%, AA 49.41%->49.79%->56.16%->58.58%, SRA 83.28%->83.68%->87.64%->89.30%
+[1975/2000] sample 1974: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 39.70%->40.00%->47.95%->50.89%, AA 49.28%->49.65%->55.97%->58.34%, SRA 83.32%->83.72%->87.65%->89.32%
+[2000/2000] sample 1999: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 39.65%->39.95%->47.95%->50.80%, AA 49.41%->49.78%->56.05%->58.33%, SRA 83.36%->83.76%->87.68%->89.33%
+device: cuda:0
+Final PA (Gallagher -> completion -> S1A3 -> S1A4): 39.6500% -> 39.9500% -> 47.9500% -> 50.8000%
+Final AA (Gallagher -> completion -> S1A3 -> S1A4): 49.4120% -> 49.7760% -> 56.0480% -> 58.3300%
+Final SRA (Gallagher -> completion -> S1A3 -> S1A4): 83.3612% -> 83.7588% -> 87.6838% -> 89.3287%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 67, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 6, 'improved_puzzles': 25, 'damaged_puzzles': 4}
+Search diagnostics: {'evaluated_poses': 4573, 'recorded_pose_rows': 4573, 'evaluated_completion_hypotheses': 14411, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 2448, 'selected_non_greedy_poses': 382}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/full_rg_lns_b4
+
+finished_at: 2026-08-31T17:03:23+08:00
+return_code: 0
+elapsed_seconds: 245.332

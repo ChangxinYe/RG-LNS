@@ -1,0 +1,67 @@
+ImageNet-LSEJ S1A4 Profiled Large-Neighborhood Reassembly (Gallagher initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode5/hard_triplet_d128_s224_k15_2026-08-02-21-16-37/checkpoints/best.pth
+loss_type: hard_triplet
+data_root: /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ
+task/split: grid10_erode5 / test
+samples: [0, 2000) = 2000
+complete_initial_solver_baselines: 1741/2000
+complete_after_partial_completion: 2000/2000
+configuration: beam=4, partial_beam=2, k=3, component=0, min_size=4, rounds=1, postprocess=True
+runtime: device=cuda:0, score_batch_size=128
+artifacts: save_visuals=True, visual_limit=10, save_predictions=True, save_completion_details=True
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement
+initial_solver: Gallagher
+initial_solver_config: {}
+status: {'max_rounds': 1574, 'no_strict_e1_improvement': 163, 'partial_completed__max_rounds': 250, 'partial_completed__no_strict_e1_improvement': 8, 'small_component': 4, 'partial_completed__small_component': 1}
+
+S1A Gallagher baseline:
+  PA=5.9500%
+  AA=32.2685%
+  Horizontal SRA=61.0778%
+  Vertical SRA=61.2044%
+  SRA=61.1411%
+
+Label-free E1 partial-layout completion:
+  PA=6.0500%
+  AA=32.8230%
+  Horizontal SRA=61.7217%
+  Vertical SRA=61.7672%
+  SRA=61.7444%
+  diagnostics={'beam_width': 2, 'applied_samples': 259, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 2, 'improved_puzzles': 99, 'damaged_puzzles': 43}
+
+S1A3 single-path reference (same E1 scores and initial layout):
+  PA=13.2500%
+  AA=44.1745%
+  Horizontal SRA=68.5906%
+  Vertical SRA=68.7400%
+  SRA=68.6653%
+
+S1A4 profiled reassembly:
+  PA=19.6500%
+  AA=53.1460%
+  Horizontal SRA=74.8400%
+  Vertical SRA=75.0350%
+  SRA=74.9375%
+
+Comparison: {'improved_puzzles': 1284, 'damaged_puzzles': 329, 'unchanged_puzzles': 387, 'changed_predictions': 1833, 'repaired_to_perfect': 274, 'broken_perfect': 0, 'accepted_rounds': 1824, 'accepted_beam_rounds': 1470}
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 259, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 2, 'improved_puzzles': 99, 'damaged_puzzles': 43}
+Incremental vs S1A3: {'improved_puzzles': 887, 'damaged_puzzles': 350, 'unchanged_puzzles': 763, 'changed_predictions': 1470, 'repaired_to_perfect': 129, 'broken_perfect': 1}
+Search diagnostics: {'evaluated_poses': 43494, 'recorded_pose_rows': 43494, 'evaluated_completion_hypotheses': 172567, 'recorded_completion_rows': 172567, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 38390, 'selected_non_greedy_poses': 1470}
+PA repaired image list: pa_repaired_images.txt (274)
+PA broken image list: pa_broken_images.txt (0)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (129)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (1)
+elapsed_seconds: 26658.62753
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-60-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 503.50 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.55 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 560.35.03
+CUDA_VISIBLE_DEVICES: not set

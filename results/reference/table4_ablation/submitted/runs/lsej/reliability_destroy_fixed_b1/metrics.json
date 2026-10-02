@@ -1,0 +1,134 @@
+{
+  "method": "s1a4_profiled_large_neighborhood_reassembly_gallagher_initialization",
+  "initial_solver": "Gallagher",
+  "uses_training": false,
+  "uses_e2": false,
+  "uses_e5": false,
+  "uses_ground_truth_for_selection": false,
+  "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement",
+  "beam1_contract": "after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver",
+  "task": "grid10_erode2",
+  "split": "test",
+  "start_index": 0,
+  "end_index_exclusive": 2000,
+  "evaluated_samples": 2000,
+  "checkpoint": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth",
+  "configuration": {
+    "completion_beam_width": 1,
+    "partial_completion_beam_width": 2,
+    "mutual_top_k": 3,
+    "translation_mode": "fixed",
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "postprocess": true,
+    "score_batch_size": 128,
+    "device": "cuda:0",
+    "save_visuals": false,
+    "visual_limit": 0,
+    "save_predictions": false,
+    "save_completion_details": false,
+    "initial_solver": {}
+  },
+  "status_counts": {
+    "no_strict_e1_improvement": 1153,
+    "max_rounds": 739,
+    "partial_completed__max_rounds": 74,
+    "partial_completed__no_strict_e1_improvement": 34
+  },
+  "complete_initial_solver_baselines": 1892,
+  "complete_after_partial_completion": 2000,
+  "baseline": {
+    "samples": 2000,
+    "perfect_puzzles": 784,
+    "correct_pieces": 144185,
+    "total_pieces": 200000,
+    "PA": 0.392,
+    "AA": 0.7209250000000015,
+    "horizontal_SRA": 0.8722722222222222,
+    "vertical_SRA": 0.8634666666666667,
+    "SRA": 0.8678694444444445
+  },
+  "partial_completion": {
+    "samples": 2000,
+    "perfect_puzzles": 787,
+    "correct_pieces": 145391,
+    "total_pieces": 200000,
+    "PA": 0.3935,
+    "AA": 0.7269550000000014,
+    "horizontal_SRA": 0.8759166666666667,
+    "vertical_SRA": 0.8666222222222222,
+    "SRA": 0.8712694444444444
+  },
+  "partial_completion_diagnostics": {
+    "beam_width": 2,
+    "applied_samples": 108,
+    "failed_samples": 0,
+    "complete_after_completion": 2000,
+    "repaired_to_perfect": 3,
+    "improved_puzzles": 57,
+    "damaged_puzzles": 9
+  },
+  "s1a3_single_path_reference": {
+    "samples": 2000,
+    "perfect_puzzles": 933,
+    "correct_pieces": 148063,
+    "total_pieces": 200000,
+    "PA": 0.4665,
+    "AA": 0.7403150000000017,
+    "horizontal_SRA": 0.8901388888888889,
+    "vertical_SRA": 0.8848944444444444,
+    "SRA": 0.8875166666666666
+  },
+  "s1a4": {
+    "samples": 2000,
+    "perfect_puzzles": 933,
+    "correct_pieces": 148063,
+    "total_pieces": 200000,
+    "PA": 0.4665,
+    "AA": 0.7403150000000017,
+    "horizontal_SRA": 0.8901388888888889,
+    "vertical_SRA": 0.8848944444444444,
+    "SRA": 0.8875166666666666
+  },
+  "comparison": {
+    "improved_puzzles": 500,
+    "damaged_puzzles": 159,
+    "unchanged_puzzles": 1341,
+    "changed_predictions": 847,
+    "repaired_to_perfect": 154,
+    "broken_perfect": 5,
+    "accepted_rounds": 813,
+    "accepted_beam_rounds": 0
+  },
+  "incremental_vs_s1a3": {
+    "improved_puzzles": 0,
+    "damaged_puzzles": 0,
+    "unchanged_puzzles": 2000,
+    "changed_predictions": 0,
+    "repaired_to_perfect": 0,
+    "broken_perfect": 0
+  },
+  "search_diagnostics": {
+    "evaluated_poses": 2000,
+    "recorded_pose_rows": 1210,
+    "evaluated_completion_hypotheses": 2000,
+    "recorded_completion_rows": 0,
+    "pose_diagnostics_complete": false,
+    "poses_improved_over_s1a3_greedy": 0,
+    "selected_non_greedy_poses": 0
+  },
+  "elapsed_seconds": 979.972534796223,
+  "pa_case_lists": {
+    "repaired": "pa_repaired_images.txt",
+    "broken": "pa_broken_images.txt",
+    "repaired_images": 154,
+    "broken_images": 5
+  },
+  "incremental_pa_case_lists": {
+    "repaired": "pa_repaired_vs_s1a3_images.txt",
+    "broken": "pa_broken_vs_s1a3_images.txt",
+    "repaired_images": 0,
+    "broken_images": 0
+  }
+}

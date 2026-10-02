@@ -1,0 +1,14 @@
+{
+  "state": "completed",
+  "updated_at": "2026-08-31T17:03:23+08:00",
+  "run_root": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601",
+  "datasets": [
+    "lsej",
+    "gap",
+    "jpleg"
+  ],
+  "completed_runs": 6,
+  "total_runs": 6,
+  "current_run": null,
+  "error": null
+}

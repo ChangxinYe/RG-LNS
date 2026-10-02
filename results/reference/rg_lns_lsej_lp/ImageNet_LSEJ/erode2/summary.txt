@@ -1,0 +1,67 @@
+ImageNet-LSEJ S1A4 Profiled Large-Neighborhood Reassembly (faithful Python LP initialization)
+================================================================================
+checkpoint: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth
+loss_type: hard_triplet
+data_root: /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ
+task/split: grid10_erode2 / test
+samples: [0, 2000) = 2000
+complete_initial_solver_baselines: 1969/2000
+complete_after_partial_completion: 2000/2000
+configuration: beam=4, partial_beam=2, k=3, component=0, min_size=4, rounds=1, postprocess=False
+runtime: device=cuda:0, score_batch_size=128
+artifacts: save_visuals=True, visual_limit=10, save_predictions=True, save_completion_details=True
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 solver
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement
+initial_solver: faithful Python LP
+initial_solver_config: {'implementation': 'faithful_bmvc2016_type1_python_port', 'postprocess': False, 'top_k': 1, 'refinement_iterations': 5, 'probability_lambda': 5.0, 'minimum_weight': 1e-15, 'match_tolerance': 0.0001, 'rigid_components': True, 'buddy_check': True, 'loop_check': True, 'greedy_stop_threshold': 1.25, 'highs_time_limit': 0.0}
+status: {'no_strict_e1_improvement': 1156, 'max_rounds': 811, 'partial_completed__no_strict_e1_improvement': 8, 'partial_completed__max_rounds': 23, 'small_component': 2}
+
+S1A faithful Python LP baseline:
+  PA=44.9000%
+  AA=80.8950%
+  Horizontal SRA=89.0722%
+  Vertical SRA=88.0239%
+  SRA=88.5481%
+
+Label-free E1 partial-layout completion:
+  PA=44.9500%
+  AA=81.0960%
+  Horizontal SRA=89.1711%
+  Vertical SRA=88.0956%
+  SRA=88.6333%
+  diagnostics={'beam_width': 2, 'applied_samples': 31, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 1, 'improved_puzzles': 14, 'damaged_puzzles': 3}
+
+S1A3 single-path reference (same E1 scores and initial layout):
+  PA=51.2500%
+  AA=83.8865%
+  Horizontal SRA=90.1850%
+  Vertical SRA=89.2922%
+  SRA=89.7386%
+
+S1A4 profiled reassembly:
+  PA=55.9000%
+  AA=85.7425%
+  Horizontal SRA=91.5889%
+  Vertical SRA=90.7428%
+  SRA=91.1658%
+
+Comparison: {'improved_puzzles': 653, 'damaged_puzzles': 124, 'unchanged_puzzles': 1223, 'changed_predictions': 842, 'repaired_to_perfect': 224, 'broken_perfect': 4, 'accepted_rounds': 834, 'accepted_beam_rounds': 593}
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 31, 'failed_samples': 0, 'complete_after_completion': 2000, 'repaired_to_perfect': 1, 'improved_puzzles': 14, 'damaged_puzzles': 3}
+Incremental vs S1A3: {'improved_puzzles': 395, 'damaged_puzzles': 130, 'unchanged_puzzles': 1475, 'changed_predictions': 593, 'repaired_to_perfect': 99, 'broken_perfect': 6}
+Search diagnostics: {'evaluated_poses': 11940, 'recorded_pose_rows': 11940, 'evaluated_completion_hypotheses': 45680, 'recorded_completion_rows': 45680, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 9155, 'selected_non_greedy_poses': 593}
+PA repaired image list: pa_repaired_images.txt (224)
+PA broken image list: pa_broken_images.txt (4)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (99)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (6)
+elapsed_seconds: 6768.506264
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-60-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 503.50 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.55 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 560.35.03
+CUDA_VISIBLE_DEVICES: not set

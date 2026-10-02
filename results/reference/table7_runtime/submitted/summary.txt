@@ -1,0 +1,27 @@
+RG-LNS Runtime Experiment
+================================================================================
+output_dir: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493
+datasets: lsej, gap, jpleg
+solvers: gallagher, lp, pomeranz
+max_samples: 200
+configured_warmup_samples: 20
+device: auto (gpu_id=0)
+Timing excludes data loading, ground-truth diagnostics, visualization, and serialization.
+
+Mean seconds per puzzle
+-----------------------
+ImageNet-LSEJ-10 (2 px) | Gallagher | n=180 | compat=0.300301 | solver=0.091470 | partial=0.004219 | RG-LNS=0.775182 | refinement=0.779401 | total=1.171173
+ImageNet-LSEJ-10 (2 px) | LP | n=180 | compat=0.276784 | solver=0.087655 | partial=0.003209 | RG-LNS=1.520404 | refinement=1.523613 | total=1.888053
+ImageNet-LSEJ-10 (2 px) | Pomeranz | n=180 | compat=0.309946 | solver=0.853129 | partial=0.000000 | RG-LNS=0.571864 | refinement=0.571864 | total=1.734939
+GAP-5 | Gallagher | n=180 | compat=0.080933 | solver=0.017649 | partial=0.000521 | RG-LNS=0.135902 | refinement=0.136423 | total=0.235004
+GAP-5 | LP | n=180 | compat=0.073884 | solver=0.028635 | partial=0.000189 | RG-LNS=0.132727 | refinement=0.132916 | total=0.235435
+GAP-5 | Pomeranz | n=180 | compat=0.076826 | solver=0.093676 | partial=0.000000 | RG-LNS=0.072219 | refinement=0.072219 | total=0.242722
+JPwLEG-5 | Gallagher | n=180 | compat=0.078031 | solver=0.014359 | partial=0.000288 | RG-LNS=0.047714 | refinement=0.048002 | total=0.140392
+JPwLEG-5 | LP | n=180 | compat=0.082820 | solver=0.024986 | partial=0.000239 | RG-LNS=0.070356 | refinement=0.070595 | total=0.178401
+JPwLEG-5 | Pomeranz | n=180 | compat=0.077326 | solver=0.087894 | partial=0.000000 | RG-LNS=0.027763 | refinement=0.027763 | total=0.192983
+
+Artifacts
+---------
+runtime_results.csv: one compact row per dataset/solver setting
+runtime_stage_statistics.csv: mean/median/std/p95/total for every stage
+results.json: commands, paths, and machine-readable runtime summaries

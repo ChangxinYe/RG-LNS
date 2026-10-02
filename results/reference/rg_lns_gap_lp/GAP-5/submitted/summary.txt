@@ -1,0 +1,75 @@
+GAP S1A4 Profiled Large-Neighborhood Reassembly (faithful Python LP initialization)
+================================================================================
+checkpoint: /data/jaxon/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_gap/GAP-5/hard_triplet_d128_s224_k15_2026-07-31-20-43-26/checkpoints/best.pth
+data_root: /data/jaxon/Jigsaw_Puzzles_V2/datasets/GAP_fast
+dataset/split: GAP-5 / test
+samples: 3000 (start_index=0)
+complete_initial_solver_baselines: 2860/3000
+complete_after_partial_completion: 3000/3000
+configuration: beam=4, partial_beam=2, k=3, component=0, min_size=4, rounds=1, postprocess=False, score_batch_size=128
+beam=1 contract: after the same partial-layout completion, completion_beam_width=1 directly reuses the formal S1A3 path
+selection: first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component placement, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across placements with the same E1 rule and accept only a strict improvement
+initial_solver: faithful Python LP
+initial_solver_config: {'implementation': 'faithful_bmvc2016_type1_python_port', 'postprocess': False, 'top_k': 1, 'refinement_iterations': 5, 'probability_lambda': 5.0, 'minimum_weight': 1e-15, 'match_tolerance': 0.0001, 'rigid_components': True, 'buddy_check': True, 'loop_check': True, 'greedy_stop_threshold': 1.25, 'highs_time_limit': 0.0}
+status: {'max_rounds': 1670, 'no_strict_e1_improvement': 1017, 'small_component': 173, 'partial_completed__max_rounds': 101, 'partial_completed__small_component': 19, 'partial_completed__no_strict_e1_improvement': 20}
+
+S1A faithful Python LP baseline:
+  PA=21.0667%
+  AA=38.0480%
+  HA=63.7150%
+  VA=66.6200%
+  SRA=65.1675%
+  NA=68.5708%
+
+Label-free E1 partial-layout completion:
+  PA=21.4000%
+  AA=38.4893%
+  HA=64.0950%
+  VA=67.0233%
+  SRA=65.5592%
+  NA=69.0542%
+
+S1A3 single-path reference:
+  PA=27.3000%
+  AA=45.2147%
+  HA=68.8100%
+  VA=71.7767%
+  SRA=70.2933%
+  NA=73.4775%
+
+S1A4 profiled reassembly:
+  PA=33.6667%
+  AA=49.4720%
+  HA=72.9333%
+  VA=75.8317%
+  SRA=74.3825%
+  NA=76.9325%
+
+True-Neighbor MRR: 0.778622
+Mean True-Neighbor Rank: 2.163
+True-Neighbor Recall@1: 66.9142%
+True-Neighbor Recall@3: 86.3962%
+True-Neighbor Recall@5: 92.0296%
+True-Neighbor Recall@10: 97.2408%
+True-Neighbor Recall@15: 99.0829%
+
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 140, 'failed_samples': 0, 'complete_after_completion': 3000, 'repaired_to_perfect': 10, 'improved_puzzles': 68, 'damaged_puzzles': 14}
+Comparison: {'improved_puzzles': 960, 'damaged_puzzles': 349, 'unchanged_puzzles': 1691, 'changed_predictions': 1810, 'repaired_to_perfect': 396, 'broken_perfect': 18, 'accepted_rounds': 1771, 'accepted_beam_rounds': 1296}
+Incremental vs S1A3: {'improved_puzzles': 570, 'damaged_puzzles': 257, 'unchanged_puzzles': 2173, 'changed_predictions': 1296, 'repaired_to_perfect': 208, 'broken_perfect': 17}
+Search diagnostics: {'evaluated_poses': 16951, 'recorded_pose_rows': 16951, 'evaluated_completion_hypotheses': 65087, 'recorded_completion_rows': 65087, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 13115, 'selected_non_greedy_poses': 1296}
+PA repaired image list: pa_repaired_images.txt (396)
+PA broken image list: pa_broken_images.txt (18)
+PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt (208)
+PA broken vs S1A3: pa_broken_vs_s1a3_images.txt (17)
+elapsed_seconds: 1363.539201
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-124-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 251.50 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.52 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 580.173.02
+CUDA_VISIBLE_DEVICES: not set

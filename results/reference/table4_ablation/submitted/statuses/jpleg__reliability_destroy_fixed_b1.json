@@ -1,0 +1,228 @@
+{
+  "dataset": "jpleg",
+  "variant": "reliability_destroy_fixed_b1",
+  "state": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "state": "completed",
+      "signature": "27e4ca6dd44e9142502612983fe7fd92d1117bf61b70c6513f460a0c0c22260a",
+      "signature_payload": {
+        "dataset": "jpleg",
+        "selector": "jpleg5",
+        "data_root": "/data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset",
+        "checkpoint": {
+          "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth",
+          "size": 67554260,
+          "mtime_ns": 1785421971854845506
+        },
+        "variant": {
+          "translation_mode": "fixed",
+          "completion_beam_width": 1
+        },
+        "evaluation": {
+          "split": "test",
+          "start_index": 0,
+          "max_samples": 0,
+          "partial_completion_beam_width": 2,
+          "mutual_top_k": 3,
+          "component_index": 0,
+          "min_component_size": 4,
+          "refinement_rounds": 1,
+          "score_batch_size": 128,
+          "postprocess": true,
+          "device": "auto",
+          "gpu_id": 0,
+          "save_run_artifacts": false
+        },
+        "sources": [
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/s1a4_eval_jpleg_profiled_large_neighborhood_reassembly.py",
+            "size": 45888,
+            "mtime_ns": 1788160257678364767,
+            "sha256": "42cd81d1aadf58e520df2db92db52b87418775eba876bfed4b74e49de95e95d1"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/assembly_solvers/our_iterative_component_reassembly/single_component_e1.py",
+            "size": 17839,
+            "mtime_ns": 1788160257669364710,
+            "sha256": "c293f3301a27413c619a51cc3ae867dbc425b7d481b4de5bbfc7647eaa006a06"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/assembly_solvers/our_iterative_component_reassembly/profiled_completion_e1.py",
+            "size": 34689,
+            "mtime_ns": 1788160257669364710,
+            "sha256": "0416f2e36cd236702a980d669a4050ed9c8dbbaf5fd47792704f4a0a81655f56"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/__init__.py",
+            "size": 884,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "55bed1749a51016bb93da0fb4cf8277d655e385d445fc8d50f5c4fa926f72e54"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/actions.py",
+            "size": 12906,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "a68a9ecf34fcf2d1c8bc0506cfd64ca02e904acb1d72fcf4b2562ba45032efd1"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/environment.py",
+            "size": 12276,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "cf75b1893b9dd5361f956be3cd58962867d97a984ca9e4b074fc03e3585a75ba"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/partial_layout_completion.py",
+            "size": 7383,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "e164149e304810634cb667a0a2843c536670501d052262000ccba11894473b93"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/policy.py",
+            "size": 3147,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "9bb0bdc7727d8fddc6149a2d73601d750b698e403eaa5296c66668cce2dcf9e9"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/layout_refiners/reinforced_component_reassembly/rollout.py",
+            "size": 8639,
+            "mtime_ns": 1786250599430324179,
+            "sha256": "19578b7962effe0f09392b8dd4bfe17b3969f59893e81ac9e2bb8d3b0a8f1210"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_geometry.py",
+            "size": 3365,
+            "mtime_ns": 1785242727345071803,
+            "sha256": "9f63274808a08e8c49e2de934fc0244ecdc3be3f7c6f1b8021cc29fbf16b501d"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_lsej_macro_assisted.py",
+            "size": 19602,
+            "mtime_ns": 1784860050621005164,
+            "sha256": "763651371a9e9c5ad392360e4c6eaf317c27f07d3d5355b1ddc01c24d6527eeb"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_scorer.py",
+            "size": 10257,
+            "mtime_ns": 1784512536131779981,
+            "sha256": "ed24088bf7dad62fbfbc80b8b0a6767951238b2914cfdcc0c39a21a8c907fbaf"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_transforms.py",
+            "size": 3000,
+            "mtime_ns": 1785242727340071805,
+            "sha256": "821c1a32e633987c691a8a3f80f83a8ee94b5a326fe279ea51683e9e9439a7db"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_vit_model.py",
+            "size": 13241,
+            "mtime_ns": 1785242727341071804,
+            "sha256": "67d16f7905cbfe9efb8f729a73d0f09a8a8ebad7e2db49669f789ad8ab89d636"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/models/vit_handwritten.py",
+            "size": 10916,
+            "mtime_ns": 1783218745670917115,
+            "sha256": "2f6f49a2dc2db3e9956c50a8b4a3bb8522b8c487fd817e25aec9d49a4022dc88"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/baselines/PuzzleDemoMGC_CVPR2012_Python/mgc.py",
+            "size": 31470,
+            "mtime_ns": 1783387729577697793,
+            "sha256": "576a79a9f3f58247b7536d78b61c076eecce55a08cb950ffae537fcb458d4edb"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/baselines/Edge2Vec_arxiv_2022/jpleg_data.py",
+            "size": 10725,
+            "mtime_ns": 1783414099747058123,
+            "sha256": "c255b2b99fa1c4874f01f56ca3591447d501b3a9c157a7a859f64106b3038cc0"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_jpleg_data.py",
+            "size": 5526,
+            "mtime_ns": 1784118548326972599,
+            "sha256": "845dc9c45936deb1187a3f49ea97cd5ac1ce3aca2f39048f6855f27bf3bf00ca"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/metric_jpleg_evaluator.py",
+            "size": 20756,
+            "mtime_ns": 1786350517132315373,
+            "sha256": "e5ea5cd080f85b8597025347db53f52b900967e7556e63daf3997be375e8b363"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/s1a_eval_jpleg.py",
+            "size": 27766,
+            "mtime_ns": 1786427706387454490,
+            "sha256": "bd500187495dbd726100b4bfef14285948bba3b8e0233caa6943dc69dcd93e02"
+          },
+          {
+            "path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/s1a3_eval_jpleg_iterative_component_reassembly.py",
+            "size": 26256,
+            "mtime_ns": 1786350517133315546,
+            "sha256": "b1f527cc92fd9c88b2e7c26186bed57170aa523d254f70405bf0d58f9ff0d3be"
+          }
+        ]
+      },
+      "started_at": "2026-08-31T16:56:08+08:00",
+      "command": [
+        "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python",
+        "-m",
+        "s1_based_on_metric_learning.s1a4_eval_jpleg_profiled_large_neighborhood_reassembly",
+        "--dataset",
+        "jpleg5",
+        "--split",
+        "test",
+        "--data-root",
+        "/data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset",
+        "--checkpoint",
+        "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth",
+        "--start-index",
+        "0",
+        "--max-samples",
+        "0",
+        "--translation-mode",
+        "fixed",
+        "--completion-beam-width",
+        "1",
+        "--partial-completion-beam-width",
+        "2",
+        "--mutual-top-k",
+        "3",
+        "--component-index",
+        "0",
+        "--min-component-size",
+        "4",
+        "--refinement-rounds",
+        "1",
+        "--score-batch-size",
+        "128",
+        "--postprocess",
+        "true",
+        "--device",
+        "auto",
+        "--gpu-id",
+        "0",
+        "--output-dir",
+        "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/reliability_destroy_fixed_b1",
+        "--save-visuals",
+        "false",
+        "--visual-limit",
+        "0",
+        "--save-predictions",
+        "false",
+        "--save-completion-details",
+        "false",
+        "--progress-interval",
+        "25"
+      ],
+      "command_text": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_jpleg_profiled_large_neighborhood_reassembly --dataset jpleg5 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/MET_Dataset --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_jpleg/jpleg5/hard_triplet_d128_s224_2026-07-28-23-27-31/checkpoints/best.pth --start-index 0 --max-samples 0 --translation-mode fixed --completion-beam-width 1 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/reliability_destroy_fixed_b1 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25",
+      "log_path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/logs/jpleg__reliability_destroy_fixed_b1__20260831_165608_925151.log",
+      "result_dir": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/reliability_destroy_fixed_b1",
+      "metrics_path": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_ablation_experiment/table5_20260831_151109_138601/runs/jpleg/reliability_destroy_fixed_b1/metrics.json",
+      "return_code": 0,
+      "finished_at": "2026-08-31T16:59:17+08:00",
+      "elapsed_seconds": 188.7793571073562
+    }
+  ]
+}

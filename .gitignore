@@ -25,5 +25,10 @@ Thumbs.db
 *.npz
 
 # Retain the compact prediction archives included with the evaluation records.
-!research_code/s1_based_on_metric_learning/eval_result/**/*.npy
-!research_code/s1_based_on_metric_learning/eval_result/**/*.npz
+!results/reference/**/*.npy
+!results/reference/**/*.npz
+
+# Local datasets, learned weights, and newly generated runs
+datasets/
+checkpoints/
+results/runs/

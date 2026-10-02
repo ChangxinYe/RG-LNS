@@ -1,0 +1,10 @@
+{
+  "state": "completed",
+  "updated_at": "2026-09-08T19:32:27+08:00",
+  "run_root": "/data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_hyperparameter_sensitivity_experiment/sensitivity_20260908_123243_766773",
+  "total_runs": 11,
+  "completed_runs": 11,
+  "failed_runs": 0,
+  "current_run": null,
+  "error": null
+}

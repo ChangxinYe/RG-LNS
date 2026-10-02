@@ -1,0 +1,18 @@
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m s1_based_on_metric_learning.s1a4_eval_lsej_pomeranz_profiled_large_neighborhood_reassembly --task grid10_erode2 --split test --data-root /data/yecx/Jigsaw_Puzzles_V2/datasets/ImageNet_LSEJ/ImageNet_LSEJ --checkpoint /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/logs/s1a_train_lsej/grid10_erode2/hard_triplet_d128_s224_k15_2026-07-25-10-22-41/checkpoints/best.pth --start-index 0 --max-samples 200 --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --translation-mode all --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --runtime-warmup-samples 20 --device auto --gpu-id 0 --output-dir /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/lsej/pomeranz --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25 --loss-type hard_triplet
+
+Pomeranz configuration: {'restarts': 10, 'max_refinement_rounds': 0, 'random_seed': 0}
+[25/200] LSEJ_000167: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 52.00%->52.00%->52.00%->56.00%, AA 80.44%->80.44%->79.24%->85.88%, SRA 88.73%->88.73%->88.87%->90.73%
+[50/200] LSEJ_000318: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 52.00%->52.00%->54.00%->58.00%, AA 86.14%->86.14%->85.68%->89.14%, SRA 91.12%->91.12%->91.43%->92.93%
+[75/200] LSEJ_000476: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 53.33%->53.33%->56.00%->58.67%, AA 85.00%->85.00%->86.73%->89.04%, SRA 91.65%->91.65%->92.27%->93.27%
+[100/200] LSEJ_000638: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 54.00%->54.00%->57.00%->60.00%, AA 84.00%->84.00%->86.33%->88.26%, SRA 91.89%->91.89%->92.49%->93.36%
+[125/200] LSEJ_000795: max_rounds, rounds=1/1, completion=profiled_beam:1, PA 56.80%->56.80%->60.00%->64.00%, AA 85.94%->85.94%->87.86%->89.46%, SRA 92.91%->92.91%->93.51%->94.25%
+[150/200] LSEJ_000942: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 54.67%->54.67%->57.33%->63.33%, AA 85.34%->85.34%->87.59%->89.19%, SRA 92.58%->92.58%->93.23%->94.16%
+[175/200] LSEJ_001085: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 54.29%->54.29%->57.14%->62.29%, AA 85.61%->85.61%->87.99%->89.39%, SRA 92.31%->92.31%->92.92%->93.83%
+[200/200] LSEJ_001241: no_strict_e1_improvement, rounds=0/1, completion=current:-1, PA 56.50%->56.50%->59.00%->63.50%, AA 86.20%->86.20%->88.42%->89.52%, SRA 92.53%->92.53%->93.04%->93.97%
+device: cuda:0
+Final PA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 56.5000% -> 56.5000% -> 59.0000% -> 63.5000%
+Final AA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 86.2050% -> 86.2050% -> 88.4250% -> 89.5200%
+Final SRA (Pomeranz CVPR 2011 -> completion -> S1A3 -> S1A4): 92.5306% -> 92.5306% -> 93.0389% -> 93.9667%
+Partial completion diagnostics: {'beam_width': 2, 'applied_samples': 0, 'failed_samples': 0, 'complete_after_completion': 200, 'repaired_to_perfect': 0, 'improved_puzzles': 0, 'damaged_puzzles': 0}
+Search diagnostics: {'evaluated_poses': 513, 'recorded_pose_rows': 513, 'evaluated_completion_hypotheses': 1753, 'recorded_completion_rows': 0, 'pose_diagnostics_complete': True, 'poses_improved_over_s1a3_greedy': 328, 'selected_non_greedy_poses': 49}
+Saved: /data/yecx/Jigsaw_Puzzles_V2/s1_based_on_metric_learning/eval_result/s1a4_runtime_experiment/runtime_20260901_160548_130493/runs/lsej/pomeranz

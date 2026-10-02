@@ -18,18 +18,107 @@ compatibility with Gallagher, Pomeranz, and linear programming (LP) as layout
 optimizers. Experiments are conducted on GAP, JPwLEG-5, and our ImageNet
 Large-Scale Eroded Jigsaw (ImageNet-LSEJ) dataset.
 
-> **Release status.** A provenance-preserving research-code snapshot is now
-> available under [`research_code/`](research_code/). A streamlined interface,
-> environment and data instructions, and pretrained checkpoints are being
-> organized for the public release.
+> **Release status.** The paper-facing implementation is organized by method
+> stage. The numerical training, initial-solver, and RG-LNS routines retain the
+> submitted implementation; only paths, module names, and public dispatchers
+> were changed. See the [reproducibility notes](docs/reproducibility.md) and
+> [source manifest](docs/source_manifest.md).
 
-## Research Code
+## Code layout
 
-The current snapshot preserves the module layout used for the submitted
-experiments so that cleanup does not silently change the reported results.
-See the [snapshot guide](research_code/README.md),
-[source manifest](research_code/SOURCE_MANIFEST.md), and
-[evaluation-record inventory](research_code/s1_based_on_metric_learning/eval_result/README.md).
+```text
+compatibility/          Stage I: ViT compatibility model, scorer, and training
+data_loaders/           GAP, JPwLEG, and ImageNet-LSEJ adapters
+initial_solvers/        Gallagher, Pomeranz, LP, and partial-layout completion
+rg_lns/                 Stage II: the proposed destroy/translate/repair search
+evaluation/             Metrics plus explicit dataset/solver evaluation commands
+experiments/            Ablation, sensitivity, runtime, and failure analysis
+datasets/               Local data only; ignored by Git
+checkpoints/            Local pretrained/trained weights; ignored by Git
+results/reference/      Compact records from the submitted experiments
+results/runs/           Newly generated runs; ignored by Git
+```
+
+Stage-I perception is deliberately outside `rg_lns/`. The latter contains
+only the proposed layout-correction algorithm and consumes a fixed directional
+compatibility tensor plus an initial layout.
+
+## Installation
+
+The verified development environment uses Python 3.10 and the package versions
+listed in `requirements.txt`.
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+python -m pip install -r requirements.txt
+```
+
+For CUDA, install the PyTorch build matching the local driver before installing
+the remaining requirements.
+
+## Data and checkpoints
+
+Keep uncompressed datasets at these exact local paths:
+
+```text
+datasets/GAP_fast/GAP-3
+datasets/GAP_fast/GAP-5
+datasets/MET_Dataset/JPLEG-5
+datasets/ImageNet_LSEJ/configs
+datasets/ImageNet_LSEJ/images
+```
+
+Training writes complete run directories below `checkpoints/train_<dataset>/`.
+Copy the selected paper checkpoints to stable names under
+`checkpoints/compatibility/`:
+
+```text
+checkpoints/
+├── pretrained/
+│   └── vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth
+└── compatibility/
+    ├── gap3_best.pth
+    ├── gap5_best.pth
+    ├── jpleg5_best.pth
+    ├── lsej_grid10_erode2_best.pth
+    └── lsej_grid10_erode5_best.pth
+```
+
+The pretrained file initializes Stage-I training. The five compatibility
+checkpoints are the task-specific models used for paper evaluation and can be
+loaded directly with `--checkpoint`; evaluation does not reload the pretrained
+initialization.
+
+## Main commands
+
+```bash
+# Stage-I compatibility training
+python train_compatibility.py gap --dataset GAP-5
+python train_compatibility.py jpleg --dataset jpleg5
+python train_compatibility.py lsej --task grid10_erode2
+
+# Initial layout only, or the final RG-LNS correction
+python evaluate.py gap gallagher initial --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py gap gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py lsej linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+
+# Paper-level experiments
+python reproduce.py ablation
+python reproduce.py sensitivity
+python reproduce.py runtime
+```
+
+Run the lightweight synthetic regression tests with:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+All original dataset/solver combinations remain available as explicit modules
+under `evaluation/commands/`, which keeps each reported path independently
+auditable. Compact submitted records are inventoried in
+[`results/reference/README.md`](results/reference/README.md).
 
 ## Motivation
 
