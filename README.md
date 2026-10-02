@@ -182,13 +182,71 @@ and repair.
 
 ## Main Results
 
-RG-LNS consistently improves all three ViT-T-based baselines across the three
-datasets. Its best perfect accuracy (PA) exceeds the strongest competing result
-by:
+The following tables reproduce the paper's two main comparisons. All metrics
+are percentages (higher is better): **PA** is perfect puzzle accuracy, **AA**
+is absolute piece-position accuracy, and **SRA** is spatial relationship
+accuracy. Each ViT-T baseline and its RG-LNS row use the same frozen
+directional compatibility model; bold values show the result after RG-LNS.
 
-- **33.4 percentage points** on GAP-5 (33.7% vs. 0.3%);
-- **28.2 percentage points** on JPwLEG-5 (60.7% vs. 32.5%); and
-- **37.7 percentage points** on ImageNet-LSEJ (55.9% vs. 18.2%).
+### GAP and JPwLEG-5
+
+| Method | GAP-3 PA | GAP-3 AA | GAP-3 SRA | GAP-5 PA | GAP-5 AA | GAP-5 SRA | JPwLEG-5 PA | JPwLEG-5 AA | JPwLEG-5 SRA |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| [Pomeranz (CVPR 2011)][pomeranz] | 0.0 | 11.6 | 8.6 | 0.0 | 4.1 | 3.7 | — | — | — |
+| [GA (CVPR 2013)][ga] | 0.0 | 11.1 | 8.5 | 0.0 | 11.1 | 8.5 | — | — | — |
+| [JigsawGAN (TIP 2022)][jigsawgan] | 4.6 | 45.3 | 35.9 | 0.0 | 18.0 | 12.0 | — | — | — |
+| [DiffAssemble (CVPR 2024)][diffassemble]† | 16.4 | 50.5 | 43.4 | 0.0 | 21.9 | 14.7 | 16.4 | 63.0 | — |
+| [JPDVT (CVPR 2024)][jpdvt]† | 0.0 | 11.2 | 8.4 | 0.0 | 3.9 | 3.2 | 0.0 | 4.1 | — |
+| [ERL-MPP (AAAI 2025)][erlmpp] | — | — | — | — | — | — | 18.6 | 52.7 | — |
+| [FCViT (ESWA 2025)][fcvit]† | 25.2 | 60.7 | 47.6 | 0.0 | 20.4 | 13.8 | 2.5 | 43.2 | — |
+| [PuzLM (ECCV 2026)][puzlm] | 0.0 | 14.8 | 9.9 | 0.0 | 7.8 | 4.5 | 32.5 | 72.1 | — |
+| [PuzzleFlow (CVPR 2026)][puzzleflow] | 28.5 | 62.9 | 55.7 | 0.3 | 29.1 | 19.8 | 0.0 | 29.0 | — |
+| ViT-T + [Gallagher][gallagher] | 24.4 | 33.7 | 63.2 | 15.2 | 30.7 | 62.4 | 39.6 | 49.4 | 83.4 |
+| ↳ + RG-LNS (ours) | **31.5** | **38.9** | **68.1** | **30.9** | **45.6** | **74.4** | **50.8** | **58.3** | **89.3** |
+| ViT-T + [Pomeranz][pomeranz] | 30.2 | 38.2 | 68.0 | 24.7 | 40.6 | 70.9 | 49.1 | 57.4 | 88.1 |
+| ↳ + RG-LNS (ours) | **33.7** | **41.1** | **70.0** | **32.9** | **48.7** | **75.8** | **54.4** | **62.2** | **90.1** |
+| ViT-T + [LP][lp] | 28.6 | 38.6 | 65.6 | 21.1 | 38.0 | 65.2 | 52.2 | 63.6 | 86.4 |
+| ↳ + RG-LNS (ours) | **35.5** | **43.6** | **70.3** | **33.7** | **49.5** | **74.4** | **60.7** | **69.1** | **90.9** |
+
+Linked method names cite the original algorithms. Prior-method results are
+reported by [PuzzleFlow][puzzleflow], except the JPwLEG-5 results marked †,
+which are reported by [PuzLM][puzlm]. JPwLEG-5 uses the no-fixed-center
+protocol; the ViT-T combinations and RG-LNS values are from our experiments.
+
+### ImageNet-LSEJ (10 × 10)
+
+| Method | 2 px PA | 2 px AA | 2 px SRA | 5 px PA | 5 px AA | 5 px SRA |
+|:--|--:|--:|--:|--:|--:|--:|
+| [Gallagher (CVPR 2012)][gallagher] | 8.3 | 39.9 | 62.8 | 0.0 | 3.1 | 23.7 |
+| [JigsawGAN (TIP 2022)][jigsawgan] | 0.0 | 2.1 | 2.2 | 0.0 | 2.1 | 2.0 |
+| [Edge2Vec (arXiv 2022)][edge2vec] | 18.2 | 55.7 | 75.3 | 0.2 | 10.8 | 39.8 |
+| [JPDVT (CVPR 2024)][jpdvt] | 0.0 | 1.5 | 3.4 | 0.0 | 1.2 | 1.5 |
+| [DiffAssemble (CVPR 2024)][diffassemble] | 0.0 | 1.6 | 1.4 | 0.0 | 1.5 | 1.3 |
+| [FCViT (ESWA 2025)][fcvit] | 0.0 | 1.0 | 7.2 | 0.0 | 1.0 | 12.5 |
+| [PuzzleFlow (CVPR 2026)][puzzleflow] | 0.0 | 7.3 | 4.4 | 0.0 | 6.1 | 3.7 |
+| ViT-T + [Gallagher][gallagher] | 39.2 | 72.1 | 86.8 | 5.9 | 32.3 | 61.1 |
+| ↳ + RG-LNS (ours) | **53.8** | **83.9** | **91.6** | **19.7** | **53.1** | **74.9** |
+| ViT-T + [Pomeranz][pomeranz] | 48.1 | 82.8 | 90.5 | 16.6 | 53.0 | 72.7 |
+| ↳ + RG-LNS (ours) | **54.8** | **86.7** | **92.1** | **23.2** | **59.8** | **77.6** |
+| ViT-T + [LP][lp] | 44.9 | 80.9 | 88.5 | 9.2 | 39.2 | 63.1 |
+| ↳ + RG-LNS (ours) | **55.9** | **85.7** | **91.2** | **18.6** | **50.6** | **72.0** |
+
+Competing methods on ImageNet-LSEJ were reproduced for the paper. The compact
+records for our reported runs are inventoried in
+[`results/reference/`](results/reference/README.md).
+
+[pomeranz]: https://doi.org/10.1109/CVPR.2011.5995331
+[ga]: https://doi.org/10.1109/CVPR.2013.231
+[jigsawgan]: https://doi.org/10.1109/TIP.2021.3120052
+[diffassemble]: https://openaccess.thecvf.com/content/CVPR2024/html/Scarpellini_DiffAssemble_A_Unified_Graph-Diffusion_Model_for_2D_and_3D_Reassembly_CVPR_2024_paper.html
+[jpdvt]: https://openaccess.thecvf.com/content/CVPR2024/html/Liu_Solving_Masked_Jigsaw_Puzzles_with_Diffusion_Vision_Transformers_CVPR_2024_paper.html
+[erlmpp]: https://ojs.aaai.org/index.php/AAAI/article/view/32748
+[fcvit]: https://doi.org/10.1016/j.eswa.2025.126776
+[puzlm]: https://doi.org/10.1007/978-3-032-37281-9_4
+[puzzleflow]: https://openaccess.thecvf.com/content/CVPR2026/papers/Shahar_The_Missing_GAP_From_Solving_Square_Jigsaw_Puzzles_to_Handling_CVPR_2026_paper.pdf
+[gallagher]: https://doi.org/10.1109/CVPR.2012.6247699
+[edge2vec]: https://arxiv.org/abs/2211.07771
+[lp]: https://bmva-archive.org.uk/bmvc/2016/papers/paper139/index.html
 
 On the ImageNet-LSEJ failures used for our analysis, RG-LNS repairs
 19.3–42.1% of failures attributed to region shift and 13.9–26.8% of those
