@@ -33,6 +33,7 @@ initial_solvers/        Gallagher, Pomeranz, LP, and partial-layout completion
 rg_lns/                 Stage II: the proposed destroy/translate/repair search
 evaluation/             Metrics plus explicit dataset/solver evaluation commands
 experiments/            Ablation, sensitivity, runtime, and failure analysis
+scripts/                Standalone data preparation tools
 datasets/               Local data only; ignored by Git
 checkpoints/            Local pretrained/trained weights; ignored by Git
 results/reference/      Compact records from the submitted experiments
@@ -372,7 +373,12 @@ Displayed percentages are rounded to one decimal place.
 
 - **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):**
   public $3\times3$ and $5\times5$ benchmarks with irregular eroded
-  fragments.
+  fragments. We use GAP-fast, a contiguous, uncompressed HDF5 repack for faster
+  reads without changing puzzle arrays or index labels. Download `GAP_fast.zip`
+  from [Hugging Face](https://huggingface.co/datasets/changxinye/GAP-fast/tree/main)
+  and extract it into `datasets/`, yielding `datasets/GAP_fast/`. For conversion
+  from the original data, see the [preparation instructions](docs/reproducibility.md#gap-data-preparation)
+  and [repacking script](scripts/repack_gap_hdf5.py).
 - **[JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):**
   a public $5\times5$ benchmark with large gaps, evaluated under the
   no-fixed-center protocol.

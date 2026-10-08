@@ -58,6 +58,41 @@ checkpoints/
 Every evaluator accepts `--checkpoint`, so the directory convention is not a
 hard dependency when reproducing from an archived checkpoint.
 
+## GAP data preparation
+
+Download `GAP_fast.zip` from
+[GAP-fast on Hugging Face](https://huggingface.co/datasets/changxinye/GAP-fast/tree/main)
+and extract it into `datasets/` under the repository root. The archive contains
+a `GAP_fast/` directory; avoid creating an extra nested `GAP_fast/GAP_fast/`.
+The resulting paths must be `datasets/GAP_fast/GAP-3/{train,val,test}/` and
+`datasets/GAP_fast/GAP-5/{train,val,test}/`, with `puzzles.h5` and
+`labels_indices.h5` in each split. No conversion is needed after extraction.
+
+If `GAP_fast.zip` is not yet listed under **Files and versions**, use the
+conversion method below or check back after the archive is uploaded.
+
+Alternatively, download the original dataset from
+[Ofirish/GAP](https://huggingface.co/datasets/Ofirish/GAP) and place its
+`GAP-3/` and `GAP-5/` directories under `datasets/GAP_Download/GAP/`. After
+installing the requirements, run the following from the repository root:
+
+```bash
+python scripts/repack_gap_hdf5.py --source-root datasets/GAP_Download/GAP --output-root datasets/GAP_fast
+```
+
+Always specify both root arguments: the unchanged script defaults are based
+on its own location, not the repository root. It preserves puzzle arrays and
+index labels while rewriting their HDF5 storage into a contiguous,
+uncompressed layout. The complete output is approximately 44.6 GB; retain
+the original data and allow additional free space for conversion. The script
+checks available space and refuses existing output files unless `--overwrite`
+is explicitly supplied.
+
+The GAP loader requires this repacked layout and does not fall back to the
+original compressed files. GAP remains subject to the original dataset's
+CC BY-NC 4.0 license and usage terms; please cite the original GAP paper.
+The repository's MIT license does not relicense the dataset.
+
 ## Exact evaluation paths
 
 The root dispatcher is a thin wrapper. For example:
