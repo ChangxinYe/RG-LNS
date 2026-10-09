@@ -18,14 +18,6 @@ compatibility with Gallagher, Pomeranz, and linear programming (LP) as layout
 optimizers. Experiments are conducted on GAP, JPwLEG-5, and our ImageNet
 Large-Scale Eroded Jigsaw (ImageNet-LSEJ) dataset.
 
-> **Release status.** The paper-facing implementation is organized by method
-> stage. The numerical training, initial-solver, and RG-LNS routines retain the
-> submitted implementation; only paths, module names, and public dispatchers
-> were changed. See the [reproducibility notes](docs/reproducibility.md) and
-> [source manifest](docs/source_manifest.md).
-
-[Quick Start](#quick-start) · [Main Results](#main-results) · [Appendix](#appendix)
-
 ## Installation
 
 The verified development environment uses Python 3.10 and the package versions
@@ -191,23 +183,44 @@ directional compatibility model; bold values show the result after RG-LNS.
 
 ### GAP and JPwLEG-5
 
-| Method | GAP-3 PA | GAP-3 AA | GAP-3 SRA | GAP-5 PA | GAP-5 AA | GAP-5 SRA | JPwLEG-5 PA | JPwLEG-5 AA | JPwLEG-5 SRA |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| [Pomeranz (CVPR 2011)][pomeranz] | 0.0 | 11.6 | 8.6 | 0.0 | 4.1 | 3.7 | — | — | — |
-| [GA (CVPR 2013)][ga] | 0.0 | 11.1 | 8.5 | 0.0 | 11.1 | 8.5 | — | — | — |
-| [JigsawGAN (TIP 2022)][jigsawgan] | 4.6 | 45.3 | 35.9 | 0.0 | 18.0 | 12.0 | — | — | — |
-| [DiffAssemble (CVPR 2024)][diffassemble]† | 16.4 | 50.5 | 43.4 | 0.0 | 21.9 | 14.7 | 16.4 | 63.0 | — |
-| [JPDVT (CVPR 2024)][jpdvt]† | 0.0 | 11.2 | 8.4 | 0.0 | 3.9 | 3.2 | 0.0 | 4.1 | — |
-| [ERL-MPP (AAAI 2025)][erlmpp] | — | — | — | — | — | — | 18.6 | 52.7 | — |
-| [FCViT (ESWA 2025)][fcvit]† | 25.2 | 60.7 | 47.6 | 0.0 | 20.4 | 13.8 | 2.5 | 43.2 | — |
-| [PuzLM (ECCV 2026)][puzlm] | 0.0 | 14.8 | 9.9 | 0.0 | 7.8 | 4.5 | 32.5 | 72.1 | — |
-| [PuzzleFlow (CVPR 2026)][puzzleflow] | 28.5 | 62.9 | 55.7 | 0.3 | 29.1 | 19.8 | 0.0 | 29.0 | — |
-| ViT-T + [Gallagher][gallagher] | 24.4 | 33.7 | 63.2 | 15.2 | 30.7 | 62.4 | 39.6 | 49.4 | 83.4 |
-| ↳ + RG-LNS (ours) | **31.5** | **38.9** | **68.1** | **30.9** | **45.6** | **74.4** | **50.8** | **58.3** | **89.3** |
-| ViT-T + [Pomeranz][pomeranz] | 30.2 | 38.2 | 68.0 | 24.7 | 40.6 | 70.9 | 49.1 | 57.4 | 88.1 |
-| ↳ + RG-LNS (ours) | **33.7** | **41.1** | **70.0** | **32.9** | **48.7** | **75.8** | **54.4** | **62.2** | **90.1** |
-| ViT-T + [LP][lp] | 28.6 | 38.6 | 65.6 | 21.1 | 38.0 | 65.2 | 52.2 | 63.6 | 86.4 |
-| ↳ + RG-LNS (ours) | **35.5** | **43.6** | **70.3** | **33.7** | **49.5** | **74.4** | **60.7** | **69.1** | **90.9** |
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2" align="left">Method</th>
+      <th colspan="3" align="center">GAP-3</th>
+      <th colspan="3" align="center">GAP-5</th>
+      <th colspan="3" align="center">JPwLEG-5</th>
+    </tr>
+    <tr>
+      <th align="center">PA</th>
+      <th align="center">AA</th>
+      <th align="center">SRA</th>
+      <th align="center">PA</th>
+      <th align="center">AA</th>
+      <th align="center">SRA</th>
+      <th align="center">PA</th>
+      <th align="center">AA</th>
+      <th align="center">SRA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><a href="https://doi.org/10.1109/CVPR.2011.5995331">Pomeranz (CVPR 2011)</a></td><td align="right">0.0</td><td align="right">11.6</td><td align="right">8.6</td><td align="right">0.0</td><td align="right">4.1</td><td align="right">3.7</td><td align="right">—</td><td align="right">—</td><td align="right">—</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/CVPR.2013.231">GA (CVPR 2013)</a></td><td align="right">0.0</td><td align="right">11.1</td><td align="right">8.5</td><td align="right">0.0</td><td align="right">11.1</td><td align="right">8.5</td><td align="right">—</td><td align="right">—</td><td align="right">—</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TIP.2021.3120052">JigsawGAN (TIP 2022)</a></td><td align="right">4.6</td><td align="right">45.3</td><td align="right">35.9</td><td align="right">0.0</td><td align="right">18.0</td><td align="right">12.0</td><td align="right">—</td><td align="right">—</td><td align="right">—</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Scarpellini_DiffAssemble_A_Unified_Graph-Diffusion_Model_for_2D_and_3D_Reassembly_CVPR_2024_paper.html">DiffAssemble (CVPR 2024)</a>†</td><td align="right">16.4</td><td align="right">50.5</td><td align="right">43.4</td><td align="right">0.0</td><td align="right">21.9</td><td align="right">14.7</td><td align="right">16.4</td><td align="right">63.0</td><td align="right">—</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Liu_Solving_Masked_Jigsaw_Puzzles_with_Diffusion_Vision_Transformers_CVPR_2024_paper.html">JPDVT (CVPR 2024)</a>†</td><td align="right">0.0</td><td align="right">11.2</td><td align="right">8.4</td><td align="right">0.0</td><td align="right">3.9</td><td align="right">3.2</td><td align="right">0.0</td><td align="right">4.1</td><td align="right">—</td></tr>
+    <tr><td><a href="https://ojs.aaai.org/index.php/AAAI/article/view/32748">ERL-MPP (AAAI 2025)</a></td><td align="right">—</td><td align="right">—</td><td align="right">—</td><td align="right">—</td><td align="right">—</td><td align="right">—</td><td align="right">18.6</td><td align="right">52.7</td><td align="right">—</td></tr>
+    <tr><td><a href="https://doi.org/10.1016/j.eswa.2025.126776">FCViT (ESWA 2025)</a>†</td><td align="right">25.2</td><td align="right">60.7</td><td align="right">47.6</td><td align="right">0.0</td><td align="right">20.4</td><td align="right">13.8</td><td align="right">2.5</td><td align="right">43.2</td><td align="right">—</td></tr>
+    <tr><td><a href="https://doi.org/10.1007/978-3-032-37281-9_4">PuzLM (ECCV 2026)</a></td><td align="right">0.0</td><td align="right">14.8</td><td align="right">9.9</td><td align="right">0.0</td><td align="right">7.8</td><td align="right">4.5</td><td align="right">32.5</td><td align="right">72.1</td><td align="right">—</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2026/papers/Shahar_The_Missing_GAP_From_Solving_Square_Jigsaw_Puzzles_to_Handling_CVPR_2026_paper.pdf">PuzzleFlow (CVPR 2026)</a></td><td align="right">28.5</td><td align="right">62.9</td><td align="right">55.7</td><td align="right">0.3</td><td align="right">29.1</td><td align="right">19.8</td><td align="right">0.0</td><td align="right">29.0</td><td align="right">—</td></tr>
+    <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2012.6247699">Gallagher</a></td><td align="right">24.4</td><td align="right">33.7</td><td align="right">63.2</td><td align="right">15.2</td><td align="right">30.7</td><td align="right">62.4</td><td align="right">39.6</td><td align="right">49.4</td><td align="right">83.4</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>31.5</strong></td><td align="right"><strong>38.9</strong></td><td align="right"><strong>68.1</strong></td><td align="right"><strong>30.9</strong></td><td align="right"><strong>45.6</strong></td><td align="right"><strong>74.4</strong></td><td align="right"><strong>50.8</strong></td><td align="right"><strong>58.3</strong></td><td align="right"><strong>89.3</strong></td></tr>
+    <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2011.5995331">Pomeranz</a></td><td align="right">30.2</td><td align="right">38.2</td><td align="right">68.0</td><td align="right">24.7</td><td align="right">40.6</td><td align="right">70.9</td><td align="right">49.1</td><td align="right">57.4</td><td align="right">88.1</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>33.7</strong></td><td align="right"><strong>41.1</strong></td><td align="right"><strong>70.0</strong></td><td align="right"><strong>32.9</strong></td><td align="right"><strong>48.7</strong></td><td align="right"><strong>75.8</strong></td><td align="right"><strong>54.4</strong></td><td align="right"><strong>62.2</strong></td><td align="right"><strong>90.1</strong></td></tr>
+    <tr><td>ViT-T + <a href="https://bmva-archive.org.uk/bmvc/2016/papers/paper139/index.html">LP</a></td><td align="right">28.6</td><td align="right">38.6</td><td align="right">65.6</td><td align="right">21.1</td><td align="right">38.0</td><td align="right">65.2</td><td align="right">52.2</td><td align="right">63.6</td><td align="right">86.4</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>35.5</strong></td><td align="right"><strong>43.6</strong></td><td align="right"><strong>70.3</strong></td><td align="right"><strong>33.7</strong></td><td align="right"><strong>49.5</strong></td><td align="right"><strong>74.4</strong></td><td align="right"><strong>60.7</strong></td><td align="right"><strong>69.1</strong></td><td align="right"><strong>90.9</strong></td></tr>
+  </tbody>
+</table>
 
 Linked method names cite the original algorithms. Prior-method results are
 reported by [PuzzleFlow][puzzleflow], except the JPwLEG-5 results marked †,
@@ -216,21 +229,38 @@ protocol; the ViT-T combinations and RG-LNS values are from our experiments.
 
 ### ImageNet-LSEJ (10 × 10)
 
-| Method | 2 px PA | 2 px AA | 2 px SRA | 5 px PA | 5 px AA | 5 px SRA |
-|:--|--:|--:|--:|--:|--:|--:|
-| [Gallagher (CVPR 2012)][gallagher] | 8.3 | 39.9 | 62.8 | 0.0 | 3.1 | 23.7 |
-| [JigsawGAN (TIP 2022)][jigsawgan] | 0.0 | 2.1 | 2.2 | 0.0 | 2.1 | 2.0 |
-| [Edge2Vec (arXiv 2022)][edge2vec] | 18.2 | 55.7 | 75.3 | 0.2 | 10.8 | 39.8 |
-| [JPDVT (CVPR 2024)][jpdvt] | 0.0 | 1.5 | 3.4 | 0.0 | 1.2 | 1.5 |
-| [DiffAssemble (CVPR 2024)][diffassemble] | 0.0 | 1.6 | 1.4 | 0.0 | 1.5 | 1.3 |
-| [FCViT (ESWA 2025)][fcvit] | 0.0 | 1.0 | 7.2 | 0.0 | 1.0 | 12.5 |
-| [PuzzleFlow (CVPR 2026)][puzzleflow] | 0.0 | 7.3 | 4.4 | 0.0 | 6.1 | 3.7 |
-| ViT-T + [Gallagher][gallagher] | 39.2 | 72.1 | 86.8 | 5.9 | 32.3 | 61.1 |
-| ↳ + RG-LNS (ours) | **53.8** | **83.9** | **91.6** | **19.7** | **53.1** | **74.9** |
-| ViT-T + [Pomeranz][pomeranz] | 48.1 | 82.8 | 90.5 | 16.6 | 53.0 | 72.7 |
-| ↳ + RG-LNS (ours) | **54.8** | **86.7** | **92.1** | **23.2** | **59.8** | **77.6** |
-| ViT-T + [LP][lp] | 44.9 | 80.9 | 88.5 | 9.2 | 39.2 | 63.1 |
-| ↳ + RG-LNS (ours) | **55.9** | **85.7** | **91.2** | **18.6** | **50.6** | **72.0** |
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2" align="left">Method</th>
+      <th colspan="3" align="center">2 px</th>
+      <th colspan="3" align="center">5 px</th>
+    </tr>
+    <tr>
+      <th align="center">PA</th>
+      <th align="center">AA</th>
+      <th align="center">SRA</th>
+      <th align="center">PA</th>
+      <th align="center">AA</th>
+      <th align="center">SRA</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><a href="https://doi.org/10.1109/CVPR.2012.6247699">Gallagher (CVPR 2012)</a></td><td align="right">8.3</td><td align="right">39.9</td><td align="right">62.8</td><td align="right">0.0</td><td align="right">3.1</td><td align="right">23.7</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TIP.2021.3120052">JigsawGAN (TIP 2022)</a></td><td align="right">0.0</td><td align="right">2.1</td><td align="right">2.2</td><td align="right">0.0</td><td align="right">2.1</td><td align="right">2.0</td></tr>
+    <tr><td><a href="https://arxiv.org/abs/2211.07771">Edge2Vec (arXiv 2022)</a></td><td align="right">18.2</td><td align="right">55.7</td><td align="right">75.3</td><td align="right">0.2</td><td align="right">10.8</td><td align="right">39.8</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Liu_Solving_Masked_Jigsaw_Puzzles_with_Diffusion_Vision_Transformers_CVPR_2024_paper.html">JPDVT (CVPR 2024)</a></td><td align="right">0.0</td><td align="right">1.5</td><td align="right">3.4</td><td align="right">0.0</td><td align="right">1.2</td><td align="right">1.5</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2024/html/Scarpellini_DiffAssemble_A_Unified_Graph-Diffusion_Model_for_2D_and_3D_Reassembly_CVPR_2024_paper.html">DiffAssemble (CVPR 2024)</a></td><td align="right">0.0</td><td align="right">1.6</td><td align="right">1.4</td><td align="right">0.0</td><td align="right">1.5</td><td align="right">1.3</td></tr>
+    <tr><td><a href="https://doi.org/10.1016/j.eswa.2025.126776">FCViT (ESWA 2025)</a></td><td align="right">0.0</td><td align="right">1.0</td><td align="right">7.2</td><td align="right">0.0</td><td align="right">1.0</td><td align="right">12.5</td></tr>
+    <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2026/papers/Shahar_The_Missing_GAP_From_Solving_Square_Jigsaw_Puzzles_to_Handling_CVPR_2026_paper.pdf">PuzzleFlow (CVPR 2026)</a></td><td align="right">0.0</td><td align="right">7.3</td><td align="right">4.4</td><td align="right">0.0</td><td align="right">6.1</td><td align="right">3.7</td></tr>
+    <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2012.6247699">Gallagher</a></td><td align="right">39.2</td><td align="right">72.1</td><td align="right">86.8</td><td align="right">5.9</td><td align="right">32.3</td><td align="right">61.1</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>53.8</strong></td><td align="right"><strong>83.9</strong></td><td align="right"><strong>91.6</strong></td><td align="right"><strong>19.7</strong></td><td align="right"><strong>53.1</strong></td><td align="right"><strong>74.9</strong></td></tr>
+    <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2011.5995331">Pomeranz</a></td><td align="right">48.1</td><td align="right">82.8</td><td align="right">90.5</td><td align="right">16.6</td><td align="right">53.0</td><td align="right">72.7</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>54.8</strong></td><td align="right"><strong>86.7</strong></td><td align="right"><strong>92.1</strong></td><td align="right"><strong>23.2</strong></td><td align="right"><strong>59.8</strong></td><td align="right"><strong>77.6</strong></td></tr>
+    <tr><td>ViT-T + <a href="https://bmva-archive.org.uk/bmvc/2016/papers/paper139/index.html">LP</a></td><td align="right">44.9</td><td align="right">80.9</td><td align="right">88.5</td><td align="right">9.2</td><td align="right">39.2</td><td align="right">63.1</td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>55.9</strong></td><td align="right"><strong>85.7</strong></td><td align="right"><strong>91.2</strong></td><td align="right"><strong>18.6</strong></td><td align="right"><strong>50.6</strong></td><td align="right"><strong>72.0</strong></td></tr>
+  </tbody>
+</table>
 
 Competing methods on ImageNet-LSEJ were reproduced for the paper. The compact
 records for our reported runs are inventoried in
