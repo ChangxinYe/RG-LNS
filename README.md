@@ -180,6 +180,8 @@ are percentages (higher is better): **PA** is perfect puzzle accuracy, **AA**
 is absolute piece-position accuracy, and **SRA** is spatial relationship
 accuracy. Each ViT-T baseline and its RG-LNS row use the same frozen
 directional compatibility model; bold values show the result after RG-LNS.
+Parenthesized gains are percentage-point improvements over the ViT-T baseline
+immediately above, calculated from the displayed values.
 
 ### GAP and JPwLEG-5
 
@@ -192,15 +194,15 @@ directional compatibility model; bold values show the result after RG-LNS.
       <th colspan="3" align="center">JPwLEG-5</th>
     </tr>
     <tr>
-      <th align="center">PA</th>
-      <th align="center">AA</th>
-      <th align="center">SRA</th>
-      <th align="center">PA</th>
-      <th align="center">AA</th>
-      <th align="center">SRA</th>
-      <th align="center">PA</th>
-      <th align="center">AA</th>
-      <th align="center">SRA</th>
+      <th align="center">PA (%)</th>
+      <th align="center">AA (%)</th>
+      <th align="center">SRA (%)</th>
+      <th align="center">PA (%)</th>
+      <th align="center">AA (%)</th>
+      <th align="center">SRA (%)</th>
+      <th align="center">PA (%)</th>
+      <th align="center">AA (%)</th>
+      <th align="center">SRA (%)</th>
     </tr>
   </thead>
   <tbody>
@@ -214,11 +216,11 @@ directional compatibility model; bold values show the result after RG-LNS.
     <tr><td><a href="https://doi.org/10.1007/978-3-032-37281-9_4">PuzLM (ECCV 2026)</a></td><td align="right">0.0</td><td align="right">14.8</td><td align="right">9.9</td><td align="right">0.0</td><td align="right">7.8</td><td align="right">4.5</td><td align="right">32.5</td><td align="right">72.1</td><td align="right">—</td></tr>
     <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2026/papers/Shahar_The_Missing_GAP_From_Solving_Square_Jigsaw_Puzzles_to_Handling_CVPR_2026_paper.pdf">PuzzleFlow (CVPR 2026)</a></td><td align="right">28.5</td><td align="right">62.9</td><td align="right">55.7</td><td align="right">0.3</td><td align="right">29.1</td><td align="right">19.8</td><td align="right">0.0</td><td align="right">29.0</td><td align="right">—</td></tr>
     <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2012.6247699">Gallagher</a></td><td align="right">24.4</td><td align="right">33.7</td><td align="right">63.2</td><td align="right">15.2</td><td align="right">30.7</td><td align="right">62.4</td><td align="right">39.6</td><td align="right">49.4</td><td align="right">83.4</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>31.5</strong></td><td align="right"><strong>38.9</strong></td><td align="right"><strong>68.1</strong></td><td align="right"><strong>30.9</strong></td><td align="right"><strong>45.6</strong></td><td align="right"><strong>74.4</strong></td><td align="right"><strong>50.8</strong></td><td align="right"><strong>58.3</strong></td><td align="right"><strong>89.3</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>31.5</strong> (+7.1)</td><td align="right"><strong>38.9</strong> (+5.2)</td><td align="right"><strong>68.1</strong> (+4.9)</td><td align="right"><strong>30.9</strong> (+15.7)</td><td align="right"><strong>45.6</strong> (+14.9)</td><td align="right"><strong>74.4</strong> (+12.0)</td><td align="right"><strong>50.8</strong> (+11.2)</td><td align="right"><strong>58.3</strong> (+8.9)</td><td align="right"><strong>89.3</strong> (+5.9)</td></tr>
     <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2011.5995331">Pomeranz</a></td><td align="right">30.2</td><td align="right">38.2</td><td align="right">68.0</td><td align="right">24.7</td><td align="right">40.6</td><td align="right">70.9</td><td align="right">49.1</td><td align="right">57.4</td><td align="right">88.1</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>33.7</strong></td><td align="right"><strong>41.1</strong></td><td align="right"><strong>70.0</strong></td><td align="right"><strong>32.9</strong></td><td align="right"><strong>48.7</strong></td><td align="right"><strong>75.8</strong></td><td align="right"><strong>54.4</strong></td><td align="right"><strong>62.2</strong></td><td align="right"><strong>90.1</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>33.7</strong> (+3.5)</td><td align="right"><strong>41.1</strong> (+2.9)</td><td align="right"><strong>70.0</strong> (+2.0)</td><td align="right"><strong>32.9</strong> (+8.2)</td><td align="right"><strong>48.7</strong> (+8.1)</td><td align="right"><strong>75.8</strong> (+4.9)</td><td align="right"><strong>54.4</strong> (+5.3)</td><td align="right"><strong>62.2</strong> (+4.8)</td><td align="right"><strong>90.1</strong> (+2.0)</td></tr>
     <tr><td>ViT-T + <a href="https://bmva-archive.org.uk/bmvc/2016/papers/paper139/index.html">LP</a></td><td align="right">28.6</td><td align="right">38.6</td><td align="right">65.6</td><td align="right">21.1</td><td align="right">38.0</td><td align="right">65.2</td><td align="right">52.2</td><td align="right">63.6</td><td align="right">86.4</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>35.5</strong></td><td align="right"><strong>43.6</strong></td><td align="right"><strong>70.3</strong></td><td align="right"><strong>33.7</strong></td><td align="right"><strong>49.5</strong></td><td align="right"><strong>74.4</strong></td><td align="right"><strong>60.7</strong></td><td align="right"><strong>69.1</strong></td><td align="right"><strong>90.9</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>35.5</strong> (+6.9)</td><td align="right"><strong>43.6</strong> (+5.0)</td><td align="right"><strong>70.3</strong> (+4.7)</td><td align="right"><strong>33.7</strong> (+12.6)</td><td align="right"><strong>49.5</strong> (+11.5)</td><td align="right"><strong>74.4</strong> (+9.2)</td><td align="right"><strong>60.7</strong> (+8.5)</td><td align="right"><strong>69.1</strong> (+5.5)</td><td align="right"><strong>90.9</strong> (+4.5)</td></tr>
   </tbody>
 </table>
 
@@ -237,12 +239,12 @@ protocol; the ViT-T combinations and RG-LNS values are from our experiments.
       <th colspan="3" align="center">5 px</th>
     </tr>
     <tr>
-      <th align="center">PA</th>
-      <th align="center">AA</th>
-      <th align="center">SRA</th>
-      <th align="center">PA</th>
-      <th align="center">AA</th>
-      <th align="center">SRA</th>
+      <th align="center">PA (%)</th>
+      <th align="center">AA (%)</th>
+      <th align="center">SRA (%)</th>
+      <th align="center">PA (%)</th>
+      <th align="center">AA (%)</th>
+      <th align="center">SRA (%)</th>
     </tr>
   </thead>
   <tbody>
@@ -254,11 +256,11 @@ protocol; the ViT-T combinations and RG-LNS values are from our experiments.
     <tr><td><a href="https://doi.org/10.1016/j.eswa.2025.126776">FCViT (ESWA 2025)</a></td><td align="right">0.0</td><td align="right">1.0</td><td align="right">7.2</td><td align="right">0.0</td><td align="right">1.0</td><td align="right">12.5</td></tr>
     <tr><td><a href="https://openaccess.thecvf.com/content/CVPR2026/papers/Shahar_The_Missing_GAP_From_Solving_Square_Jigsaw_Puzzles_to_Handling_CVPR_2026_paper.pdf">PuzzleFlow (CVPR 2026)</a></td><td align="right">0.0</td><td align="right">7.3</td><td align="right">4.4</td><td align="right">0.0</td><td align="right">6.1</td><td align="right">3.7</td></tr>
     <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2012.6247699">Gallagher</a></td><td align="right">39.2</td><td align="right">72.1</td><td align="right">86.8</td><td align="right">5.9</td><td align="right">32.3</td><td align="right">61.1</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>53.8</strong></td><td align="right"><strong>83.9</strong></td><td align="right"><strong>91.6</strong></td><td align="right"><strong>19.7</strong></td><td align="right"><strong>53.1</strong></td><td align="right"><strong>74.9</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>53.8</strong> (+14.6)</td><td align="right"><strong>83.9</strong> (+11.8)</td><td align="right"><strong>91.6</strong> (+4.8)</td><td align="right"><strong>19.7</strong> (+13.8)</td><td align="right"><strong>53.1</strong> (+20.8)</td><td align="right"><strong>74.9</strong> (+13.8)</td></tr>
     <tr><td>ViT-T + <a href="https://doi.org/10.1109/CVPR.2011.5995331">Pomeranz</a></td><td align="right">48.1</td><td align="right">82.8</td><td align="right">90.5</td><td align="right">16.6</td><td align="right">53.0</td><td align="right">72.7</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>54.8</strong></td><td align="right"><strong>86.7</strong></td><td align="right"><strong>92.1</strong></td><td align="right"><strong>23.2</strong></td><td align="right"><strong>59.8</strong></td><td align="right"><strong>77.6</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>54.8</strong> (+6.7)</td><td align="right"><strong>86.7</strong> (+3.9)</td><td align="right"><strong>92.1</strong> (+1.6)</td><td align="right"><strong>23.2</strong> (+6.6)</td><td align="right"><strong>59.8</strong> (+6.8)</td><td align="right"><strong>77.6</strong> (+4.9)</td></tr>
     <tr><td>ViT-T + <a href="https://bmva-archive.org.uk/bmvc/2016/papers/paper139/index.html">LP</a></td><td align="right">44.9</td><td align="right">80.9</td><td align="right">88.5</td><td align="right">9.2</td><td align="right">39.2</td><td align="right">63.1</td></tr>
-    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>55.9</strong></td><td align="right"><strong>85.7</strong></td><td align="right"><strong>91.2</strong></td><td align="right"><strong>18.6</strong></td><td align="right"><strong>50.6</strong></td><td align="right"><strong>72.0</strong></td></tr>
+    <tr><td>↳ + RG-LNS (ours)</td><td align="right"><strong>55.9</strong> (+11.0)</td><td align="right"><strong>85.7</strong> (+4.8)</td><td align="right"><strong>91.2</strong> (+2.7)</td><td align="right"><strong>18.6</strong> (+9.4)</td><td align="right"><strong>50.6</strong> (+11.4)</td><td align="right"><strong>72.0</strong> (+8.9)</td></tr>
   </tbody>
 </table>
 
