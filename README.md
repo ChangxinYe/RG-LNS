@@ -24,25 +24,7 @@ Large-Scale Eroded Jigsaw (ImageNet-LSEJ) dataset.
 > were changed. See the [reproducibility notes](docs/reproducibility.md) and
 > [source manifest](docs/source_manifest.md).
 
-## Code layout
-
-```text
-compatibility/          Stage I: ViT compatibility model, scorer, and training
-data_loaders/           GAP, JPwLEG, and ImageNet-LSEJ adapters
-initial_solvers/        Gallagher, Pomeranz, LP, and partial-layout completion
-rg_lns/                 Stage II: the proposed destroy/translate/repair search
-evaluation/             Metrics plus explicit dataset/solver evaluation commands
-experiments/            Ablation, sensitivity, runtime, and failure analysis
-scripts/                Standalone data preparation tools
-datasets/               Local data only; ignored by Git
-checkpoints/            Local pretrained/trained weights; ignored by Git
-results/reference/      Compact records from the submitted experiments
-results/runs/           Newly generated runs; ignored by Git
-```
-
-Stage-I perception is deliberately outside `rg_lns/`. The latter contains
-only the proposed layout-correction algorithm and consumes a fixed directional
-compatibility tensor plus an initial layout.
+[Quick Start](#quick-start) · [Main Results](#main-results) · [Appendix](#appendix)
 
 ## Installation
 
@@ -58,7 +40,22 @@ python -m pip install -r requirements.txt
 For CUDA, install the PyTorch build matching the local driver before installing
 the remaining requirements.
 
-## Data and checkpoints
+## Benchmarks
+
+- **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):**
+  public $3\times3$ and $5\times5$ benchmarks with irregular eroded
+  fragments. We use GAP-fast, a contiguous, uncompressed HDF5 repack for faster
+  reads without changing puzzle arrays or index labels. Download `GAP_fast.zip`
+  from [Hugging Face](https://huggingface.co/datasets/changxinye/GAP-fast/tree/main)
+  and extract it into `datasets/`, yielding `datasets/GAP_fast/`. For conversion
+  from the original data, see the [preparation instructions](docs/reproducibility.md#gap-data-preparation)
+  and [repacking script](scripts/repack_gap_hdf5.py).
+- **[JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):**
+  a public $5\times5$ benchmark with large gaps, evaluated under the
+  no-fixed-center protocol.
+- **[ImageNet-LSEJ](https://github.com/ChangxinYe/ImageNet-LSEJ):** our
+  $10\times10$ benchmark derived from ImageNet, with $50\times50$-pixel pieces
+  under 2- and 5-pixel erosion.
 
 Keep uncompressed datasets at these exact local paths:
 
@@ -69,6 +66,8 @@ datasets/MET_Dataset/JPLEG-5
 datasets/ImageNet_LSEJ/configs
 datasets/ImageNet_LSEJ/images
 ```
+
+## Checkpoints
 
 The six model files are available in the public
 [v0.1.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v0.1.0).
@@ -102,7 +101,24 @@ pretrained ViT-Tiny file is needed when training Stage I from scratch.
 `checkpoints/` is ignored by Git, so downloaded weights stay local. Training
 writes complete run directories under `checkpoints/train_<dataset>/`.
 
-## Main commands
+## Quick Start
+
+After installing the requirements and preparing the dataset and matching
+checkpoint, run the following from the repository root. Released checkpoints
+can be evaluated without retraining Stage I.
+
+```bash
+# GAP-5: final layout after RG-LNS correction
+python evaluate.py gap gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
+
+# GAP-5: initial layout only
+python evaluate.py gap gallagher initial --checkpoint checkpoints/compatibility/gap5_best.pth
+
+# ImageNet-LSEJ: LP initialization followed by RG-LNS
+python evaluate.py lsej linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+```
+
+## Training and Experiments
 
 ```bash
 # Stage-I compatibility training
@@ -110,21 +126,10 @@ python train_compatibility.py gap --dataset GAP-5
 python train_compatibility.py jpleg --dataset jpleg5
 python train_compatibility.py lsej --task grid10_erode2
 
-# Initial layout only, or the final RG-LNS correction
-python evaluate.py gap gallagher initial --checkpoint checkpoints/compatibility/gap5_best.pth
-python evaluate.py gap gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
-python evaluate.py lsej linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
-
 # Paper-level experiments
 python reproduce.py ablation
 python reproduce.py sensitivity
 python reproduce.py runtime
-```
-
-Run the lightweight synthetic regression tests with:
-
-```bash
-python -m unittest discover -s tests -v
 ```
 
 All original dataset/solver combinations remain available as explicit modules
@@ -132,37 +137,32 @@ under `evaluation/commands/`, which keeps each reported path independently
 auditable. Compact submitted records are inventoried in
 [`results/reference/README.md`](results/reference/README.md).
 
-## Motivation
+## Code Layout
 
-Even when a complete puzzle layout is incorrect, it can retain many correct
-local relationships. Our empirical analysis identifies two dominant failure
-modes.
+```text
+compatibility/          Stage I: ViT compatibility model, scorer, and training
+data_loaders/           GAP, JPwLEG, and ImageNet-LSEJ adapters
+initial_solvers/        Gallagher, Pomeranz, LP, and partial-layout completion
+rg_lns/                 Stage II: the proposed destroy/translate/repair search
+evaluation/             Metrics plus explicit dataset/solver evaluation commands
+experiments/            Ablation, sensitivity, runtime, and failure analysis
+scripts/                Standalone data preparation tools
+datasets/               Local data only; ignored by Git
+checkpoints/            Local pretrained/trained weights; ignored by Git
+results/reference/      Compact records from the submitted experiments
+results/runs/           Newly generated runs; ignored by Git
+```
 
-### 1. Region shift
-
-Some regions preserve the correct relative positions among their pieces but
-are displaced as a whole. The cyan outline below marks the same region in the
-initial layout and its target location.
-
-<p align="center">
-  <img src="assets/motivation_1.png" width="100%" alt="Example of region shift">
-</p>
-
-### 2. Local ambiguity
-
-Multiple neighboring pieces can exhibit high visual similarity, making their
-relative spatial positions difficult to infer. The reliability map below
-highlights where the available neighboring relationships provide insufficient
-support for an unambiguous arrangement.
-
-<p align="center">
-  <img src="assets/motivation_2.png" width="100%" alt="Example of local ambiguity">
-</p>
+Stage-I perception is deliberately outside `rg_lns/`. The latter contains
+only the proposed layout-correction algorithm and consumes a fixed directional
+compatibility tensor plus an initial layout.
 
 ## Method Overview
 
-RG-LNS addresses these two failure modes through reliability-guided destroy
-and repair.
+RG-LNS addresses region shift and local ambiguity through reliability-guided
+destroy and repair. See [Appendix A](#a-motivation) for examples and
+[Appendix B](#b-failure-taxonomy-for-table-1) for the failure-classification
+protocol.
 
 1. **Directional compatibility.** The four edges of each piece are mapped to a
    shared canonical orientation and embedded by a frozen ViT-T model.
@@ -253,13 +253,64 @@ On the ImageNet-LSEJ failures used for our analysis, RG-LNS repairs
 19.3–42.1% of failures attributed to region shift and 13.9–26.8% of those
 attributed to local ambiguity across the three baselines.
 
-## Failure Taxonomy for Table 1
+## Citation
+
+Citation information will be added with the public paper release.
+
+## Acknowledgments
+
+We thank the authors of the following projects for making their code publicly
+available. Their implementations supported our ImageNet-LSEJ baseline
+evaluation:
+
+- [JigsawGAN](https://github.com/liru0126/JigsawGAN)
+- [JPDVT](https://github.com/JinyangMarkLiu/JPDVT)
+- [DiffAssemble](https://github.com/IIT-PAVIS/DiffAssemble)
+- [FCViT](https://github.com/HiMyNameIsDavidKim/fcvit)
+- [PuzzleFlow](https://github.com/OfirShahar/puzzle-flow-matching)
+
+Other baselines were reproduced by following their original papers.
+
+## License
+
+This project is released under the [MIT License](LICENSE).
+
+## Appendix
+
+### A. Motivation
+
+Even when a complete puzzle layout is incorrect, it can retain many correct
+local relationships. Our empirical analysis identifies two dominant failure
+modes.
+
+#### 1. Region shift
+
+Some regions preserve the correct relative positions among their pieces but
+are displaced as a whole. The cyan outline below marks the same region in the
+initial layout and its target location.
+
+<p align="center">
+  <img src="assets/motivation_1.png" width="100%" alt="Example of region shift">
+</p>
+
+#### 2. Local ambiguity
+
+Multiple neighboring pieces can exhibit high visual similarity, making their
+relative spatial positions difficult to infer. The reliability map below
+highlights where the available neighboring relationships provide insufficient
+support for an unambiguous arrangement.
+
+<p align="center">
+  <img src="assets/motivation_2.png" width="100%" alt="Example of local ambiguity">
+</p>
+
+### B. Failure Taxonomy for Table 1
 
 This section documents the deterministic sample-level classification used to
 produce Table 1 of the paper. The three labels are applied to all failed
 predictions from each baseline and form a disjoint partition.
 
-### Step 1: Absolute-position errors
+#### Step 1: Absolute-position errors
 
 For a complete failed sample $s$, let $\mathbf{x}_i$ and
 $\mathbf{x}_i^{*}$ be the predicted and ground-truth grid coordinates of piece
@@ -272,7 +323,7 @@ $i$. The set of pieces at incorrect absolute positions is
 Only failed samples are classified, so $|\mathcal{W}_s|>0$ for every complete
 prediction considered below.
 
-### Step 2: Reliable components
+#### Step 2: Reliable components
 
 For a currently adjacent pair $(i,j)$ in direction $d$, let
 $r_{i\rightarrow j}^{d}$ be the rank of $j$ among the candidate neighbors of
@@ -295,7 +346,7 @@ with at least $M$ pieces form
 
 The experiments use $K=3$ and $M=4$.
 
-### Step 3: Evidence for the two failure modes
+#### Step 3: Evidence for the two failure modes
 
 For every piece $i$, define the translation needed to move it from its
 predicted position to its target position as
@@ -333,7 +384,7 @@ q_s^{\mathrm{local}}=
 \frac{|\mathcal{W}_s\cap\mathcal{L}_s|}{|\mathcal{W}_s|}.
 ```
 
-### Step 4: Ordered sample-level classification
+#### Step 4: Ordered sample-level classification
 
 With the dominance threshold $\tau=0.4$, the failure label is assigned in the
 following order:
@@ -354,7 +405,7 @@ The ordered rule makes the two dominant categories mutually exclusive.
 Predictions that do not define a complete grid permutation are assigned
 directly to **Other failure**.
 
-### Table 1 results
+#### Table 1 results
 
 The following results are obtained on ImageNet-LSEJ ($10\times10$) with
 2-pixel erosion. All three baselines use the same frozen ViT-T directional
@@ -368,42 +419,3 @@ compatibility.
 | **Total** | **1,216 (100%)** | **1,037 (100%)** | **1,102 (100%)** |
 
 Displayed percentages are rounded to one decimal place.
-
-## Benchmarks
-
-- **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):**
-  public $3\times3$ and $5\times5$ benchmarks with irregular eroded
-  fragments. We use GAP-fast, a contiguous, uncompressed HDF5 repack for faster
-  reads without changing puzzle arrays or index labels. Download `GAP_fast.zip`
-  from [Hugging Face](https://huggingface.co/datasets/changxinye/GAP-fast/tree/main)
-  and extract it into `datasets/`, yielding `datasets/GAP_fast/`. For conversion
-  from the original data, see the [preparation instructions](docs/reproducibility.md#gap-data-preparation)
-  and [repacking script](scripts/repack_gap_hdf5.py).
-- **[JPwLEG-5](https://drive.google.com/drive/folders/1MjPm7ar-u6H5WX6Bw2qshPiYPT_eQCZE):**
-  a public $5\times5$ benchmark with large gaps, evaluated under the
-  no-fixed-center protocol.
-- **[ImageNet-LSEJ](https://github.com/ChangxinYe/ImageNet-LSEJ):** our
-  $10\times10$ benchmark derived from ImageNet, with $50\times50$-pixel pieces
-  under 2- and 5-pixel erosion.
-
-## Acknowledgments
-
-We thank the authors of the following projects for making their code publicly
-available. Their implementations supported our ImageNet-LSEJ baseline
-evaluation:
-
-- [JigsawGAN](https://github.com/liru0126/JigsawGAN)
-- [JPDVT](https://github.com/JinyangMarkLiu/JPDVT)
-- [DiffAssemble](https://github.com/IIT-PAVIS/DiffAssemble)
-- [FCViT](https://github.com/HiMyNameIsDavidKim/fcvit)
-- [PuzzleFlow](https://github.com/OfirShahar/puzzle-flow-matching)
-
-Other baselines were reproduced by following their original papers.
-
-## Citation
-
-Citation information will be added with the public paper release.
-
-## License
-
-This project is released under the [MIT License](LICENSE).
