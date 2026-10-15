@@ -12,6 +12,10 @@ model learns directional compatibility between pieces, and RG-LNS refines
 initial layouts without retraining the visual model. We evaluate on GAP,
 JPwLEG-5, and ImageNet-LSEJ.
 
+![RG-LNS framework: visual compatibility learning followed by reliability-guided destroy and repair.](assets/RG-LNS_overall_framework_v4.png)
+
+<p align="center"><em>Overview of the two-stage RG-LNS framework.</em></p>
+
 ## Installation
 
 The verified development environment uses Python 3.10 and the package versions
