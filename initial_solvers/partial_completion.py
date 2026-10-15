@@ -1,8 +1,8 @@
 """
 @file: partial_layout_completion.py
-@description: 使用冻结 E1 对 Gallagher/LP 等求解器产生的不完整布局进行无真实标签补全。
-              已放置 piece 作为刚性 scaffold，枚举其合法整体平移，再以 profiled beam
-              回填所有未放置 piece，并按完整布局 E1 目标确定性选择最终候选。
+@description: Complete incomplete layouts produced by Gallagher/LP and other solvers without ground-truth labels using frozen E1 scores.
+              Treat placed pieces as a rigid scaffold, enumerate legal global translations, then use a profiled beam
+              to fill all unplaced pieces and deterministically select the final candidate by the full-layout E1 objective.
 @author: Changxin Ye
 @created: 2026-08-05
 @version: 1.0
@@ -24,20 +24,20 @@ def is_complete_layout(positions: np.ndarray, grid: int) -> bool:
 
 
 def validate_partial_layout(positions: np.ndarray, grid: int) -> tuple[np.ndarray, np.ndarray]:
-    """验证 piece-to-position 部分排列，返回 int32 布局和已放置 piece id。"""
+    """Validate a partial piece-to-position permutation and return the int32 layout and placed piece ids."""
 
     positions = np.asarray(positions, dtype=np.int32)
     count = grid * grid
     if positions.shape != (count,):
-        raise ValueError(f"部分布局应为 {(count,)}，实际为 {positions.shape}")
+        raise ValueError(f"partial layout must have shape {(count,)}, got {positions.shape}")
     if np.any((positions < -1) | (positions >= count)):
-        raise ValueError("部分布局的位置只能是 -1 或 0..N-1")
+        raise ValueError("partial layout positions must be -1 or in 0..N-1")
     placed_pieces = np.flatnonzero(positions >= 0).astype(np.int32)
     placed_slots = positions[placed_pieces]
     if len(np.unique(placed_slots)) != len(placed_slots):
-        raise ValueError("部分布局包含重复占用的网格位置，无法作为刚性 scaffold")
+        raise ValueError("partial layout contains duplicate grid positions and cannot be used as a rigid scaffold")
     if len(placed_pieces) == 0:
-        raise ValueError("部分布局没有任何已放置 piece，E1 scaffold 补全无法启动")
+        raise ValueError("partial layout contains no placed pieces; E1 scaffold completion cannot start")
     return positions, placed_pieces
 
 
@@ -46,13 +46,13 @@ def partial_layout_metrics(
     target: np.ndarray,
     grid: int,
 ) -> dict[str, float]:
-    """对含 -1 的布局计算 PA/AA/SRA；未放置 piece 自然计为错误。"""
+    """Compute PA/AA/SRA for a layout containing -1; unplaced pieces count as errors."""
 
     prediction = np.asarray(prediction, dtype=np.int32)
     target = np.asarray(target, dtype=np.int32)
     count = grid * grid
     if prediction.shape != (count,) or target.shape != (count,):
-        raise ValueError("prediction 与 target 的长度必须等于 grid²")
+        raise ValueError("prediction and target lengths must equal grid²")
     correct = int(np.count_nonzero(prediction == target))
     relationships = compute_relationship_counts(prediction, target, grid)
     relation_correct = relationships["horizontal_correct"] + relationships["vertical_correct"]
@@ -71,15 +71,15 @@ def complete_partial_layout(
     *,
     completion_beam_width: int = 2,
 ) -> dict:
-    """把部分排列补为完整排列；候选生成与选择全过程不读取真实布局。"""
+    """Complete a partial permutation; candidate generation and selection never read the ground-truth layout."""
 
     if completion_beam_width <= 0:
-        raise ValueError("completion_beam_width 必须为正")
+        raise ValueError("completion_beam_width must be positive")
     positions = np.asarray(positions, dtype=np.int32)
     count = grid * grid
     scores = np.asarray(scores, dtype=np.float32)
     if scores.shape != (count, count, 4):
-        raise ValueError(f"E1 scores 应为 {(count, count, 4)}，实际为 {scores.shape}")
+        raise ValueError(f"E1 scores must have shape {(count, count, 4)}, got {scores.shape}")
     if is_complete_layout(positions, grid):
         return {
             "prediction": positions.copy(),
@@ -132,7 +132,7 @@ def complete_partial_layout(
                 }
             )
     if not candidates:
-        raise RuntimeError("部分布局补全没有产生任何完整候选")
+        raise RuntimeError("partial-layout completion produced no complete candidate")
 
     def selection_key(candidate: dict):
         return (

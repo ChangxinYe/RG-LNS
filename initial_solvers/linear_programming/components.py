@@ -1,6 +1,6 @@
 """
 @file: components.py
-@description: 忠实移植 check_match_lp、get_connected_from_sol、recover_connected_block 与 SCO_update 的 Type-1 路径。
+@description: Faithful Type-1 port of the check_match_lp, get_connected_from_sol, recover_connected_block, and SCO_update paths.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -28,10 +28,11 @@ class BlocksInfo:
 def blocks_info_cut_type1(
     blocks_info: BlocksInfo, num_pieces: int
 ) -> tuple[BlocksInfo, np.ndarray]:
-    """Type-1 等价移植的 ``BlocksInfo_cut.m``。
+    """Type-1 equivalent port of ``BlocksInfo_cut.m``.
 
-    原函数仅在同一原始 piece 的旋转复制发生冲突时切块。Type-1 不复制 piece，
-    ``get_all_ind`` 对每个块内 id 恒产生四个不同旋转 id，因此其切块条件恒为假。
+    The original function splits blocks only when rotated copies of the same original piece conflict.
+    Type-1 does not duplicate pieces; ``get_all_ind`` always produces four distinct rotated ids
+    within each block, so the split condition is always false.
     """
 
     del num_pieces
@@ -41,7 +42,7 @@ def blocks_info_cut_type1(
 def check_match_lp(
     info: MatchInfo, coordinates: np.ndarray, tolerance: float = 1e-4
 ) -> np.ndarray:
-    """按作者的严格阈值检查 LP 坐标是否恰好满足候选邻接。"""
+    """Check whether LP coordinates satisfy candidate adjacencies under the author's strict threshold."""
 
     observed = coordinates[info.neighbors] - coordinates[info.anchors]
     expected = DIRECTION_OFFSETS[info.directions]
@@ -103,7 +104,7 @@ def recover_connected_blocks(
     coordinates: np.ndarray,
     num_pieces: int,
 ) -> tuple[np.ndarray, BlocksInfo]:
-    """从连续 LP 坐标恢复无冲突的四连通二维刚性块；piece id 在块内保持 MATLAB 的 1 基表示。"""
+    """Recover conflict-free four-connected 2D rigid blocks from continuous LP coordinates; piece ids retain MATLAB's one-based representation within each block."""
 
     blocks: list[np.ndarray] = []
     rotations: list[np.ndarray] = []
@@ -136,7 +137,7 @@ def recover_connected_blocks(
             child = block.copy()
             child[spatial_labels != spatial_component] = 0
             child = _crop(child)
-            # MATLAB 最终删除单 piece block；这里按其注释表达的语义执行。
+            # MATLAB ultimately removes single-piece blocks; follow the semantics stated in its comment.
             if np.count_nonzero(child > 0) <= 1:
                 continue
             blocks.append(child)
@@ -156,7 +157,7 @@ def sco_update(
     *,
     remove_boundary: bool = True,
 ) -> np.ndarray:
-    """复现 ``SCO_update(..., method='conneced_comp')`` 的 Type-1 socket 淘汰。"""
+    """Reproduce the Type-1 socket pruning in ``SCO_update(..., method='conneced_comp')``."""
 
     updated = np.asarray(scores, dtype=np.float64).copy()
     n = updated.shape[0]

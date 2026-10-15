@@ -1,6 +1,6 @@
 """
-@file: s1a3_eval_jpleg_pomeranz_iterative_component_reassembly.py
-@description: 使用 S1A E1 + Pomeranz 生成 JPLEG 初始解，再执行我们的迭代式组件重组。
+@file: evaluate_jpleg_pomeranz_greedy_rg_lns.py
+@description: Generate a JPLEG initial solution with E1 compatibility + Pomeranz, then run greedy component reassembly.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -30,7 +30,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "在 JPLEG 中以 S1A E1 + Pomeranz CVPR 2011 完整解作为 S1A3 初始布局"
+    parser.description = "Use the complete E1 compatibility + Pomeranz CVPR 2011 solution as the greedy initial layout on JPLEG"
     add_pomeranz_arguments(parser)
     return parser.parse_args()
 

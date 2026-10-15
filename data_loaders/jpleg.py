@@ -1,6 +1,6 @@
 """
 @file: metric_jpleg_data.py
-@description: JPLEG 数据集的同图合法候选采样，用于 puzzle-level hard triplet 训练。
+@description: Same-puzzle legal-candidate sampling for puzzle-level hard-triplet training on JPLEG.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.1

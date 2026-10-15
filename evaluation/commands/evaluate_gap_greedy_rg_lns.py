@@ -1,9 +1,10 @@
 """
-@file: s1a3_eval_gap_iterative_component_reassembly.py
-@description: 在 GAP-3/GAP-5 上加载对应的 S1A RGBA 度量模型，先以 Gallagher Solver
-              生成初始布局，再执行 S1A3 单路径迭代组件重组。评估同时报告重组前后的
-              PA、AA、HA、VA、SRA、NA，以及不受求解器影响的真实邻居 Recall@K；并保存
-              逐样本、逐轮、候选、预测、PA 修复/破坏列表和带正确性框的可视化结果。
+@file: evaluate_gap_greedy_rg_lns.py
+@description: Load the corresponding compatibility model on GAP-3/GAP-5, use Gallagher Solver
+              to produce an initial layout, then run greedy single-path component reassembly.
+              Report PA, AA, HA, VA, SRA, and NA before and after reassembly, together with solver-independent
+              true-neighbor Recall@K; save per-sample, per-round, candidate, and prediction records,
+              PA repair/degradation lists, and visualizations with correctness boxes.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -69,7 +70,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET = "GAP-3"  # "GAP-3" or "GAP-5"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
-DEFAULT_MAX_SAMPLES = 0  # 0 表示评估完整 split
+DEFAULT_MAX_SAMPLES = 0  # 0 evaluates the complete split.
 DEFAULT_RUN_NAMES = {
     "GAP-3": "hard_triplet_d128_s224_kall_2026-07-31-20-21-04",
     "GAP-5": "hard_triplet_d128_s224_k15_2026-07-31-20-43-26",
@@ -77,7 +78,7 @@ DEFAULT_RUN_NAMES = {
 DEFAULT_RUN_DIR = None
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 
-# 与 LSEJ / JPwLEG 的正式 S1A3 设置保持一致。
+# Keep consistent with the formal greedy-reassembly settings for LSEJ/JPwLEG.
 DEFAULT_MUTUAL_TOP_K = 3
 DEFAULT_COMPONENT_INDEX = 0
 DEFAULT_MIN_COMPONENT_SIZE = 4
@@ -94,17 +95,17 @@ METRIC_KEYS = ("PA", "AA", "HA", "VA", "SRA", "NA")
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate S1A3 iterative component reassembly on GAP-3/GAP-5",
+        "Evaluate greedy component reassembly on GAP-3/GAP-5",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=GAP_CONFIGS.keys())
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=GAP_SPLITS)
     parser.add_argument("--data-root", default=DEFAULT_GAP_DATA_ROOT, type=Path)
-    parser.add_argument("--checkpoint", default=None, type=Path, help="精确 checkpoint 路径，优先级最高")
+    parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")
     parser.add_argument(
         "--run-name",
         default=None,
-        help="logs/s1a_train_gap/<dataset> 下的实验名；留空时按 dataset 使用 DEFAULT_RUN_NAMES",
+        help="experiment name under logs/train_gap/<dataset>; leave empty to use DEFAULT_RUN_NAMES by dataset",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path)
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME)
@@ -134,28 +135,28 @@ def parse_args() -> argparse.Namespace:
 
 def validate_args(args: argparse.Namespace) -> None:
     if args.start_index < 0 or args.max_samples < 0:
-        raise ValueError("start-index 和 max-samples 必须非负")
+        raise ValueError("start-index and max-samples must be non-negative")
     if args.mutual_top_k <= 0:
-        raise ValueError("mutual-top-k 必须为正整数")
+        raise ValueError("mutual-top-k must be a positive integer")
     if args.component_index < 0:
-        raise ValueError("component-index 不能为负数")
+        raise ValueError("component-index cannot be negative")
     if args.min_component_size <= 0 or args.refinement_rounds <= 0:
-        raise ValueError("min-component-size 和 refinement-rounds 必须为正整数")
+        raise ValueError("min-component-size and refinement-rounds must be positive integers")
     if args.score_batch_size <= 0:
-        raise ValueError("score-batch-size 必须为正整数")
+        raise ValueError("score-batch-size must be a positive integer")
     if args.visual_limit < 0 or args.progress_interval < 0:
-        raise ValueError("visual-limit 和 progress-interval 必须非负")
+        raise ValueError("visual-limit and progress-interval must be non-negative")
 
 
 def _prepare_output_dir(output_dir: Path, *, automatically_named: bool) -> Path:
-    """避免不同参数的重复评估混写到同一个结果目录。"""
+    """Avoid mixing repeated evaluations with different parameters in one result directory."""
 
     del automatically_named
     return prepare_unique_output_dir(output_dir)
 
 
 def _default_output_dir(checkpoint: Path, dataset: str, *, output_root: Path) -> Path:
-    # 目录名只保留 checkpoint 身份；全部评估参数写入 summary.txt / metrics.json。
+    # Keep only checkpoint identity in the directory name; write all evaluation parameters to summary.txt/metrics.json.
     folder = f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}"
     return Path(output_root) / dataset / folder
 
@@ -198,7 +199,7 @@ def _save_visual(
     title: str,
     initial_solver_name: str,
 ) -> None:
-    """保存输入、初始求解器布局、组件种子、S1A3 解和真实布局。"""
+    """Save the input, initial-solver layout, component seed, greedy solution, and ground-truth layout."""
 
     import matplotlib
 
@@ -216,10 +217,10 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"S1A {initial_solver_name} baseline "
+        f"E1 {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         "Last component seed (cyan)",
-        f"S1A3 final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"Greedy reassembly final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -358,7 +359,7 @@ def run_evaluation(
     started = time.perf_counter()
 
     print(
-        f"Evaluating S1A3 on {args.dataset} {args.split}: "
+        f"Evaluating greedy reassembly on {args.dataset} {args.split}: "
         f"samples={len(gap_data)}, grid={grid}x{grid}"
     )
     for evaluation_number in range(1, len(gap_data) + 1):
@@ -607,7 +608,7 @@ def run_evaluation(
         )
 
     summary_lines = [
-        f"GAP S1A3 Iterative Component Reassembly ({initial_solver_name} initialization)",
+        f"GAP Greedy Component Reassembly ({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {checkpoint}",
         f"data_root: {Path(args.data_root).expanduser().resolve()}",
@@ -624,8 +625,8 @@ def run_evaluation(
         "",
     ]
     for label, metrics in (
-        (f"S1A {initial_solver_name} baseline", baseline_aggregate),
-        ("S1A3", selected_aggregate),
+        (f"E1 {initial_solver_name} baseline", baseline_aggregate),
+        ("Greedy reassembly", selected_aggregate),
     ):
         summary_lines.append(f"{label}:")
         summary_lines.extend(f"  {key}={metrics[key]:.4%}" for key in METRIC_KEYS)
@@ -658,7 +659,7 @@ def run_evaluation(
     print(f"device: {device}")
     for key in ("PA", "AA", "SRA", "NA"):
         print(
-            f"Final {key} ({initial_solver_name} -> S1A3): "
+            f"Final {key} ({initial_solver_name} -> greedy reassembly): "
             f"{baseline_aggregate[key]:.4%} -> {selected_aggregate[key]:.4%}"
         )
     print(f"Saved: {output_dir}")

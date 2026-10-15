@@ -1,6 +1,6 @@
 """
 @file: metric_jpleg_evaluator.py
-@description: JPLEG 的通用求解器评估、PA/AA/HA/VA/SRA/NA 统计、结果保存与可视化工具。
+@description: General solver evaluation, PA/AA/HA/VA/SRA/NA statistics, result saving, and visualization for JPLEG.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.0
@@ -136,7 +136,7 @@ def solve_with_gallagher(
     *,
     verbose: bool = False,
 ) -> np.ndarray:
-    """运行仓库中的 Gallagher 求解器并返回 piece 到位置的映射。"""
+    """Run the repository's Gallagher solver and return the piece-to-position mapping."""
 
     position_key = np.arange(1, grid * grid + 1, dtype=np.int32)
     with maybe_silence_solver(verbose):
@@ -152,15 +152,15 @@ def solve_with_gallagher(
 
 
 def compute_relationship_counts(prediction: np.ndarray, target: np.ndarray, grid: int) -> dict[str, int]:
-    """统计方向敏感的 HA/VA/SRA，以及方向无关的 NA。"""
+    """Compute direction-sensitive HA/VA/SRA and direction-independent NA."""
 
     num_pieces = grid * grid
     prediction = np.asarray(prediction, dtype=np.int64)
     target = np.asarray(target, dtype=np.int64)
     if prediction.shape != (num_pieces,) or target.shape != (num_pieces,):
-        raise ValueError(f"预测和标签都应为 ({num_pieces},)，实际为 {prediction.shape} 和 {target.shape}")
+        raise ValueError(f"prediction and target must both have shape ({num_pieces},), got {prediction.shape} and {target.shape}")
     if not np.array_equal(np.sort(target), np.arange(num_pieces)):
-        raise ValueError("标签必须是全部拼图位置的一个排列")
+        raise ValueError("target must be a permutation of all puzzle positions")
 
     piece_at_target_position = np.empty(num_pieces, dtype=np.int64)
     piece_at_target_position[target] = np.arange(num_pieces)
@@ -237,7 +237,7 @@ def sample_ground_truth_metrics(prediction: np.ndarray, target: np.ndarray, grid
 
 def aggregate_ground_truth_metrics(rows: list[dict]) -> dict[str, float | int]:
     if not rows:
-        raise ValueError("不能汇总空指标列表")
+        raise ValueError("cannot summarize an empty metric list")
     samples = len(rows)
     horizontal_correct = sum(int(row["horizontal_correct"]) for row in rows)
     horizontal_total = sum(int(row["horizontal_total"]) for row in rows)
@@ -300,9 +300,9 @@ def save_evaluation_visual(
         compose_puzzle(pieces, target, grid),
     ]
     names = [
-        "输入乱序拼图",
+        "Shuffled input puzzle",
         f"{method_name}（AA {int(np.count_nonzero(prediction == target))}/{grid * grid}）",
-        "真实拼图",
+        "Ground-truth puzzle",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     figure, axes = plt.subplots(1, 3, figsize=(15, 5), constrained_layout=True)
@@ -348,20 +348,20 @@ def evaluate_jpleg_split(
     save_visuals: bool = True,
     visual_limit: int = 20,
     save_predictions: bool = True,
-    method_name: str = "S1A",
+    method_name: str = "E1 compatibility",
     configuration: dict | None = None,
 ) -> JPLEGMetrics:
     if dataset not in JPLEG_CONFIGS:
-        raise ValueError(f"未知 JPLEG 数据集：{dataset}")
+        raise ValueError(f"unknown JPLEG dataset: {dataset}")
     if max_samples < 0 or start_index < 0:
-        raise ValueError("max_samples 和 start_index 必须非负")
+        raise ValueError("max_samples and start_index must be non-negative")
     if visual_limit < 0 or progress_interval < 0:
-        raise ValueError("visual_limit 和 progress_interval 必须非负")
+        raise ValueError("visual_limit and progress_interval must be non-negative")
 
     config = JPLEG_CONFIGS[dataset]
     images, labels = load_jpleg_arrays(data_root, dataset, split)
     if start_index >= len(images):
-        raise ValueError(f"start_index={start_index} 超出数据集长度 {len(images)}")
+        raise ValueError(f"start_index={start_index} exceeds dataset length {len(images)}")
     end_index = len(images) if max_samples == 0 else min(len(images), start_index + max_samples)
     sample_count = end_index - start_index
     output_dir = Path(output_dir) if output_dir is not None else None
@@ -374,7 +374,7 @@ def evaluate_jpleg_split(
     sample_indices: list[int] = []
     visualized = 0
     started = time.perf_counter()
-    print(f"在 {dataset.upper()} {split} 上评估 {method_name}：samples={sample_count}, grid={config.grid}x{config.grid}")
+    print(f"Evaluating {method_name} on {dataset.upper()} {split}: samples={sample_count}, grid={config.grid}x{config.grid}")
 
     for done, index in enumerate(range(start_index, end_index), start=1):
         image = np.asarray(images[index])
@@ -453,7 +453,7 @@ def evaluate_jpleg_split(
                 grid_size=np.asarray(config.grid, dtype=np.int32),
             )
         summary = [
-            f"JPLEG {method_name} 评估结果",
+            f"JPLEG {method_name} evaluation results",
             "=" * 80,
             f"checkpoint: {checkpoint}",
             f"data_root: {data_root}",

@@ -1,6 +1,6 @@
 """
 @file: metric_vit_model.py
-@description: 基于 handwritten ViT 预训练 backbone 的度量学习 embedding encoder。
+@description: Metric-learning embedding encoder based on a handwritten ViT pretrained backbone.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.1

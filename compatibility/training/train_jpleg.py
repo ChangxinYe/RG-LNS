@@ -1,6 +1,6 @@
 """
-@file: s1a_train_jpleg.py
-@description: 基于 handwritten ViT 和同图合法 hard negative mining 的 JPLEG 训练脚本。
+@file: train_jpleg.py
+@description: JPLEG training script using a handwritten ViT and same-puzzle legal hard-negative mining.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.1

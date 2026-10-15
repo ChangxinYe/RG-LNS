@@ -1,6 +1,6 @@
 """
 @file: solver.py
-@description: 基于论文流程组织 Pomeranz Placer、Segmenter 与 Shifter，并接入 S1A E1 距离。
+@description: Organize the Pomeranz Placer, Segmenter, and Shifter according to the paper workflow and connect them to the E1 compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -119,9 +119,9 @@ def solve_with_pomeranz(
     verbose: bool = False,
     return_diagnostics: bool = False,
 ):
-    """使用统一 S1A E1 矩阵执行多种子 Pomeranz CVPR 2011 求解流程。"""
+    """Run the multi-seed Pomeranz CVPR 2011 solving workflow using a unified E1 compatibility matrix."""
 
-    del pieces  # 与其他求解器保持统一调用签名；Pomeranz 仅使用预计算 E1 分数。
+    del pieces  # Keep a uniform call signature with other solvers; Pomeranz uses only precomputed E1 scores.
     config = config or PomeranzSolverConfig()
     num_pieces = grid * grid
     config.validate(num_pieces)

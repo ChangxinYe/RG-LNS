@@ -1,6 +1,6 @@
 """
 @file: metric_losses.py
-@description: 面向拼图同图候选集合的 triplet、InfoNCE 与双向部分分配损失函数。
+@description: Triplet, InfoNCE, and bidirectional partial-assignment losses for same-puzzle candidate sets.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.5
@@ -484,7 +484,7 @@ def puzzle_bidirectional_assignment_loss(
     puzzle's partial one-to-one adjacency structure.
 
     A K-candidate bidirectional hard-triplet term is retained so S6A can be
-    compared against S1A-style metric training while adding only the structured
+    compared against compatibility-style metric training while adding only the structured
     assignment objective. Smaller distances mean greater compatibility.
     """
 

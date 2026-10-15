@@ -1,6 +1,6 @@
 """
-@file: s1a_eval_jpleg.py
-@description: 使用 Gallagher 求解器评估 puzzle-level hard triplet checkpoint 的 PA、AA、HA、VA、SRA 和 NA。
+@file: evaluate_jpleg_gallagher.py
+@description: Evaluate a puzzle-level hard-triplet checkpoint with Gallagher and report PA, AA, HA, VA, SRA, and NA.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.3
@@ -168,7 +168,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=["all", *JPLEG_CONFIGS.keys()])
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys())
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path)
-    parser.add_argument("--output-dir", default=None, type=Path, help="评估结果目录；留空时按评估脚本、数据集和实验自动分类")
+    parser.add_argument("--output-dir", default=None, type=Path, help="evaluation-result directory; leave empty to classify automatically by script, dataset, and experiment")
     parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="0 means evaluate the full split")
     parser.add_argument("--start-index", default=0, type=int)
     parser.add_argument("--progress-interval", default=25, type=int)
@@ -281,7 +281,7 @@ def gi_to_predicted_positions(gi: np.ndarray, grid: int) -> np.ndarray:
 
 
 def compute_relationship_counts(pred: np.ndarray, target: np.ndarray, grid: int) -> dict[str, int]:
-    """计算与 TEN 一致的方向敏感 HA/VA 和方向无关 NA 关系计数。"""
+    """Compute direction-sensitive HA/VA and direction-independent NA relation counts consistent with TEN."""
 
     num_pieces = grid * grid
     pred = np.asarray(pred, dtype=np.int64)
@@ -461,7 +461,7 @@ def evaluate_dataset(
     visual_interval: int,
     save_predictions: bool,
     verbose_solver: bool,
-    method_name: str = "S1A hard triplet",
+    method_name: str = "E1 hard-triplet compatibility",
 ) -> DatasetMetrics:
     config = JPLEG_CONFIGS[dataset]
     images, labels = load_jpleg_arrays(data_root, dataset, split)

@@ -1,6 +1,6 @@
 """
 @file: matching.py
-@description: 忠实移植 get_normSCO、get_candidate_and_weight、info_filter 与 info_filter_loop。
+@description: Faithful port of get_normSCO, get_candidate_and_weight, info_filter, and info_filter_loop.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -31,7 +31,7 @@ LOOP_MATRIX = np.asarray(
 
 @dataclass(frozen=True)
 class MatchInfo:
-    """MATLAB ``info`` 矩阵的零基、列式表示。"""
+    """Zero-based, column-wise representation of the MATLAB ``info`` matrix."""
 
     anchors: np.ndarray
     neighbors: np.ndarray
@@ -68,7 +68,7 @@ def empty_info() -> MatchInfo:
 
 
 def unique_info(info: MatchInfo) -> MatchInfo:
-    """等价于 MATLAB ``unique(info, 'rows')``（包含权重列）。"""
+    """Equivalent to MATLAB ``unique(info, 'rows')`` including the weight column."""
 
     if len(info) == 0:
         return info
@@ -95,13 +95,13 @@ def concatenate_info(*items: MatchInfo) -> MatchInfo:
 
 
 def normalize_scores(scores: np.ndarray, tiny: float = 1e-15) -> np.ndarray:
-    """逐方向复现 ``get_normSCO.m`` 的行列第二竞争者归一化。"""
+    """Reproduce the row/column second-competitor normalization of ``get_normSCO.m`` per direction."""
 
     scores = np.asarray(scores, dtype=np.float64)
     if scores.ndim != 3 or scores.shape[0] != scores.shape[1] or scores.shape[2] != 4:
-        raise ValueError(f"兼容分数应为 (N, N, 4)，实际为 {scores.shape}")
+        raise ValueError(f"compatibility scores must have shape (N, N, 4), got {scores.shape}")
     if np.isnan(scores).any():
-        raise ValueError("兼容分数中不能含 NaN；已淘汰候选请使用 inf")
+        raise ValueError("compatibility scores cannot contain NaN; use inf for pruned candidates")
 
     normalized = scores.copy()
     n = scores.shape[0]
@@ -138,7 +138,7 @@ def get_candidate_and_weight(
     probability_lambda: float = 5.0,
     minimum_weight: float = 1e-15,
 ) -> MatchInfo:
-    """复现概率加权模式 ``method=2``：每个 piece、每个方向取 Top-K。"""
+    """Reproduce probability-weighted ``method=2`` by retaining Top-K candidates per piece and direction."""
 
     normalized = normalize_scores(scores)
     n = normalized.shape[0]
@@ -154,7 +154,7 @@ def get_candidate_and_weight(
             candidate_weights = np.maximum(
                 np.exp(-probability_lambda * ratios * ratios), minimum_weight
             )
-            # MATLAB 随后删除 weight 恰好等于 t 的候选。
+            # MATLAB then removes candidates whose weight is exactly t.
             keep = np.isfinite(ratios) & (candidate_weights != minimum_weight)
             for anchor in np.flatnonzero(keep):
                 anchors.append(int(anchor))
@@ -170,7 +170,7 @@ def get_candidate_and_weight(
 
 
 def info_filter(info: MatchInfo) -> MatchInfo:
-    """只保留同时存在反向镜像记录的候选。"""
+    """Retain only candidates that also have a reverse-mirror record."""
 
     keys = {
         (int(a), int(b), int(d))
@@ -187,7 +187,7 @@ def info_filter(info: MatchInfo) -> MatchInfo:
 
 
 def info_filter_loop(info: MatchInfo) -> MatchInfo:
-    """复现作者的八种二维四步闭环检查，最后再次执行 buddy check。"""
+    """Reproduce the author's eight 2D four-step cycle checks, then run the buddy check again."""
 
     if len(info) == 0:
         return info
@@ -205,7 +205,7 @@ def info_filter_loop(info: MatchInfo) -> MatchInfo:
                 if candidates.size == 0:
                     complete = False
                     break
-                # MATLAB ismember 返回首个匹配项。
+                # MATLAB ismember returns the first matching item.
                 current = int(info.neighbors[int(candidates[0])])
             if complete and current != start:
                 delete[first_index] = True

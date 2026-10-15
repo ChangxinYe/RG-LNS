@@ -1,6 +1,6 @@
 """
-@file: s1a3_eval_lsej_lp_iterative_component_reassembly.py
-@description: 使用 BMVC 2016 Type-1 纯 Python 忠实移植生成初始布局，再执行 S1A3 迭代式高置信组件重组。
+@file: evaluate_lsej_linear_programming_greedy_rg_lns.py
+@description: Generate an initial layout with the faithful pure-Python BMVC 2016 Type-1 port, then run greedy high-confidence component reassembly.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -28,7 +28,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "以作者 BMVC 2016 Type-1 LP 的纯 Python 忠实移植作为 S1A3 初始求解器"
+    parser.description = "Use the faithful pure-Python BMVC 2016 Type-1 LP port as the greedy initial solver"
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()

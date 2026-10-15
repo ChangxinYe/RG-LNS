@@ -1,8 +1,8 @@
 """
-@file: s1a3_eval_gap_pomeranz_iterative_component_reassembly.py
-@description: 在 GAP-3/GAP-5 上使用 S1A E1 与 Pomeranz CVPR 2011 求解器生成
-              初始布局，再执行 S1A3 单路径迭代组件重组；输出完整指标、搜索诊断、预测、
-              PA 修复/破坏列表和带正确性框的可视化结果。
+@file: evaluate_gap_pomeranz_greedy_rg_lns.py
+@description: Generate initial GAP-3/GAP-5 layouts with the E1 compatibility distance and Pomeranz CVPR 2011 solver,
+              then run greedy single-path component reassembly. Output complete metrics, search diagnostics,
+              predictions, PA repair/degradation lists, and visualizations with correctness boxes.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -39,7 +39,7 @@ DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate S1A3 on GAP-3/GAP-5 with Pomeranz CVPR 2011 initialization"
+        "Evaluate greedy component reassembly on GAP-3/GAP-5 with Pomeranz CVPR 2011 initialization"
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,

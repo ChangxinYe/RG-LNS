@@ -210,18 +210,21 @@ TABLE_ROWS: tuple[TableRowSpec, ...] = (
         key="reliability_guided_destroy",
         label="+ Reliability-Guided Destroy",
         run_variant="reliability_destroy_fixed_b1",
+        # Historical result key retained for compatibility; the public name is profiled RG-LNS.
         metric_section="s1a4",
     ),
     TableRowSpec(
         key="component_translations",
         label="+ Component Translations",
         run_variant="full_rg_lns_b4",
+        # Historical result key retained for compatibility; the public name is greedy reassembly.
         metric_section="s1a3_single_path_reference",
     ),
     TableRowSpec(
         key="beam_search_completion",
         label="+ Beam-Search Completion",
         run_variant="full_rg_lns_b4",
+        # Historical result key retained for compatibility; the public name is profiled RG-LNS.
         metric_section="s1a4",
     ),
 )
@@ -310,7 +313,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--run-name",
         default=None,
         help=(
-            "Subdirectory under eval_result/s1a4_ablation_experiment; "
+            "Subdirectory under eval_result/rg_lns_ablation; "
             "required with --resume or --force"
         ),
     )

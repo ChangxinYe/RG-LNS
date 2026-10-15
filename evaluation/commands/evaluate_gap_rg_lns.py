@@ -1,11 +1,12 @@
 """
-@file: s1a4_eval_gap_profiled_large_neighborhood_reassembly.py
-@description: 在 GAP-3/GAP-5 上加载对应的 S1A RGBA 度量模型，以 Gallagher Solver
-              生成共同初始布局；若初始预测不完整，则先执行无标签兼容性回填，再同时运行
-              S1A3 单路径组件重组和 S1A4 profiled
-              large-neighborhood reassembly。S1A4 为每个可靠组件位置保留多条剩余 piece
-              回填路径，再用完整布局的 E1 目标选择候选。脚本输出三阶段指标、邻居 Recall@K、
-              完整搜索诊断、预测、PA 修复/破坏列表和带正确性框的可视化结果。
+@file: evaluate_gap_rg_lns.py
+@description: Load the corresponding compatibility model on GAP-3/GAP-5 and use Gallagher Solver
+              to produce a shared initial layout. If the initial prediction is incomplete, first perform
+              ground-truth-free compatibility completion, then run greedy single-path component reassembly and
+              profiled large-neighborhood reassembly. The profiled method retains multiple remaining-piece fill paths
+              for each reliable-component pose and selects candidates using the full-layout E1 objective.
+              The script outputs three-stage metrics, neighbor Recall@K, full search diagnostics, predictions,
+              PA repair/degradation lists, and visualizations with correctness boxes.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.1
@@ -51,8 +52,8 @@ try:
         _prepare_output_dir,
         _retrieval_metrics,
         _write_csv,
-        build_parser as build_s1a3_parser,
-        validate_args as validate_s1a3_args,
+        build_parser as build_greedy_parser,
+        validate_args as validate_greedy_args,
     )
     from evaluation.commands.evaluate_gap_gallagher import parse_bool, resolve_checkpoint
 except ImportError:
@@ -85,8 +86,8 @@ except ImportError:
         _prepare_output_dir,
         _retrieval_metrics,
         _write_csv,
-        build_parser as build_s1a3_parser,
-        validate_args as validate_s1a3_args,
+        build_parser as build_greedy_parser,
+        validate_args as validate_greedy_args,
     )
     from evaluation.commands.evaluate_gap_gallagher import parse_bool, resolve_checkpoint
 
@@ -118,31 +119,31 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = build_s1a3_parser()
-    parser.description = "Evaluate S1A4 profiled large-neighborhood reassembly on GAP-3/GAP-5"
+    parser = build_greedy_parser()
+    parser.description = "Evaluate profiled RG-LNS on GAP-3/GAP-5"
     parser.add_argument(
         "--completion-beam-width",
         default=DEFAULT_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="每个组件位置最多保留的完整回填候选数；1 严格退化为 S1A3 路径",
+        help="maximum complete fill candidates retained per component pose; 1 strictly reduces to greedy reassembly",
     )
     parser.add_argument(
         "--partial-completion-beam-width",
         default=DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="不完整初始布局的无 GT E1 补全 beam 宽度",
+        help="ground-truth-free E1 completion beam width for incomplete initial layouts",
     )
     parser.add_argument(
         "--translation-mode",
         default=DEFAULT_TRANSLATION_MODE,
         choices=("fixed", "all"),
-        help="固定组件当前绝对位置，或枚举全部合法平移",
+        help="keep the component at its current absolute position or enumerate all legal translations",
     )
     parser.add_argument(
         "--save-completion-details",
         default=DEFAULT_SAVE_COMPLETION_DETAILS,
         type=parse_bool,
-        help="是否保存每个组件位置内全部 retained completion 的诊断 CSV",
+        help="whether to save diagnostic CSVs for all retained completions at each component pose",
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
@@ -171,15 +172,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
-    validate_s1a3_args(args)
+    validate_greedy_args(args)
     if args.completion_beam_width <= 0:
-        raise ValueError("completion-beam-width 必须为正整数")
+        raise ValueError("completion-beam-width must be a positive integer")
     if args.partial_completion_beam_width <= 0:
-        raise ValueError("partial-completion-beam-width 必须为正整数")
+        raise ValueError("partial-completion-beam-width must be a positive integer")
     if args.translation_mode not in {"fixed", "all"}:
-        raise ValueError("translation-mode 必须为 fixed 或 all")
+        raise ValueError("translation-mode must be fixed or all")
     if args.runtime_warmup_samples < 0:
-        raise ValueError("runtime-warmup-samples 必须非负")
+        raise ValueError("runtime-warmup-samples must be non-negative")
 
 
 def _write_pa_case_lists(
@@ -220,7 +221,7 @@ def _save_visual(
     scaffold_title: str,
     initial_solver_name: str,
 ) -> None:
-    """保存初始求解器、S1A3、S1A4 三阶段以及可靠组件位置。"""
+    """Save the initial-solver, greedy, and profiled RG-LNS stages together with reliable-component poses."""
 
     import matplotlib
 
@@ -239,11 +240,11 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"S1A {initial_solver_name} baseline "
+        f"E1 {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
-        f"S1A3 single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
+        f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
         scaffold_title,
-        f"S1A4 profiled final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"Profiled RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -308,7 +309,7 @@ def _append_diagnostic_rows(
     pose_rows: list[dict],
     completion_rows: list[dict],
 ) -> None:
-    """展开 S1A4 每轮、每个组件位置和每条回填路径，便于检查涨点来源。"""
+    """Expand every profiled RG-LNS round, component pose, and fill path to inspect improvements."""
 
     for round_record in result["rounds"]:
         graph = round_record["graph_statistics"]
@@ -494,7 +495,7 @@ def run_evaluation(
     started = time.perf_counter()
 
     print(
-        f"Evaluating S1A4 on {args.dataset} {args.split}: samples={len(gap_data)}, "
+        f"Evaluating profiled RG-LNS on {args.dataset} {args.split}: samples={len(gap_data)}, "
         f"grid={grid}x{grid}, beam={args.completion_beam_width}"
     )
     for evaluation_number in range(1, len(gap_data) + 1):
@@ -910,7 +911,7 @@ def run_evaluation(
         ),
         "beam1_contract": (
             "after the same partial-layout completion, completion_beam_width=1 directly "
-            "reuses the formal S1A3 path"
+            "reuses the formal greedy path"
         ),
         "dataset": args.dataset,
         "split": args.split,
@@ -989,7 +990,7 @@ def run_evaluation(
         )
 
     summary_lines = [
-        f"GAP S1A4 Profiled Large-Neighborhood Reassembly "
+        f"GAP Profiled RG-LNS "
         f"({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {checkpoint}",
@@ -1012,10 +1013,10 @@ def run_evaluation(
         "",
     ]
     for label, metrics in (
-        (f"S1A {initial_solver_name} baseline", baseline_aggregate),
+        (f"E1 {initial_solver_name} baseline", baseline_aggregate),
         ("Label-free E1 partial-layout completion", completed_baseline_aggregate),
-        ("S1A3 single-path reference", s1a3_aggregate),
-        ("S1A4 profiled reassembly", selected_aggregate),
+        ("Greedy single-path reference", s1a3_aggregate),
+        ("Profiled RG-LNS", selected_aggregate),
     ):
         summary_lines.append(f"{label}:")
         summary_lines.extend(f"  {key}={metrics[key]:.4%}" for key in METRIC_KEYS)
@@ -1033,12 +1034,12 @@ def run_evaluation(
             "",
             f"Partial completion diagnostics: {partial_completion_diagnostics}",
             f"Comparison: {comparison}",
-            f"Incremental vs S1A3: {incremental}",
+            f"Incremental vs greedy reassembly: {incremental}",
             f"Search diagnostics: {search_diagnostics}",
             f"PA repaired image list: pa_repaired_images.txt ({len(repaired)})",
             f"PA broken image list: pa_broken_images.txt ({len(broken)})",
-            f"PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt ({len(repaired_vs_s1a3)})",
-            f"PA broken vs S1A3: pa_broken_vs_s1a3_images.txt ({len(broken_vs_s1a3)})",
+            f"PA repaired vs greedy: pa_repaired_vs_s1a3_images.txt ({len(repaired_vs_s1a3)})",
+            f"PA broken vs greedy: pa_broken_vs_s1a3_images.txt ({len(broken_vs_s1a3)})",
         ]
     )
     summary_lines.extend(["", *format_stage_timing_summary(runtime_summary), ""])
@@ -1054,7 +1055,7 @@ def run_evaluation(
     print(f"device: {device}")
     for key in ("PA", "AA", "SRA", "NA"):
         print(
-            f"Final {key} ({initial_solver_name} -> completion -> S1A3 -> S1A4): "
+            f"Final {key} ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
             f"{baseline_aggregate[key]:.4%} -> {completed_baseline_aggregate[key]:.4%} "
             f"-> {s1a3_aggregate[key]:.4%} "
             f"-> {selected_aggregate[key]:.4%}"

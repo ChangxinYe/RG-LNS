@@ -1,6 +1,6 @@
 """
-@file: s1a_eval_jpleg_pomeranz.py
-@description: 使用统一 S1A E1 距离和 Pomeranz CVPR 2011 纯 Python 求解器评估 JPLEG。
+@file: evaluate_jpleg_pomeranz.py
+@description: Evaluate JPLEG with the unified E1 compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -44,28 +44,28 @@ DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "使用 S1A E1 距离和 Pomeranz CVPR 2011 求解器评估 JPLEG",
+        "Evaluate JPLEG with the E1 compatibility distance and Pomeranz CVPR 2011 solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPLEG_CONFIGS.keys(), help="要评估的 JPLEG 数据集")
-    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="要评估的数据划分")
-    parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset 数据集根目录")
-    parser.add_argument("--checkpoint", default=None, type=Path, help="精确 checkpoint 路径；设置后优先级最高")
-    parser.add_argument("--run-name", default=DEFAULT_RUN_NAME, help="logs/s1a_train_jpleg/<dataset> 下的实验文件夹名")
-    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="直接指定包含 checkpoints 的实验目录")
-    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="要读取的 checkpoint 文件名")
-    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="最多评估多少张拼图；0 表示完整 split")
-    parser.add_argument("--start-index", default=0, type=int, help="从 split 中第几张拼图开始")
-    parser.add_argument("--score-batch-size", default=128, type=int, help="提取边缘 embedding 时的前向批量")
-    parser.add_argument("--postprocess", default=True, type=parse_bool, help="是否对 E1 距离矩阵执行现有 S1A 后处理")
-    parser.add_argument("--device", default="auto", help="运行设备，例如 auto、cpu、cuda:0")
-    parser.add_argument("--gpu-id", default=2, type=int, help="device=auto 时使用的 GPU 编号")
-    parser.add_argument("--progress-interval", default=25, type=int, help="每处理多少张拼图打印一次指标；0 表示关闭")
-    parser.add_argument("--verbose-solver", action="store_true", help="打印 Pomeranz 每次重启和重组轮次摘要")
-    parser.add_argument("--output-dir", default=None, type=Path, help="结果保存目录；留空时自动生成")
-    parser.add_argument("--save-visuals", default=True, type=parse_bool, help="是否保存拼图结果可视化")
-    parser.add_argument("--visual-limit", default=10, type=int, help="最多保存多少张可视化图片")
-    parser.add_argument("--save-predictions", default=True, type=parse_bool, help="是否保存 predictions.npz")
+    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPLEG_CONFIGS.keys(), help="JPLEG dataset to evaluate")
+    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="data split to evaluate")
+    parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset root")
+    parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")
+    parser.add_argument("--run-name", default=DEFAULT_RUN_NAME, help="experiment directory under logs/train_jpleg/<dataset>")
+    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="directory containing checkpoints")
+    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="checkpoint filename to load")
+    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="maximum puzzles to evaluate; 0 uses the full split")
+    parser.add_argument("--start-index", default=0, type=int, help="starting puzzle index in the split")
+    parser.add_argument("--score-batch-size", default=128, type=int, help="forward batch size for edge embeddings")
+    parser.add_argument("--postprocess", default=True, type=parse_bool, help="whether to apply the existing compatibility post-processing to E1 distances")
+    parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0")
+    parser.add_argument("--gpu-id", default=2, type=int, help="GPU index used when device=auto")
+    parser.add_argument("--progress-interval", default=25, type=int, help="print metrics every N puzzles; 0 disables output")
+    parser.add_argument("--verbose-solver", action="store_true", help="print Pomeranz restart and refinement summaries")
+    parser.add_argument("--output-dir", default=None, type=Path, help="result directory; leave empty to generate automatically")
+    parser.add_argument("--save-visuals", default=True, type=parse_bool, help="whether to save puzzle visualizations")
+    parser.add_argument("--visual-limit", default=10, type=int, help="maximum number of visualizations to save")
+    parser.add_argument("--save-predictions", default=True, type=parse_bool, help="whether to save predictions.npz")
     return add_pomeranz_arguments(parser)
 
 
@@ -84,11 +84,11 @@ def default_output_dir(checkpoint: Path, args: argparse.Namespace, split: str) -
 
 def validate_args(args: argparse.Namespace) -> None:
     if args.start_index < 0 or args.max_samples < 0:
-        raise ValueError("start-index 和 max-samples 必须非负")
+        raise ValueError("start-index and max-samples must be non-negative")
     if args.score_batch_size <= 0:
-        raise ValueError("score-batch-size 必须为正整数")
+        raise ValueError("score-batch-size must be a positive integer")
     if args.visual_limit < 0 or args.progress_interval < 0:
-        raise ValueError("visual-limit 和 progress-interval 必须非负")
+        raise ValueError("visual-limit and progress-interval must be non-negative")
     pomeranz_config_from_args(args).validate(JPLEG_CONFIGS[args.dataset].num_pieces)
 
 
@@ -130,7 +130,7 @@ def main() -> None:
         save_visuals=args.save_visuals,
         visual_limit=args.visual_limit,
         save_predictions=args.save_predictions,
-        method_name="S1A E1 + Pomeranz CVPR 2011",
+        method_name="E1 compatibility + Pomeranz CVPR 2011",
         configuration={
             "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
             "postprocess": args.postprocess,

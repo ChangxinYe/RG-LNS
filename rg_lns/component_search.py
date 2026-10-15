@@ -1,6 +1,6 @@
 """
 @file: single_component_e1.py
-@description: 我们的单组件 E1 迭代重组算法；适用于任意 Type-1 方形拼图数据集。
+@description: Single-component E1 iterative reassembly algorithm for arbitrary Type-1 square jigsaw datasets.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.1

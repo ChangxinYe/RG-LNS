@@ -1,7 +1,7 @@
 """
 @file: metric_gap_data.py
-@description: GAP-3/GAP-5 的 HDF5 懒加载、RGBA piece 读取与 S1A 同图困难三元组采样。
-              数据标签保持官方 piece-to-position 语义，训练可随机重排，验证采样固定可复现。
+@description: Lazy HDF5 loading, RGBA piece reading, and same-puzzle hard-triplet sampling for GAP-3/GAP-5.
+              Labels retain the official piece-to-position semantics; training may randomize piece order, while validation sampling is deterministic and reproducible.
 @author: Changxin Ye
 @created: 2026-07-27
 @version: 1.2
@@ -26,8 +26,8 @@ from compatibility.transforms import piece_to_tensor
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 FAST_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
-# S1A GAP 实验只读取重新打包后的连续、无压缩 HDF5。
-# 不回退到原始压缩数据，避免服务器漏解压 GAP_fast 时静默使用慢数据。
+# GAP experiments read only the repacked contiguous, uncompressed HDF5 data.
+# Do not fall back to the original compressed data, so a missing GAP_fast extraction cannot silently use the slower data.
 DEFAULT_GAP_DATA_ROOT = FAST_GAP_DATA_ROOT
 
 
@@ -109,7 +109,7 @@ class GAPPuzzleDataset(Dataset):
             if not path.is_file():
                 raise FileNotFoundError(
                     f"Required GAP_fast file not found: {path}. "
-                    "Extract or generate datasets/GAP_fast before running S1A GAP experiments; "
+                    "Extract or generate datasets/GAP_fast before running GAP experiments; "
                     "no fallback dataset is enabled."
                 )
 
@@ -120,7 +120,7 @@ class GAPPuzzleDataset(Dataset):
             puzzle_dataset = puzzle_file["puzzles"]
             if puzzle_dataset.chunks is not None or puzzle_dataset.compression is not None:
                 raise ValueError(
-                    f"S1A GAP requires contiguous, uncompressed GAP_fast puzzles, but {self.puzzles_path} "
+                    f"GAP requires contiguous, uncompressed GAP_fast puzzles, but {self.puzzles_path} "
                     f"uses chunks={puzzle_dataset.chunks}, compression={puzzle_dataset.compression!r}. "
                     "Run datasets/GAP_fast/repack_gap_hdf5.py and use its output directory."
                 )

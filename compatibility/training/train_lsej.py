@@ -1,6 +1,6 @@
 """
-@file: s1a_train_lsej.py
-@description: 基于 handwritten ViT 和采样式同图候选的 ImageNet-LSEJ 度量学习训练脚本。
+@file: train_lsej.py
+@description: ImageNet-LSEJ metric-learning training script using a handwritten ViT and sampled same-puzzle candidates.
 @author: Changxin Ye
 @created: 2026-07-17
 @version: 1.4
@@ -156,118 +156,118 @@ def parse_bool(value: str | bool) -> bool:
         return True
     if value in {"false", "f", "0", "no", "n"}:
         return False
-    raise argparse.ArgumentTypeError("请输入 True 或 False")
+    raise argparse.ArgumentTypeError("please enter True or False")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "在 ImageNet-LSEJ 上训练 s1a puzzle-level 度量学习模型",
+        "Train the puzzle-level E1 compatibility model on ImageNet-LSEJ",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default="grid10_erode2", choices=OFFICIAL_TASKS, help="官方 LSEJ 任务名称")
-    parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ 数据集根目录")
+    parser.add_argument("--task", default="grid10_erode2", choices=OFFICIAL_TASKS, help="official LSEJ task name")
+    parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")
     parser.add_argument(
         "--output-dir",
         default=None,
         type=Path,
-        help="训练日志和 checkpoint 根目录；留空时根据 loss-type 选择独立目录",
+        help="training-log and checkpoint root; leave empty to select a separate directory by loss type",
     )
-    parser.add_argument("--run-name", default="", help="本次实验名称；留空时根据配置和时间自动生成")
+    parser.add_argument("--run-name", default="", help="experiment name; leave empty to generate it from the configuration and time")
 
-    parser.add_argument("--backbone", default="vit-t", type=str, help="ViT 主干，可选 vit-t、vit-s、vit-b")
+    parser.add_argument("--backbone", default="vit-t", type=str, help="ViT backbone: vit-t, vit-s, or vit-b")
     parser.add_argument(
         "--pretrained-backbone",
         "--pretrained_backbone",
         default=True,
         type=parse_bool,
-        help="是否加载本地 ImageNet 预训练 ViT 权重；开启时 input-size 必须为 224",
+        help="whether to load local ImageNet-pretrained ViT weights; input-size must be 224 when enabled",
     )
     parser.add_argument(
         "--pretrained-weights-path",
         "--pretrained_weights_path",
         default=None,
         type=Path,
-        help="预训练权重路径；留空时使用 models 目录中的默认权重",
+        help="pretrained-weight path; leave empty to use the default weight in the models directory",
     )
-    parser.add_argument("--input-size", "--input_size", default=224, type=int, help="送入 ViT 的正方形 piece 尺寸，必须能被 16 整除")
-    parser.add_argument("--embedding-dim", "--embedding_dim", default=128, type=int, help="单位超球面 embedding 的维度")
+    parser.add_argument("--input-size", "--input_size", default=224, type=int, help="square piece size fed to ViT; must be divisible by 16")
+    parser.add_argument("--embedding-dim", "--embedding_dim", default=128, type=int, help="unit-hypersphere embedding dimension")
     parser.add_argument(
         "--normalization",
         default="vit",
         choices=["zero_one", "vit", "imagenet", "fragment"],
-        help="piece resize 后采用的像素归一化方式",
+        help="pixel normalization applied after piece resizing",
     )
     parser.add_argument(
         "--score-metric",
         default=None,
         choices=["cosine", "euclidean"],
-        help="checkpoint 在拼图兼容性评分阶段使用的距离类型；留空时 InfoNCE 用 cosine，triplet 用 euclidean",
+        help="distance used by the checkpoint during jigsaw compatibility scoring; when empty, InfoNCE uses cosine and triplet uses euclidean",
     )
 
     parser.add_argument(
         "--loss-type",
         default=DEFAULT_LOSS_TYPE,
         choices=LOSS_TYPES,
-        help="训练目标；支持 hard、semi-hard、随机、距离加权 triplet 和 InfoNCE",
+        help="training objective: hard, semi-hard, random, distance-weighted triplet, or InfoNCE",
     )
-    parser.add_argument("--temperature", default=DEFAULT_TEMPERATURE, type=float, help="InfoNCE cosine logits 的温度参数")
-    parser.add_argument("--triplets-per-puzzle", default=4, type=int, help="每张训练 puzzle 一次采样的 anchor-positive 关系数量")
-    parser.add_argument("--val-triplets-per-puzzle", default=2, type=int, help="每张验证 puzzle 采用的确定性关系数量")
+    parser.add_argument("--temperature", default=DEFAULT_TEMPERATURE, type=float, help="temperature for InfoNCE cosine logits")
+    parser.add_argument("--triplets-per-puzzle", default=4, type=int, help="anchor-positive relations sampled per training puzzle")
+    parser.add_argument("--val-triplets-per-puzzle", default=2, type=int, help="deterministic relations used per validation puzzle")
     parser.add_argument(
         "--negatives-per-anchor",
         default=DEFAULT_NEGATIVES_PER_ANCHOR,
         type=int,
-        help="每个 anchor 无放回采样的同图错误候选数；0 表示使用该 puzzle 的全部合法负样本",
+        help="same-puzzle incorrect candidates sampled without replacement per anchor; 0 uses all legal negatives",
     )
-    parser.add_argument("--permute-pieces", default=True, type=parse_bool, help="训练时是否在官方固定打乱基础上再次随机重排全部 pieces")
-    parser.add_argument("--margin", default=0.2, type=float, help="Triplet loss 的间隔 margin")
+    parser.add_argument("--permute-pieces", default=True, type=parse_bool, help="whether to randomly permute all pieces again during training")
+    parser.add_argument("--margin", default=0.2, type=float, help="triplet-loss margin")
     parser.add_argument(
         "--loss-distance",
         default="euclidean",
         choices=["euclidean", "cosine"],
-        help="Triplet loss 内部采用的距离类型",
+        help="distance used inside triplet loss",
     )
     parser.add_argument(
         "--distance-weighted-cutoff",
         default=DEFAULT_DISTANCE_WEIGHTED_CUTOFF,
         type=float,
-        help="距离加权采样的最小欧氏距离截断；更近的负样本共享该距离的权重以抑制高方差",
+        help="minimum Euclidean-distance cutoff for distance-weighted sampling; closer negatives share this weight to reduce variance",
     )
     parser.add_argument(
         "--distance-weighted-nonzero-cutoff",
         default=DEFAULT_DISTANCE_WEIGHTED_NONZERO_CUTOFF,
         type=float,
-        help="距离加权采样允许的最大负样本距离；默认沿用论文官方实现的 1.4",
+        help="maximum negative distance allowed by distance-weighted sampling; defaults to the paper's official 1.4",
     )
 
-    parser.add_argument("--epochs", default=150, type=int, help="最多训练 epoch 数")
-    parser.add_argument("--steps-per-epoch", default=0, type=int, help="每个 epoch 最多更新多少步；设为 0 表示遍历完整训练集")
+    parser.add_argument("--epochs", default=150, type=int, help="maximum number of training epochs")
+    parser.add_argument("--steps-per-epoch", default=0, type=int, help="maximum updates per epoch; 0 iterates over the full training set")
     parser.add_argument(
         "--batch-size",
         default=DEFAULT_BATCH_SIZE,
         type=int,
-        help="每个 batch 的 puzzle 数，不是 triplet 数；每张 puzzle 会产生 triplets-per-puzzle 个 triplet",
+        help="puzzles per batch, not triplets; each puzzle produces triplets-per-puzzle triplets",
     )
     parser.add_argument(
         "--lr",
         default=None,
         type=float,
-        help="旧版统一学习率覆盖项；一般不要使用，建议分别设置 backbone-lr 和 head-lr",
+        help="legacy shared learning-rate override; generally avoid it and set backbone-lr and head-lr separately",
     )
-    parser.add_argument("--backbone-lr", default=1e-5, type=float, help="预训练 ViT 主干的目标学习率")
-    parser.add_argument("--head-lr", default=1e-4, type=float, help="embedding 投影头的目标学习率")
-    parser.add_argument("--warmup-epochs", default=5, type=int, help="学习率从低值线性升到目标值的 epoch 数")
-    parser.add_argument("--lr-factor", default=0.5, type=float, help="验证 loss 停滞时学习率的衰减倍率")
-    parser.add_argument("--lr-patience", default=3, type=int, help="验证 loss 连续多少轮未改善后衰减学习率")
-    parser.add_argument("--grad-clip-norm", default=1.0, type=float, help="梯度范数裁剪阈值；设为 0 表示关闭")
-    parser.add_argument("--num-workers", default=4, type=int, help="DataLoader 并行读取进程数")
-    parser.add_argument("--max-train-samples", default=0, type=int, help="最多使用多少张训练 puzzle；0 表示不限制")
-    parser.add_argument("--max-val-samples", default=250, type=int, help="最多使用多少张验证 puzzle；0 表示完整验证集")
-    parser.add_argument("--device", default="auto", help="运行设备，例如 auto、cpu、cuda:0；auto 会优先使用 GPU")
-    parser.add_argument("--gpu-id", default=0, type=int, help="device=auto 时使用的 GPU 编号")
-    parser.add_argument("--seed", default=42, type=int, help="Python、NumPy 和 PyTorch 随机种子")
-    parser.add_argument("--resume", default="", type=str, help="继续训练的 checkpoint 路径；留空表示新实验")
-    parser.add_argument("--print-freq", default=25, type=int, help="每隔多少个训练 step 输出一次中间统计；0 表示不输出")
+    parser.add_argument("--backbone-lr", default=1e-5, type=float, help="target learning rate for the pretrained ViT backbone")
+    parser.add_argument("--head-lr", default=1e-4, type=float, help="target learning rate for the embedding projection head")
+    parser.add_argument("--warmup-epochs", default=5, type=int, help="epochs for linearly increasing the learning rate to its target")
+    parser.add_argument("--lr-factor", default=0.5, type=float, help="learning-rate decay factor when validation loss plateaus")
+    parser.add_argument("--lr-patience", default=3, type=int, help="validation epochs without improvement before decaying the learning rate")
+    parser.add_argument("--grad-clip-norm", default=1.0, type=float, help="gradient-norm clipping threshold; 0 disables clipping")
+    parser.add_argument("--num-workers", default=4, type=int, help="number of parallel DataLoader workers")
+    parser.add_argument("--max-train-samples", default=0, type=int, help="maximum training puzzles; 0 means unlimited")
+    parser.add_argument("--max-val-samples", default=250, type=int, help="maximum validation puzzles; 0 uses the full validation set")
+    parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0; auto prefers a GPU")
+    parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
+    parser.add_argument("--seed", default=42, type=int, help="Python, NumPy, and PyTorch random seed")
+    parser.add_argument("--resume", default="", type=str, help="checkpoint path for resuming training; empty starts a new experiment")
+    parser.add_argument("--print-freq", default=25, type=int, help="print intermediate statistics every N training steps; 0 disables output")
     return parser.parse_args()
 
 

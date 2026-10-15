@@ -1,7 +1,7 @@
 """
-@file: s1a4_eval_jpleg_lp_profiled_large_neighborhood_reassembly.py
-@description: 在 JPwLEG 上使用 BMVC 2016 Type-1 纯 Python LP 生成初始布局，
-              再执行 S1A4 基于多路径回填的 profiled large-neighborhood reassembly。
+@file: evaluate_jpleg_linear_programming_rg_lns.py
+@description: Generate an initial JPwLEG layout with the pure-Python BMVC 2016 Type-1 LP solver,
+              then run profiled RG-LNS with multi-path completion.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -37,7 +37,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "在 JPwLEG 上以 BMVC 2016 Type-1 LP 作为 S1A4 初始求解器"
+    parser.description = "Use the BMVC 2016 Type-1 LP solver as the profiled RG-LNS initial solver on JPwLEG"
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()

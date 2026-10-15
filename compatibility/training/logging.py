@@ -1,6 +1,6 @@
 """
 @file: metric_logger.py
-@description: Puzzle-level 度量学习拼图 baseline 的日志、CSV、曲线和 summary 保存工具。
+@description: Logging, CSV, curve, and summary-output utilities for the puzzle-level metric-learning jigsaw baseline.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.6

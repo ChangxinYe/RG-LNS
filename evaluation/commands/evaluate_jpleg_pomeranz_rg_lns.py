@@ -1,7 +1,7 @@
 """
-@file: s1a4_eval_jpleg_pomeranz_profiled_large_neighborhood_reassembly.py
-@description: 在 JPwLEG 上使用 S1A E1 与 Pomeranz CVPR 2011 生成初始布局，
-              再执行 S1A4 基于多路径回填的 profiled large-neighborhood reassembly。
+@file: evaluate_jpleg_pomeranz_rg_lns.py
+@description: Generate an initial JPwLEG layout with E1 compatibility and Pomeranz CVPR 2011,
+              then run profiled RG-LNS with multi-path completion.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -44,7 +44,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "在 JPwLEG 上以 S1A E1 + Pomeranz CVPR 2011 完整解作为 S1A4 初始布局"
+        "Use the complete E1 compatibility + Pomeranz CVPR 2011 solution as the profiled initial layout on JPwLEG"
     )
     add_pomeranz_arguments(parser)
     return parser.parse_args()

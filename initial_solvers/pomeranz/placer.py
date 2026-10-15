@@ -1,6 +1,6 @@
 """
 @file: placer.py
-@description: 使用 S1A E1 距离实现 Pomeranz 的浮动画布贪心 Placer。
+@description: Floating-canvas greedy Pomeranz Placer using the E1 compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -112,22 +112,22 @@ def _select_piece_and_slot(
 def _positions_to_prediction(occupied: Mapping[tuple[int, int], int], grid: int) -> np.ndarray:
     num_pieces = grid * grid
     if len(occupied) != num_pieces:
-        raise RuntimeError(f"Placer 只放置了 {len(occupied)}/{num_pieces} 个 piece")
+        raise RuntimeError(f"Placer placed only {len(occupied)}/{num_pieces} pieces")
     rows = [row for row, _ in occupied]
     columns = [column for _, column in occupied]
     min_row, max_row = min(rows), max(rows)
     min_column, max_column = min(columns), max(columns)
     if max_row - min_row + 1 != grid or max_column - min_column + 1 != grid:
-        raise RuntimeError("完整布局的包围盒不是目标网格大小")
+        raise RuntimeError("the complete layout bounding box does not match the target grid size")
 
     prediction = np.full(num_pieces, -1, dtype=np.int32)
     for (row, column), piece in occupied.items():
         position = (row - min_row) * grid + (column - min_column)
         if prediction[int(piece)] >= 0:
-            raise RuntimeError("同一个 piece 被重复放置")
+            raise RuntimeError("the same piece was placed more than once")
         prediction[int(piece)] = int(position)
     if not np.array_equal(np.sort(prediction), np.arange(num_pieces)):
-        raise RuntimeError("Placer 输出不是完整排列")
+        raise RuntimeError("Placer output is not a complete permutation")
     return prediction
 
 
@@ -138,28 +138,28 @@ def greedy_place(
     grid: int,
     seed_positions: Mapping[int, tuple[int, int]],
 ) -> np.ndarray:
-    """从单 piece 或刚性组件种子开始，在浮动画布上放置全部剩余 piece。"""
+    """Place all remaining pieces on a floating canvas starting from a single-piece or rigid-component seed."""
 
     num_pieces = grid * grid
     if not seed_positions:
-        raise ValueError("seed_positions 不能为空")
+        raise ValueError("seed_positions cannot be empty")
     occupied: dict[tuple[int, int], int] = {}
     for piece, coordinate in seed_positions.items():
         piece = int(piece)
         coordinate = (int(coordinate[0]), int(coordinate[1]))
         if not 0 <= piece < num_pieces:
-            raise ValueError(f"种子 piece 编号越界：{piece}")
+            raise ValueError(f"seed piece id out of range: {piece}")
         if coordinate in occupied:
-            raise ValueError("种子组件中存在坐标冲突")
+            raise ValueError("seed component contains a coordinate collision")
         occupied[coordinate] = piece
     if len(set(occupied.values())) != len(occupied):
-        raise ValueError("种子组件中存在重复 piece")
+        raise ValueError("seed component contains duplicate pieces")
 
     remaining = set(range(num_pieces)) - set(occupied.values())
     while remaining:
         candidates = _candidate_slots(occupied, grid)
         if not candidates:
-            raise RuntimeError("Pomeranz Placer 找不到可行空位")
+            raise RuntimeError("Pomeranz Placer could not find a feasible empty slot")
         piece, row, column = _select_piece_and_slot(
             candidates,
             remaining,

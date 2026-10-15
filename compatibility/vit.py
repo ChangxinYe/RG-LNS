@@ -1,6 +1,6 @@
 """
 @file: vit_handwritten.py
-@description: 手写版 Vision Transformer 模型定义，用于分类和特征提取。
+@description: Handwritten Vision Transformer definition for classification and feature extraction.
 @author: Changxin Ye
 @created: 2026-06-17
 @version: 1.0
@@ -298,23 +298,23 @@ def vit_base(num_classes: int = 1000, image_size: int = 224, **kwargs) -> Vision
 
 
 if __name__ == "__main__":
-    #####################固定随机种子#################################
+    ##################### Reproducibility seed #############################
     import os
     import random
     import numpy as np
     seed = 1
     print('Using random seed : ', seed)
-    os.environ["PYTHONHASHSEED"] = str(seed)  # 新增：固定 Python 哈希顺序（会影响 set/dict 转 list 的顺序）
-    os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"  # 强制 cuBLAS 使用“可复现/确定性”的工作区策略
+    os.environ["PYTHONHASHSEED"] = str(seed)  # Fix Python hash ordering (affects set/dict-to-list ordering).
+    os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"  # Force cuBLAS to use a reproducible/deterministic workspace strategy.
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)  # set random seed for all gpus
     if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)  # 设置 CUDA 随机数种子
-        torch.cuda.manual_seed_all(seed)  # 设置所有 GPU 的随机数种子
-        torch.backends.cudnn.deterministic = True  # 确保每次运行的计算结果一致
-        torch.backends.cudnn.benchmark = False  # 禁用动态优化
+        torch.cuda.manual_seed(seed)  # Set the CUDA random seed.
+        torch.cuda.manual_seed_all(seed)  # Set the random seed for all GPUs.
+        torch.backends.cudnn.deterministic = True  # Ensure deterministic results across runs.
+        torch.backends.cudnn.benchmark = False  # Disable dynamic benchmarking.
     ######################################################
 
     inputs = torch.randn(2, 3, 224, 224)

@@ -1,6 +1,6 @@
 """
-@file: s1a_eval_lsej.py
-@description: 加载 s1a checkpoint 并使用 Gallagher 求解器评估官方 ImageNet-LSEJ 任务的脚本。
+@file: evaluate_lsej_gallagher.py
+@description: Load a compatibility checkpoint and evaluate official ImageNet-LSEJ tasks with Gallagher.
 @author: Changxin Ye
 @created: 2026-07-17
 @version: 1.3
@@ -54,7 +54,7 @@ if DEFAULT_LOSS_TYPE == "hard_triplet":
     elif DEFAULT_TASK == "grid10_erode8":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-17-06"
 elif DEFAULT_LOSS_TYPE == "semi_hard_triplet":
-    # 留空时自动选择当前 task 最新的 semi-hard 实验；训练完成后也可改成精确 run name。
+    # Empty selects the latest semi-hard experiment for the current task; set an exact run name after training.
     DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_semi_hard_triplet_d128_s224_kall_2026-07-18-15-51-36"
 elif DEFAULT_LOSS_TYPE == "random_triplet":
     DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_random_triplet_d128_s224_kall_2026-07-18-22-33-41"
@@ -76,38 +76,38 @@ def parse_bool(value: str | bool) -> bool:
         return True
     if value in {"false", "f", "0", "no", "n"}:
         return False
-    raise argparse.ArgumentTypeError("请输入 True 或 False")
+    raise argparse.ArgumentTypeError("please enter True or False")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "在 ImageNet-LSEJ 上使用 Gallagher 求解器评估 s1a 度量兼容性",
+        "Evaluate compatibility scores on ImageNet-LSEJ with Gallagher",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="要评估的官方 LSEJ 任务")
-    parser.add_argument("--loss-type", default=DEFAULT_LOSS_TYPE, choices=LOSS_TYPES, help="选择默认 checkpoint 和结果目录对应的训练目标")
-    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=["train", "val", "test"], help="要评估的数据划分")
-    parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ 数据集根目录")
-    parser.add_argument("--checkpoint", default=None, type=Path, help="精确 checkpoint 路径；设置后优先级最高")
+    parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
+    parser.add_argument("--loss-type", default=DEFAULT_LOSS_TYPE, choices=LOSS_TYPES, help="training objective for the default checkpoint and result directory")
+    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=["train", "val", "test"], help="data split to evaluate")
+    parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")
+    parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")
     parser.add_argument(
         "--run-name",
         default=DEFAULT_RUN_NAME,
-        help="task 日志目录下的实验文件夹名；留空时只在当前 task 中选择最新实验",
+        help="experiment directory under the task log root; empty selects the latest run for the current task",
     )
-    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="直接指定包含 checkpoints 子目录的实验目录")
-    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="从实验 checkpoints 目录中读取的文件名")
-    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="最多评估多少张 puzzle；0 表示完整 split")
-    parser.add_argument("--start-index", default=0, type=int, help="从 split 中第几张 puzzle 开始评估")
-    parser.add_argument("--score-batch-size", default=128, type=int, help="分批提取边缘 embedding 时每个前向批次的图片数")
-    parser.add_argument("--postprocess", default=True, type=parse_bool, help="是否对兼容性矩阵做逐行归一化和双向对称化")
-    parser.add_argument("--device", default="auto", help="运行设备，例如 auto、cpu、cuda:0；auto 会优先使用 GPU")
-    parser.add_argument("--gpu-id", default=0, type=int, help="device=auto 时使用的 GPU 编号")
-    parser.add_argument("--progress-interval", default=1, type=int, help="每评估多少张 puzzle 打印一次 PA/AA/SRA；0 表示关闭")
-    parser.add_argument("--verbose-solver", action="store_true", help="显示 Gallagher 求解器内部输出；默认静默")
-    parser.add_argument("--output-dir", default=None, type=Path, help="评估结果目录；留空时将实验、checkpoint、task 和 split 合并为单个文件夹名")
-    parser.add_argument("--save-visuals", default=True, type=parse_bool, help="是否保存带正确/错误边框的拼图可视化")
-    parser.add_argument("--visual-limit", default=10, type=int, help="最多保存多少张可视化图片")
-    parser.add_argument("--save-predictions", default=True, type=parse_bool, help="是否保存 predictions.npz 供后续重算指标")
+    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="experiment directory containing the checkpoints subdirectory")
+    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="filename loaded from the experiment checkpoints directory")
+    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="maximum puzzles; 0 uses the full split")
+    parser.add_argument("--start-index", default=0, type=int, help="starting puzzle index in the split")
+    parser.add_argument("--score-batch-size", default=128, type=int, help="images per forward batch when extracting edge embeddings")
+    parser.add_argument("--postprocess", default=True, type=parse_bool, help="whether to normalize rows and symmetrize compatibility scores")
+    parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0; auto prefers a GPU")
+    parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
+    parser.add_argument("--progress-interval", default=1, type=int, help="print PA/AA/SRA every N puzzles; 0 disables output")
+    parser.add_argument("--verbose-solver", action="store_true", help="show Gallagher solver output; silent by default")
+    parser.add_argument("--output-dir", default=None, type=Path, help="evaluation-result directory; empty combines run, checkpoint, task, and split")
+    parser.add_argument("--save-visuals", default=True, type=parse_bool, help="whether to save visualizations with correct/incorrect borders")
+    parser.add_argument("--visual-limit", default=10, type=int, help="maximum number of visualizations to save")
+    parser.add_argument("--save-predictions", default=True, type=parse_bool, help="whether to save predictions.npz for later metric recomputation")
     return parser.parse_args()
 
 
@@ -145,7 +145,7 @@ def resolve_default_checkpoint(
     if candidates:
         return candidates[0]
     raise FileNotFoundError(
-        f"No s1a LSEJ {loss_type} checkpoint found for task {task}. Searched under {search_roots}. "
+        f"No compatibility LSEJ {loss_type} checkpoint found for task {task}. Searched under {search_roots}. "
         "Train this task first or pass --checkpoint explicitly."
     )
 

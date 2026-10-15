@@ -1,9 +1,9 @@
 """
-@file: s1a_train_gap.py
-@description: 在 GAP-3/GAP-5 不规则 RGBA 拼图上训练 S1A piece-to-piece 度量模型。
-              模型保留预训练 handwritten ViT、右边缘规范化、同图困难负样本和 Hard Triplet；
-              RGBA 先经过可学习的 1×1 通道适配器。训练仅使用 train/val，固定跑满 epoch，
-              test 仅由独立评估脚本使用。
+@file: train_gap.py
+@description: Train the E1 compatibility model on irregular RGBA GAP-3/GAP-5 puzzles.
+              The model retains the pretrained handwritten ViT, right-edge normalization, same-puzzle hard negatives, and Hard Triplet;
+              RGBA inputs first pass through a learnable 1x1 channel adapter. Training uses only train/val and runs for all epochs;
+              test is used only by independent evaluation scripts.
 @author: Changxin Ye
 @created: 2026-07-27
 @version: 1.0
@@ -75,12 +75,12 @@ def parse_bool(value: str | bool) -> bool:
         return True
     if value in {"false", "f", "0", "no", "n"}:
         return False
-    raise argparse.ArgumentTypeError("请输入 True 或 False")
+    raise argparse.ArgumentTypeError("please enter True or False")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Train S1A hard-triplet metric learning on GAP-3/GAP-5",
+        "Train E1 compatibility with hard-triplet metric learning on GAP-3/GAP-5",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=GAP_CONFIGS.keys())

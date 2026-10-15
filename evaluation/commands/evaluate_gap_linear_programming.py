@@ -1,6 +1,6 @@
 """
-@file: s1a_eval_gap_lp.py
-@description: 使用统一 S1A E1 距离和 BMVC 2016 Type-1 纯 Python LP 求解器评估 GAP。
+@file: evaluate_gap_linear_programming.py
+@description: Evaluate GAP with the unified E1 compatibility distance and the pure-Python BMVC 2016 Type-1 LP solver.
 @author: Changxin Ye
 @created: 2026-08-21
 @version: 1.0
@@ -46,7 +46,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Evaluate S1A on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP"
+    parser.description = "Evaluate the E1 compatibility baseline on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP"
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,
@@ -74,7 +74,7 @@ def main() -> None:
         args,
         solver=solver,
         solver_name="faithful Python LP",
-        method_name="S1A E1 + faithful Python LP",
+        method_name="E1 compatibility + faithful Python LP",
         solver_configuration=solver_config,
         output_root=DEFAULT_OUTPUT_ROOT,
         output_suffix=f"lpfaithful_k{config.top_k}_r{config.refinement_iterations}",

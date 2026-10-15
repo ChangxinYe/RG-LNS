@@ -1,6 +1,6 @@
 """
 @file: best_buddies.py
-@description: 从 S1A E1 方向距离构造 Pomeranz Best-Buddies 关系及无真值布局评分。
+@description: Construct Pomeranz Best-Buddies relations and ground-truth-free layout scores from directional E1 compatibility distances.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -17,19 +17,19 @@ def validate_scores(scores: np.ndarray, num_pieces: int) -> np.ndarray:
     scores = np.asarray(scores, dtype=np.float64)
     expected = (num_pieces, num_pieces, 4)
     if scores.shape != expected:
-        raise ValueError(f"E1 分数形状应为 {expected}，实际为 {scores.shape}")
+        raise ValueError(f"E1 scores must have shape {expected}, got {scores.shape}")
     if np.any(np.isnan(scores)) or np.any(np.isneginf(scores)):
-        raise ValueError("E1 分数中不能包含 NaN 或负无穷值")
+        raise ValueError("E1 scores cannot contain NaN or negative infinity")
     candidates = scores.copy()
     piece_ids = np.arange(num_pieces)
     candidates[piece_ids, piece_ids, :] = np.inf
     if np.any(~np.any(np.isfinite(candidates), axis=1)):
-        raise ValueError("至少有一个 piece/方向不存在有限的非自身候选")
+        raise ValueError("at least one piece/direction has no finite non-self candidate")
     return scores
 
 
 def compute_best_neighbors(scores: np.ndarray) -> np.ndarray:
-    """返回 ``best_neighbors[piece, direction]``，距离越小排名越靠前。"""
+    """Return ``best_neighbors[piece, direction]`` with smaller distances ranked first."""
 
     num_pieces = int(np.asarray(scores).shape[0])
     scores = validate_scores(scores, num_pieces).copy()
@@ -39,14 +39,14 @@ def compute_best_neighbors(scores: np.ndarray) -> np.ndarray:
 
 
 def compute_mutual_best_buddies(best_neighbors: np.ndarray) -> np.ndarray:
-    """返回有方向的 mutual Top-1 布尔矩阵，形状为 ``[N, 4]``。"""
+    """Return the directed mutual Top-1 boolean matrix with shape ``[N, 4]``."""
 
     best_neighbors = np.asarray(best_neighbors, dtype=np.int64)
     if best_neighbors.ndim != 2 or best_neighbors.shape[1] != 4:
-        raise ValueError("best_neighbors 应为 [N, 4]")
+        raise ValueError("best_neighbors must have shape [N, 4]")
     num_pieces = best_neighbors.shape[0]
     if np.any(best_neighbors < 0) or np.any(best_neighbors >= num_pieces):
-        raise ValueError("best_neighbors 中存在越界 piece 编号")
+        raise ValueError("best_neighbors contains an out-of-range piece id")
 
     piece_ids = np.arange(num_pieces, dtype=np.int64)[:, None]
     directions = np.arange(4, dtype=np.int64)[None, :]
@@ -59,9 +59,9 @@ def prediction_to_layout(prediction: np.ndarray, grid: int) -> np.ndarray:
     prediction = np.asarray(prediction, dtype=np.int64)
     num_pieces = grid * grid
     if prediction.shape != (num_pieces,):
-        raise ValueError(f"prediction 应为 ({num_pieces},)，实际为 {prediction.shape}")
+        raise ValueError(f"prediction must have shape ({num_pieces},), got {prediction.shape}")
     if not np.array_equal(np.sort(prediction), np.arange(num_pieces)):
-        raise ValueError("prediction 必须是完整的 piece-to-position 排列")
+        raise ValueError("prediction must be a complete piece-to-position permutation")
     layout = np.empty((grid, grid), dtype=np.int32)
     for piece, position in enumerate(prediction):
         layout.flat[int(position)] = int(piece)
@@ -74,7 +74,7 @@ def best_buddies_layout_score(
     mutual_best_buddies: np.ndarray,
     grid: int,
 ) -> dict[str, float | int]:
-    """仅统计当前布局真实相邻边上的 Best-Buddies 比例。"""
+    """Count the Best-Buddies ratio only on true adjacent edges in the current layout."""
 
     layout = prediction_to_layout(prediction, grid)
     best_neighbors = np.asarray(best_neighbors, dtype=np.int64)

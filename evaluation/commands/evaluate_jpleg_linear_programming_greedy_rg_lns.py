@@ -1,6 +1,6 @@
 """
-@file: s1a3_eval_jpleg_lp_iterative_component_reassembly.py
-@description: 在 JPLEG 上使用 BMVC 2016 Type-1 纯 Python LP 生成初始布局，再执行我们的单组件 E1 迭代重组。
+@file: evaluate_jpleg_linear_programming_greedy_rg_lns.py
+@description: Generate an initial JPLEG layout with the pure-Python BMVC 2016 Type-1 LP solver, then run our single-component E1 iterative reassembly.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.0
@@ -30,7 +30,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "在 JPLEG 上以 BMVC 2016 Type-1 纯 Python LP 作为 S1A3 初始求解器"
+    parser.description = "Use the pure-Python BMVC 2016 Type-1 LP solver as the greedy initial solver on JPLEG"
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()

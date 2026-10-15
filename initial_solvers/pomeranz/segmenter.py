@@ -1,6 +1,6 @@
 """
 @file: segmenter.py
-@description: 根据当前布局中的 Best-Buddies 邻接边提取 Pomeranz 高置信组件。
+@description: Extract high-confidence Pomeranz components from Best-Buddies adjacency edges in the current layout.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -36,7 +36,7 @@ def best_buddy_components(
     *,
     rng: np.random.Generator | None = None,
 ) -> list[np.ndarray]:
-    """使用 Best-Buddies 谓词执行论文描述的随机种子 region growing。"""
+    """Perform the random-seed region growing described in the paper using the Best-Buddies predicate."""
 
     layout = prediction_to_layout(prediction, grid)
     num_pieces = grid * grid

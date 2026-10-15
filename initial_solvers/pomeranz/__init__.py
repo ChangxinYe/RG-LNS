@@ -1,6 +1,6 @@
 """
 @file: __init__.py
-@description: 使用统一 S1A E1 距离的 Pomeranz CVPR 2011 纯 Python 求解器入口。
+@description: Entry point for the pure-Python Pomeranz CVPR 2011 solver using the unified E1 compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0

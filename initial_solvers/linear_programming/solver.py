@@ -1,6 +1,6 @@
 """
 @file: solver.py
-@description: 逐步复现 PuzzleMain_test.m 的 Type-1 LP、多轮刚性组件优化和 Gallagher 后处理主流程。
+@description: Step-by-step reproduction of the Type-1 LP, multi-round rigid-component optimization, and Gallagher post-processing pipeline from PuzzleMain_test.m.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -43,19 +43,19 @@ def solve_with_lp(
     config: LPSolverConfig | None = None,
     return_diagnostics: bool = False,
 ):
-    """不依赖 MATLAB，执行作者 Type-1 算法的纯 Python 等价流程。"""
+    """Run the pure-Python equivalent of the author's Type-1 algorithm without MATLAB."""
 
-    del pieces  # Type-1 布局只使用兼容分数；图像仅用于 MATLAB 的中间显示。
+    del pieces  # Type-1 layouts use only compatibility scores; images were used only for MATLAB intermediate displays.
     config = config or LPSolverConfig()
     grid = int(grid)
     num_pieces = grid * grid
     scores = np.asarray(scores, dtype=np.float64)
     if scores.shape != (num_pieces, num_pieces, 4):
         raise ValueError(
-            f"兼容分数应为 ({num_pieces}, {num_pieces}, 4)，实际为 {scores.shape}"
+            f"compatibility scores must have shape ({num_pieces}, {num_pieces}, 4), got {scores.shape}"
         )
     if np.isnan(scores).any():
-        raise ValueError("兼容分数中不能含 NaN")
+        raise ValueError("compatibility scores cannot contain NaN")
     config.validate(num_pieces)
 
     info = get_candidate_and_weight(
@@ -65,7 +65,7 @@ def solve_with_lp(
         config.minimum_weight,
     )
     if len(info) == 0:
-        raise RuntimeError("初始候选集合为空")
+        raise RuntimeError("initial candidate set is empty")
     fix_piece = find_best_fix_piece(info, num_pieces)
     coordinates, lp_record = solve_weighted_l1_lp(
         num_pieces,
@@ -106,7 +106,7 @@ def solve_with_lp(
             proposed = info_filter(proposed)
         blocks_info, broken_pairs = blocks_info_cut_type1(blocks_info, num_pieces)
         if broken_pairs.size:
-            raise AssertionError("Type-1 不应产生旋转复制冲突切边")
+            raise AssertionError("Type-1 should not produce conflicting edges from rotated duplicate pieces")
         if len(proposed) == 0:
             rounds.append({"round": iteration, "stop_reason": "no_candidates"})
             break
@@ -142,8 +142,8 @@ def solve_with_lp(
         )
         if verbose:
             print(
-                f"LP 第 {iteration} 轮：候选={len(proposed)}，保留={len(info)}，"
-                f"刚性组件={len(blocks_info.blocks)}，目标值={lp_record['objective']:.6g}"
+                f"LP iteration {iteration}: candidates={len(proposed)}, retained={len(info)}, "
+                f"rigid_components={len(blocks_info.blocks)}, objective={lp_record['objective']:.6g}"
             )
         if np.array_equal(previous_labels, labels):
             rounds[-1]["stop_reason"] = "labels_unchanged"
@@ -151,7 +151,7 @@ def solve_with_lp(
 
     blocks_info, broken_pairs = blocks_info_cut_type1(blocks_info, num_pieces)
     if broken_pairs.size:
-        raise AssertionError("Type-1 不应产生旋转复制冲突切边")
+        raise AssertionError("Type-1 should not produce conflicting edges from rotated duplicate pieces")
     final_block, postprocess_diagnostics = trim_and_fill(
         scores,
         blocks_info,

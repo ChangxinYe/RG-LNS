@@ -16,20 +16,20 @@ Examples
 --------
 Default 22-run validation experiment::
 
-    python s1a4_hyperparameter_sensitivity_experiment.py
+    python experiments/sensitivity.py
 
 Preview every command without starting an evaluator::
 
-    python s1a4_hyperparameter_sensitivity_experiment.py --dry-run
+    python experiments/sensitivity.py --dry-run
 
 Run all paper settings and solvers on validation and test splits::
 
-    python s1a4_hyperparameter_sensitivity_experiment.py \
+    python experiments/sensitivity.py \
         --benchmarks all --solvers all --splits val test
 
 Run the complete K x M x B Cartesian product::
 
-    python s1a4_hyperparameter_sensitivity_experiment.py \
+    python experiments/sensitivity.py \
         --sweep-mode cartesian
 """
 
@@ -63,15 +63,15 @@ DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
 DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 
 # ---------------------------------------------------------------------------
-# IDE 一键运行配置
+# One-click IDE run configuration
 #
-# 直接在 IDE 中运行本文件时修改下面这些常量即可；命令行参数或 JSON 配置
-# 文件会覆盖相应的默认值。所有序列都必须保留结尾逗号，例如单选应写成
-# ("gap5",)，而不是 "gap5" 或 ("gap5")。
+# When running this file directly in an IDE, edit the constants below; command-line arguments or JSON
+# configuration files override these defaults. Keep trailing commas in all sequences; for example,
+# a single choice should be written as ("gap5",), not "gap5" or ("gap5").
 # ---------------------------------------------------------------------------
 
-# 要评估的数据设置；可以同时填写任意多个，重复项会自动去除。
-# 精确名称：
+# Dataset settings to evaluate; any number may be specified and duplicates are removed automatically.
+# Exact names:
 #   "lsej10_e2"  = ImageNet-LSEJ-10，2-pixel erosion
 #   "lsej10_e5"  = ImageNet-LSEJ-10，5-pixel erosion
 #   "lsej10_e8"  = ImageNet-LSEJ-10，8-pixel erosion
@@ -79,79 +79,78 @@ DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 #   "gap5"       = GAP-5
 #   "jpleg3"     = JPwLEG-3
 #   "jpleg5"     = JPwLEG-5
-# 可用别名（会自动展开）：
-#   "lsej10" 或 "lsej" -> lsej10_e2、lsej10_e5、lsej10_e8
-#   "gap"                -> gap3、gap5
-#   "jpleg"              -> jpleg3、jpleg5
-#   "all"                -> 上述全部 7 个精确设置
+# Available aliases (expanded automatically):
+#   "lsej10" or "lsej" -> lsej10_e2, lsej10_e5, lsej10_e8
+#   "gap"              -> gap3, gap5
+#   "jpleg"            -> jpleg3, jpleg5
+#   "all"              -> all seven exact settings above
 DEFAULT_BENCHMARKS = ("lsej10_e5", "gap5")
 
-# 初始求解器；可用值："gallagher"、"lp"、"pomeranz"、"all"。
-# "all" 会展开为前三种求解器。
+# Initial solver; valid values: "gallagher", "lp", "pomeranz", or "all".
+# "all" expands to the first three solvers.
 DEFAULT_SOLVERS = ("gallagher",)
 
-# 数据划分；可用值："val"、"test"、"all"。
-# "all" 会同时运行 val 和 test。超参数选择应以 val 为主，test 用于最终报告。
+# Data split; valid values: "val", "test", or "all".
+# "all" runs both val and test. Choose hyperparameters mainly on val and reserve test for final reporting.
 DEFAULT_SPLITS = ("val",)
 
-# 要扫描的超参数；可用值："k"、"m"、"b"、"all"。
-# 可填一个或多个；"all" 等价于 ("k", "m", "b")。
-#   K = 构造可靠邻接时使用的 mutual Top-K 排名阈值
-#   M = 保留为可靠组件所需的最小碎片数
-#   B = repair 阶段的 beam-search width
+# Hyperparameters to sweep; valid values: "k", "m", "b", or "all".
+# One or more may be specified; "all" is equivalent to ("k", "m", "b").
+#   K = mutual Top-K rank threshold used to build reliable adjacencies
+#   M = minimum number of pieces required for a reliable component
+#   B = beam-search width during repair
 DEFAULT_SWEEP_PARAMETERS = ("k", "m", "b")
 
-# 扫描方式；仅可填：
-#   "one-at-a-time" = 单因素扫描（OFAT）：每次只改变 K、M、B 中的一个；
-#                     默认取值列表共产生 11 个不重复配置。
-#   "cartesian"     = 对已选择参数取完整笛卡尔积；默认 K/M/B 列表产生
-#                     5 x 4 x 4 = 80 个配置。
-# 最终 evaluator 运行数还要乘以 数据设置数 x 求解器数 x 数据划分数。
+# Sweep mode; valid values:
+#   "one-at-a-time" = one-factor-at-a-time (OFAT): change only one of K, M, and B at a time;
+#                     the default value lists produce 11 unique configurations.
+#   "cartesian"     = full Cartesian product over selected parameters; the default K/M/B lists produce
+#                     5 x 4 x 4 = 80 configurations.
+# The final evaluator count is multiplied by the number of dataset settings, solvers, and splits.
 DEFAULT_SWEEP_MODE = "one-at-a-time"
 
-# 各超参数的候选值（必须是正整数）。某参数未包含在
-# DEFAULT_SWEEP_PARAMETERS 中时，其候选列表不会参与本次实验。
+# Candidate values for each hyperparameter (must be positive integers). If a parameter is not included in
+# DEFAULT_SWEEP_PARAMETERS, its candidate list is not used in this experiment.
 DEFAULT_K_VALUES = (1, 2, 3, 4, 5)
 DEFAULT_M_VALUES = (4, 6, 8, 10)
 DEFAULT_B_VALUES = (1, 2, 4, 8)
 
-# 扫描其他参数时保持不变的基准配置。若某参数参与扫描，其默认值必须同时
-# 出现在对应的 *_VALUES 中，以便各条敏感性曲线共享同一个基准点。
+# Baseline configuration held fixed while scanning other parameters. If a parameter is scanned, its default
+# value must also appear in the corresponding *_VALUES list so all sensitivity curves share a baseline point.
 DEFAULT_K = 3
 DEFAULT_M = 4
 DEFAULT_B = 4
 
-# 每次 evaluator 最多分析多少个样本：0 = 使用整个划分；正整数 N = 仅用
-# 前 N 个样本。小规模调试可先设为 10 或 100，正式实验应设为 0。
+# Maximum samples analyzed per evaluator: 0 = use the full split; positive N = use only the first N samples.
+# For small debugging runs, try 10 or 100; use 0 for formal experiments.
 DEFAULT_MAX_SAMPLES = 0
 
-# 运行设备；可用值："auto"、"cpu"、"cuda"、"cuda:N"（如 "cuda:1"）。
-# "auto" 会在 CUDA 可用时选择 DEFAULT_GPU_ID，否则退回 CPU；"cuda" 同样
-# 使用 DEFAULT_GPU_ID；"cuda:N" 已显式指定显卡，因此忽略 DEFAULT_GPU_ID。
+# Execution device; valid values: "auto", "cpu", "cuda", or "cuda:N" (for example, "cuda:1").
+# "auto" selects DEFAULT_GPU_ID when CUDA is available and otherwise falls back to CPU; "cuda" also
+# uses DEFAULT_GPU_ID; "cuda:N" explicitly selects a GPU and ignores DEFAULT_GPU_ID.
 DEFAULT_DEVICE = "auto"
 DEFAULT_GPU_ID = 0
 
-# 计算 ViT-T 方向嵌入/兼容性分数时的 batch size；必须为正整数。显存不足
-# 时减小，显存充足时可增大。它不等于 repair 阶段的 beam width B。
+# Batch size for ViT-T directional embeddings/compatibility scores; must be positive. Reduce it when memory
+# is insufficient or increase it when memory allows. It is not the beam width B used during repair.
 DEFAULT_SCORE_BATCH_SIZE = 128
 
-# 每处理多少个样本打印一次进度：0 = 不打印中间进度；正整数 N = 每 N 个
-# 样本打印一次。
+# Print progress every N samples: 0 = no intermediate progress; positive N = print every N samples.
 DEFAULT_PROGRESS_INTERVAL = 25
 
-# 当初始求解器输出不完整时，自动回填缺失碎片所用的 beam width；必须为
-# 正整数。该值只负责“初始解补全”，不是敏感性实验中的 RG-LNS 参数 B。
+# Beam width used to fill missing pieces when the initial solver output is incomplete; must be positive.
+# This value handles only initial-solution completion and is not the RG-LNS parameter B in the sensitivity experiment.
 DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH = 2
 
-# 若一个初始解含多个可靠组件，选择第几个组件执行 RG-LNS：
-# 0 = 最大可靠组件，1 = 第二大可靠组件，依此类推；必须为非负整数。
+# If an initial solution has multiple reliable components, select which component runs RG-LNS:
+# 0 = largest reliable component, 1 = second largest, and so on; must be non-negative.
 DEFAULT_COMPONENT_INDEX = 0
 
-# RG-LNS 最多执行的精化轮数；必须为正整数。论文实验默认只执行 1 轮。
+# Maximum RG-LNS refinement rounds; must be positive. The paper experiments default to one round.
 DEFAULT_REFINEMENT_ROUNDS = 1
 
-# 仅在启用 --save-run-artifacts 时生效：每次运行最多保存多少个可视化案例；
-# 0 = 不限制，正整数 N = 最多保存 N 个。未保存运行产物时该值会被忽略。
+# Applies only when --save-run-artifacts is enabled: maximum visual cases saved per run;
+# 0 = unlimited, positive N = at most N. Ignored when run artifacts are not saved.
 DEFAULT_VISUAL_LIMIT = 20
 
 

@@ -1,7 +1,7 @@
 """
 @file: experiment_runtime_info.py
-@description: 统一采集训练与评估任务的跨平台运行环境信息，并以紧凑文本或JSON形式保存。
-              Windows和Linux均不依赖特定命令；CPU、内存和显卡驱动检测均提供降级路径。
+@description: Collect cross-platform runtime environment information for training and evaluation and save it as compact text or JSON.
+              Windows and Linux do not require platform-specific commands; CPU, memory, and GPU-driver checks provide fallbacks.
 @author: Changxin Ye
 @created: 2026-08-10
 @version: 1.0
@@ -147,7 +147,7 @@ def collect_runtime_environment(
     resolved_device: str | torch.device | None = None,
     gpu_id: int | None = None,
 ) -> dict[str, Any]:
-    """采集稳定、适合辨认实验机器的运行环境信息。"""
+    """Collect stable runtime information suitable for identifying the experiment machine."""
 
     physical_cores, logical_cores, total_memory = _memory_and_cores()
     requested = str(requested_device) if requested_device is not None else "unknown"
@@ -190,8 +190,8 @@ def collect_runtime_environment(
             "pytorch": torch.__version__,
             "cuda_runtime": torch.version.cuda,
             "cudnn": cudnn_version,
-            # 即使本次明确使用 CPU，也记录机器上的 NVIDIA 驱动版本；这样不会把
-            # “GPU 未参与本次运行”误写成“机器没有可用驱动”。
+            # Even when this run explicitly uses CPU, record the NVIDIA driver version on the machine;
+            # this avoids misreporting "GPU not used in this run" as "the machine has no usable driver."
             "nvidia_driver": _nvidia_driver_version(),
         },
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
@@ -206,7 +206,7 @@ def _gib(value: int | None) -> str:
 
 
 def format_runtime_environment(info: dict[str, Any]) -> list[str]:
-    """生成适合追加到summary文本末尾的紧凑八行环境信息。"""
+    """Generate compact eight-line environment information suitable for appending to a summary."""
 
     os_info = info["os"]
     cpu = info["cpu"]
@@ -265,7 +265,7 @@ def append_runtime_environment(
     resolved_device: str | torch.device | None = None,
     gpu_id: int | None = None,
 ) -> dict[str, Any]:
-    """向已存在的summary文本追加环境段；重复调用不会重复追加。"""
+    """Append an environment section to an existing summary; repeated calls do not duplicate it."""
 
     path = Path(path)
     info = collect_runtime_environment(

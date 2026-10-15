@@ -1,6 +1,6 @@
 """
 @file: metric_lsej_macro_assisted.py
-@description: S4B 宏观辅助重排的布局合成、可靠性门控、排名惩罚与诊断工具。
+@description: Layout synthesis, reliability gating, rank penalties, and diagnostics for S4B macro-assisted reassembly.
 @author: Changxin Ye
 @created: 2026-07-23
 @version: 1.0
@@ -129,7 +129,7 @@ def macro_internal_confidence(
     piece_scores: np.ndarray,
     top_k: int,
 ) -> float:
-    """Fraction of directed internal edges whose S1A candidate rank is <= K."""
+    """Fraction of directed internal edges whose compatibility candidate rank is <= K."""
 
     ranks = [
         candidate_rank(piece_scores, anchor, candidate, direction)

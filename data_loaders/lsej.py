@@ -1,6 +1,6 @@
 """
 @file: metric_lsej_data.py
-@description: 基于官方 ImageNet-LSEJ DataLoader 的 s1a 多三元组采样与同图候选负样本数据适配器。
+@description: Data adapter based on the official ImageNet-LSEJ DataLoader for multi-triplet sampling and same-puzzle candidate negatives.
 @author: Changxin Ye
 @created: 2026-07-17
 @version: 1.1

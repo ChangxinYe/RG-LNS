@@ -1,12 +1,12 @@
 """
-@file: s1a4_eval_lsej_profiled_large_neighborhood_reassembly.py
-@description: 复用已经收敛的 S1A E1 compatibility 与 Gallagher 初始解，执行 S1A4
-              无真实标签地补全初始求解器产生的部分布局，再执行
-              profiled large-neighborhood reassembly。方法把闭环支持组件视为可靠的
-              相对关系骨架，释放其绝对位置并枚举全部合法平移；在每个组件位姿下，
-              使用确定性 beam completion 保留多条剩余 piece 回填路径，再由完整布局
-              的 E1 目标选出该位姿代表解。最终仅在全局 E1 严格改善时接受新布局，
-              全程不使用真实排列选择候选，也不产生新的训练 checkpoint。
+@file: evaluate_lsej_rg_lns.py
+@description: Reuse converged E1 compatibility and the Gallagher initial solution, perform profiled
+              ground-truth-free completion of partial initial layouts, and run profiled RG-LNS
+              reassembly. Treat cycle-supported components as reliable relative skeletons, release their absolute
+              positions, enumerate legal translations, retain multiple remaining-piece fill paths with deterministic
+              beam completion at each pose, and select a representative using the full-layout E1 objective.
+              Accept a new layout only under strict global E1 improvement; never use the ground-truth permutation
+              to select candidates or create a new training checkpoint.
 @author: Changxin Ye
 @created: 2026-07-31
 @version: 1.1
@@ -109,7 +109,7 @@ if DEFAULT_LOSS_TYPE == "hard_triplet":
 DEFAULT_RUN_DIR = None
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 
-# S1A4 主超参。B=1 会直接调用 S1A3 正式求解器，便于做严格等价消融。
+# Profiled RG-LNS hyperparameters. B=1 directly calls greedy reassembly for strict-equivalence ablations.
 DEFAULT_COMPLETION_BEAM_WIDTH = 4
 DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH = 2
 DEFAULT_MUTUAL_TOP_K = 3
@@ -129,154 +129,154 @@ DEFAULT_PROGRESS_INTERVAL = 1
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "使用冻结的 S1A E1 compatibility 执行多路径 profiled 大邻域重组",
+        "Run multi-path profiled RG-LNS with frozen E1 compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "--task",
         default=DEFAULT_TASK,
         choices=SUPPORTED_TASKS,
-        help="当前 S1A4 支持的官方 grid10 LSEJ 任务",
+        help="official grid10 LSEJ task supported by the current profiled RG-LNS implementation",
     )
     parser.add_argument(
         "--loss-type",
         default=DEFAULT_LOSS_TYPE,
         choices=LOSS_TYPES,
-        help="checkpoint 对应的训练损失",
+        help="training loss used by the checkpoint",
     )
     parser.add_argument(
         "--split",
         default=DEFAULT_SPLIT,
         choices=["train", "val", "test"],
-        help="要评估的数据划分",
+        help="data split to evaluate",
     )
     parser.add_argument(
         "--data-root",
         default=DEFAULT_LSEJ_DATA_ROOT,
         type=Path,
-        help="ImageNet-LSEJ 数据集根目录",
+        help="ImageNet-LSEJ dataset root",
     )
     parser.add_argument(
         "--checkpoint",
         default=None,
         type=Path,
-        help="精确 checkpoint 路径；设置后优先级最高",
+        help="exact checkpoint path; highest priority",
     )
-    parser.add_argument("--run-name", default=DEFAULT_RUN_NAME, help="当前 task 日志目录下的实验名")
+    parser.add_argument("--run-name", default=DEFAULT_RUN_NAME, help="experiment name under the current task log root")
     parser.add_argument(
         "--run-dir",
         default=DEFAULT_RUN_DIR,
         type=Path,
-        help="直接指定包含 checkpoints 的实验目录",
+        help="experiment directory containing checkpoints",
     )
     parser.add_argument(
         "--checkpoint-name",
         default=DEFAULT_CHECKPOINT_NAME,
-        help="读取的 checkpoint 文件名",
+        help="checkpoint filename to load",
     )
-    parser.add_argument("--start-index", default=DEFAULT_START_INDEX, type=int, help="起始样本下标")
+    parser.add_argument("--start-index", default=DEFAULT_START_INDEX, type=int, help="starting sample index")
     parser.add_argument(
         "--max-samples",
         default=DEFAULT_MAX_SAMPLES,
         type=int,
-        help="最大评估样本数；0 表示完整 split",
+        help="maximum samples to evaluate; 0 uses the full split",
     )
     parser.add_argument(
         "--completion-beam-width",
         default=DEFAULT_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="每个组件位姿最多保留的条件完成数量；1 严格退化为 S1A3",
+        help="maximum conditional completions retained per component pose; 1 strictly reduces to greedy reassembly",
     )
     parser.add_argument(
         "--partial-completion-beam-width",
         default=DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="不完整初始布局的无 GT E1 补全 beam 宽度",
+        help="ground-truth-free E1 completion beam width for incomplete initial layouts",
     )
     parser.add_argument(
         "--mutual-top-k",
         default=DEFAULT_MUTUAL_TOP_K,
         type=int,
-        help="构造互惠邻接图时每个方向保留的候选数",
+        help="candidates retained per direction when building mutual adjacency",
     )
     parser.add_argument(
         "--translation-mode",
         default=DEFAULT_TRANSLATION_MODE,
         choices=("fixed", "all"),
-        help="固定组件当前绝对位置，或枚举全部合法平移",
+        help="keep the current absolute position or enumerate all legal translations",
     )
     parser.add_argument(
         "--component-index",
         default=DEFAULT_COMPONENT_INDEX,
         type=int,
-        help="按尺寸排序后选择的闭环组件下标；0 为最大组件",
+        help="cycle-supported component index after size sorting; 0 is the largest",
     )
     parser.add_argument(
         "--min-component-size",
         default=DEFAULT_MIN_COMPONENT_SIZE,
         type=int,
-        help="允许执行重组的最小组件 piece 数",
+        help="minimum component size in pieces for reassembly",
     )
     parser.add_argument(
         "--refinement-rounds",
         default=DEFAULT_REFINEMENT_ROUNDS,
         type=int,
-        help="最大 profiled 重组轮数",
+        help="maximum profiled reassembly rounds",
     )
     parser.add_argument(
         "--score-batch-size",
         default=DEFAULT_SCORE_BATCH_SIZE,
         type=int,
-        help="提取边缘 embedding 时的前向批量",
+        help="forward batch size for edge embeddings",
     )
     parser.add_argument(
         "--postprocess",
         default=DEFAULT_POSTPROCESS,
         type=parse_bool,
-        help="是否执行 S1A compatibility 后处理",
+        help="whether to apply compatibility post-processing",
     )
-    parser.add_argument("--device", default="auto", help="运行设备，例如 auto、cpu、cuda:0")
-    parser.add_argument("--gpu-id", default=0, type=int, help="device=auto 时使用的 GPU 编号")
+    parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0")
+    parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
     parser.add_argument(
         "--verbose-solver",
         action="store_true",
-        help="显示初始重组求解器的内部信息",
+        help="show initial reassembly-solver internals",
     )
     parser.add_argument(
         "--output-dir",
         default=None,
         type=Path,
-        help="结果目录；留空时根据方法和参数自动生成",
+        help="result directory; leave empty to generate it from method and parameters",
     )
     parser.add_argument(
         "--save-visuals",
         default=DEFAULT_SAVE_VISUALS,
         type=parse_bool,
-        help="是否保存重组前后可视化",
+        help="whether to save before/after reassembly visualizations",
     )
     parser.add_argument(
         "--visual-limit",
         default=DEFAULT_VISUAL_LIMIT,
         type=int,
-        help="最多保存多少张可视化；0 表示全部",
+        help="maximum visualizations to save; 0 means all",
     )
     parser.add_argument(
         "--save-predictions",
         default=DEFAULT_SAVE_PREDICTIONS,
         type=parse_bool,
-        help="是否保存 predictions.npz",
+        help="whether to save predictions.npz",
     )
     parser.add_argument(
         "--save-completion-details",
         default=DEFAULT_SAVE_COMPLETION_DETAILS,
         type=parse_bool,
-        help="是否保存每个位姿内所有 retained completion 的诊断 CSV",
+        help="whether to save diagnostic CSVs for all retained completions at each pose",
     )
     parser.add_argument(
         "--progress-interval",
         default=DEFAULT_PROGRESS_INTERVAL,
         type=int,
-        help="每处理多少张打印一次运行指标；0 表示关闭",
+        help="print runtime metrics every N samples; 0 disables output",
     )
     add_stage_timing_arguments(parser)
     return parser
@@ -288,25 +288,25 @@ def parse_args() -> argparse.Namespace:
 
 def validate_args(args: argparse.Namespace) -> None:
     if args.start_index < 0 or args.max_samples < 0:
-        raise ValueError("start-index 和 max-samples 必须非负")
+        raise ValueError("start-index and max-samples must be non-negative")
     if args.completion_beam_width <= 0:
-        raise ValueError("completion-beam-width 必须为正整数")
+        raise ValueError("completion-beam-width must be a positive integer")
     if args.partial_completion_beam_width <= 0:
-        raise ValueError("partial-completion-beam-width 必须为正整数")
+        raise ValueError("partial-completion-beam-width must be a positive integer")
     if args.mutual_top_k <= 0:
-        raise ValueError("mutual-top-k 必须为正整数")
+        raise ValueError("mutual-top-k must be a positive integer")
     if args.translation_mode not in {"fixed", "all"}:
-        raise ValueError("translation-mode 必须为 fixed 或 all")
+        raise ValueError("translation-mode must be fixed or all")
     if args.component_index < 0:
-        raise ValueError("component-index 不能为负")
+        raise ValueError("component-index cannot be negative")
     if args.min_component_size <= 0 or args.refinement_rounds <= 0:
-        raise ValueError("min-component-size 和 refinement-rounds 必须为正整数")
+        raise ValueError("min-component-size and refinement-rounds must be positive integers")
     if args.score_batch_size <= 0:
-        raise ValueError("score-batch-size 必须为正整数")
+        raise ValueError("score-batch-size must be a positive integer")
     if args.visual_limit < 0 or args.progress_interval < 0:
-        raise ValueError("visual-limit 和 progress-interval 必须非负")
+        raise ValueError("visual-limit and progress-interval must be non-negative")
     if args.runtime_warmup_samples < 0:
-        raise ValueError("runtime-warmup-samples 必须非负")
+        raise ValueError("runtime-warmup-samples must be non-negative")
 
 
 def _default_output_dir(
@@ -314,14 +314,14 @@ def _default_output_dir(
     checkpoint: Path,
     output_root: Path = DEFAULT_OUTPUT_ROOT,
 ) -> Path:
-    # 目录只保留 checkpoint 来源和任务。split、样本范围、beam 及其它方法参数
-    # 全部写入 summary.txt / metrics.json，避免目录名随消融参数无限增长。
+    # Keep only checkpoint source and task in the directory name. Write split, sample range, beam, and other
+    # method parameters to summary.txt/metrics.json to avoid unbounded directory-name growth.
     folder = f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}_{args.task}"
     return Path(output_root) / DEFAULT_DATASET_NAME / folder
 
 
 def _prepare_output_dir(output_dir: Path, *, automatically_named: bool) -> Path:
-    """创建本次运行的全新目录，禁止旧结果与新结果混在一起。"""
+    """Create a fresh directory for this run so old and new results cannot be mixed."""
 
     del automatically_named
     return prepare_unique_output_dir(output_dir)
@@ -340,7 +340,7 @@ def _write_s1a3_incremental_pa_case_lists(
     output_dir: Path,
     rows: list[dict],
 ) -> tuple[list[str], list[str]]:
-    """保存 S1A3->S1A4 的 PA 修复/破坏样本，避免与初始求解器对照混淆。"""
+    """Save greedy-to-profiled PA repair/degradation samples without mixing them with the initial-solver comparison."""
 
     repaired = [
         f"sample_{int(row['sample_index']):06d}_{row['lsej_id']}.png"
@@ -398,11 +398,11 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"S1A {initial_solver_name} baseline "
+        f"E1 {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
-        f"S1A3 single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
+        f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
         scaffold_title,
-        f"S1A4 profiled final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"Profiled RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -482,7 +482,7 @@ def run_evaluation(
     sample_indices = list(range(args.start_index, end_index))
     grid = int(dataset.config["puzzle"]["grid_rows"])
     if grid != 10:
-        raise ValueError("S1A4 profiled large-neighborhood reassembly currently supports grid10")
+        raise ValueError("Profiled RG-LNS currently supports grid10")
 
     device = resolve_device(args.device, args.gpu_id)
     scorer = MetricCompatibilityScorer.from_checkpoint(
@@ -566,7 +566,7 @@ def run_evaluation(
         if not is_complete_prediction(completed_baseline, grid):
             status = f"incomplete_{initial_solver_tag}_completion_failed"
             selected = baseline.copy()
-            # 补全失败时两个 refinement 仍无法启动，因此保留原始部分布局。
+            # If completion fails, neither refinement can start, so retain the original partial layout.
             s1a3_reference = baseline.copy()
             display_component = np.empty(0, dtype=np.int32)
             scaffold_layout = baseline.copy()
@@ -602,9 +602,9 @@ def run_evaluation(
             selected = result["prediction"]
             s1a3_reference = result["single_path_reference_prediction"]
             if s1a3_reference is None:
-                # 多轮时 S1A3 与 S1A4 在第一轮后可能进入不同轨迹，不能把
-                # S1A4 当前 seed 上的单路径候选冒充 S1A3。此处从同一个
-                # 同一个初始布局上独立运行正式 S1A3，保证公平对照。
+            # With multiple rounds, greedy and profiled RG-LNS may diverge after the first round; do not label a
+            # single-path candidate on the current profiled seed as greedy. Run greedy reassembly independently
+                # from the same initial layout to preserve a fair comparison.
                 s1a3_reference = iterative_component_reassembly(
                     e1_scores,
                     completed_baseline,
@@ -1133,7 +1133,7 @@ def run_evaluation(
         ),
         "beam1_contract": (
             "after the same partial-layout completion, completion_beam_width=1 directly "
-            "reuses the formal S1A3 solver"
+            "reuses the formal greedy reassembly solver"
         ),
         "task": args.task,
         "split": args.split,
@@ -1225,7 +1225,7 @@ def run_evaluation(
         np.savez_compressed(args.output_dir / "predictions.npz", **prediction_payload)
 
     summary_lines = [
-        "ImageNet-LSEJ S1A4 Profiled Large-Neighborhood Reassembly "
+        "ImageNet-LSEJ Profiled RG-LNS "
         f"({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {args.checkpoint}",
@@ -1250,7 +1250,7 @@ def run_evaluation(
         f"initial_solver_config: {initial_solver_config or {}}",
         f"status: {status_counts}",
         "",
-        f"S1A {initial_solver_name} baseline:",
+        f"E1 {initial_solver_name} baseline:",
         f"  PA={baseline_aggregate['PA']:.4%}",
         f"  AA={baseline_aggregate['AA']:.4%}",
         f"  Horizontal SRA={baseline_aggregate['horizontal_SRA']:.4%}",
@@ -1269,7 +1269,7 @@ def run_evaluation(
     if s1a3_reference_aggregate is not None:
         summary_lines.extend(
             [
-                "S1A3 single-path reference (same E1 scores and initial layout):",
+                "Greedy single-path reference (same E1 scores and initial layout):",
                 f"  PA={s1a3_reference_aggregate['PA']:.4%}",
                 f"  AA={s1a3_reference_aggregate['AA']:.4%}",
                 f"  Horizontal SRA={s1a3_reference_aggregate['horizontal_SRA']:.4%}",
@@ -1280,7 +1280,7 @@ def run_evaluation(
         )
     summary_lines.extend(
         [
-            "S1A4 profiled reassembly:",
+            "Profiled RG-LNS:",
             f"  PA={selected_aggregate['PA']:.4%}",
             f"  AA={selected_aggregate['AA']:.4%}",
             f"  Horizontal SRA={selected_aggregate['horizontal_SRA']:.4%}",
@@ -1289,7 +1289,7 @@ def run_evaluation(
             "",
             f"Comparison: {comparison}",
             f"Partial completion diagnostics: {partial_completion_diagnostics}",
-            f"Incremental vs S1A3: {incremental_vs_s1a3}",
+                f"Incremental vs greedy reassembly: {incremental_vs_s1a3}",
             f"Search diagnostics: {search_diagnostics}",
             f"PA repaired image list: pa_repaired_images.txt ({len(repaired_images)})",
             f"PA broken image list: pa_broken_images.txt ({len(broken_images)})",
@@ -1298,9 +1298,9 @@ def run_evaluation(
     if s1a3_reference_aggregate is not None:
         summary_lines.extend(
             [
-                f"PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt "
+                f"PA repaired vs greedy: pa_repaired_vs_s1a3_images.txt "
                 f"({len(s1a3_repaired_images)})",
-                f"PA broken vs S1A3: pa_broken_vs_s1a3_images.txt "
+                f"PA broken vs greedy: pa_broken_vs_s1a3_images.txt "
                 f"({len(s1a3_broken_images)})",
             ]
         )
@@ -1329,19 +1329,19 @@ def run_evaluation(
         )
     else:
         print(
-            f"Final PA ({initial_solver_name} -> completion -> S1A3 -> S1A4): "
+            f"Final PA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
             f"{baseline_aggregate['PA']:.4%} -> {completed_baseline_aggregate['PA']:.4%} "
             f"-> {s1a3_reference_aggregate['PA']:.4%} "
             f"-> {selected_aggregate['PA']:.4%}"
         )
         print(
-            f"Final AA ({initial_solver_name} -> completion -> S1A3 -> S1A4): "
+            f"Final AA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
             f"{baseline_aggregate['AA']:.4%} -> {completed_baseline_aggregate['AA']:.4%} "
             f"-> {s1a3_reference_aggregate['AA']:.4%} "
             f"-> {selected_aggregate['AA']:.4%}"
         )
         print(
-            f"Final SRA ({initial_solver_name} -> completion -> S1A3 -> S1A4): "
+            f"Final SRA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
             f"{baseline_aggregate['SRA']:.4%} -> {completed_baseline_aggregate['SRA']:.4%} "
             f"-> {s1a3_reference_aggregate['SRA']:.4%} "
             f"-> {selected_aggregate['SRA']:.4%}"

@@ -1,10 +1,10 @@
 """
-@file: s1a4_eval_jpleg_profiled_large_neighborhood_reassembly.py
-@description: 在 JPwLEG 上使用冻结的 S1A E1 compatibility 与 Gallagher 初始解；若初始
-              预测不完整，则先执行无标签兼容性回填，再执行 S1A4 profiled
-              large-neighborhood reassembly。方法在每个可靠组件放置
-              位置下保留多条剩余 piece 回填路径，以完整布局 E1 选择代表解，并与
-              同一初始布局、同一 E1 下的 S1A3 单路径结果进行严格对照。
+@file: evaluate_jpleg_rg_lns.py
+@description: Use frozen E1 compatibility and a Gallagher initial solution on JPwLEG. If the initial
+              prediction is incomplete, perform ground-truth-free completion before profiled
+              large-neighborhood reassembly. Retain multiple remaining-piece fill paths at each reliable-component
+              pose, select a representative with the full-layout E1 objective, and compare strictly with the greedy
+              single-path result from the same initial layout and E1 scores.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.1
@@ -49,8 +49,8 @@ try:
     from compatibility.scorer import MetricCompatibilityScorer, resolve_device
     from initial_solvers.partial_completion import complete_partial_layout
     from evaluation.commands.evaluate_jpleg_greedy_rg_lns import (
-        build_parser as build_s1a3_parser,
-        validate_args as validate_s1a3_args,
+        build_parser as build_greedy_parser,
+        validate_args as validate_greedy_args,
     )
     from evaluation.commands.evaluate_jpleg_gallagher import parse_bool, resolve_checkpoint_arg
 except ImportError:
@@ -82,16 +82,16 @@ except ImportError:
     from compatibility.scorer import MetricCompatibilityScorer, resolve_device
     from initial_solvers.partial_completion import complete_partial_layout
     from evaluation.commands.evaluate_jpleg_greedy_rg_lns import (
-        build_parser as build_s1a3_parser,
-        validate_args as validate_s1a3_args,
+        build_parser as build_greedy_parser,
+        validate_args as validate_greedy_args,
     )
     from evaluation.commands.evaluate_jpleg_gallagher import parse_bool, resolve_checkpoint_arg
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
-# 直接在 PyCharm 运行时只需要修改这里。run-name 留空后，会根据 dataset
-# 自动选取下面同名映射中的 checkpoint，避免切换 jpleg3/jpleg5 时用错权重。
+# When running directly in PyCharm, edit only this section. With an empty run-name, the checkpoint is selected
+# from the mapping below by dataset, avoiding the wrong weights when switching between jpleg3 and jpleg5.
 DEFAULT_DATASET = "jpleg3"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
@@ -124,35 +124,35 @@ METRIC_KEYS = ("PA", "AA", "HA", "VA", "SRA", "NA")
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """在 S1A3 JPwLEG 公共参数上增加 S1A4 的多路径参数。"""
+    """Add profiled RG-LNS multi-path parameters to the shared greedy JPwLEG parameters."""
 
-    parser = build_s1a3_parser()
+    parser = build_greedy_parser()
     parser.description = (
-        "在 JPwLEG 上使用冻结的 S1A E1 执行多路径 profiled 大邻域重组"
+        "Run multi-path profiled RG-LNS on JPwLEG with frozen E1 compatibility"
     )
     parser.add_argument(
         "--completion-beam-width",
         default=DEFAULT_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="每个组件放置位置最多保留的完整回填候选数；1 严格退化为 S1A3",
+        help="maximum complete fill candidates retained per component pose; 1 strictly reduces to greedy reassembly",
     )
     parser.add_argument(
         "--partial-completion-beam-width",
         default=DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="不完整初始布局的无 GT E1 补全 beam 宽度",
+        help="ground-truth-free E1 completion beam width for incomplete initial layouts",
     )
     parser.add_argument(
         "--translation-mode",
         default=DEFAULT_TRANSLATION_MODE,
         choices=("fixed", "all"),
-        help="固定组件当前绝对位置，或枚举全部合法平移",
+        help="keep the current absolute position or enumerate all legal translations",
     )
     parser.add_argument(
         "--save-completion-details",
         default=DEFAULT_SAVE_COMPLETION_DETAILS,
         type=parse_bool,
-        help="是否保存每个位姿内所有 retained completion 的诊断 CSV",
+        help="whether to save diagnostic CSVs for all retained completions at each pose",
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
@@ -180,15 +180,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
-    validate_s1a3_args(args)
+    validate_greedy_args(args)
     if args.completion_beam_width <= 0:
-        raise ValueError("completion-beam-width 必须为正整数")
+        raise ValueError("completion-beam-width must be a positive integer")
     if args.partial_completion_beam_width <= 0:
-        raise ValueError("partial-completion-beam-width 必须为正整数")
+        raise ValueError("partial-completion-beam-width must be a positive integer")
     if args.translation_mode not in {"fixed", "all"}:
-        raise ValueError("translation-mode 必须为 fixed 或 all")
+        raise ValueError("translation-mode must be fixed or all")
     if args.runtime_warmup_samples < 0:
-        raise ValueError("runtime-warmup-samples 必须非负")
+        raise ValueError("runtime-warmup-samples must be non-negative")
 
 
 def _default_output_dir(
@@ -197,14 +197,14 @@ def _default_output_dir(
     *,
     output_root: Path,
 ) -> Path:
-    """目录只保留数据集和 checkpoint 来源，消融参数统一写入 summary。"""
+    """Keep only dataset and checkpoint source in the directory; write ablation parameters to the summary."""
 
     folder = f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}"
     return Path(output_root) / args.dataset / folder
 
 
 def _prepare_output_dir(output_dir: Path, *, automatically_named: bool) -> Path:
-    """创建独立运行目录，防止新旧评估结果混写。"""
+    """Create an isolated run directory to prevent mixing old and new evaluation results."""
 
     del automatically_named
     return prepare_unique_output_dir(output_dir)
@@ -226,7 +226,7 @@ def _write_pa_case_lists(
     reference_prefix: str,
     filename_suffix: str,
 ) -> tuple[list[str], list[str]]:
-    """保存相对指定 reference 的 PA 修复和破坏样本。"""
+    """Save PA repair and degradation samples relative to the specified reference."""
 
     repaired = [
         f"sample_{int(row['sample_index']):06d}.png"
@@ -264,7 +264,7 @@ def _save_visual(
     scaffold_title: str,
     initial_solver_name: str,
 ) -> None:
-    """保存输入、三阶段结果、可靠组件和真值的六栏可视化。"""
+    """Save six-column visualizations of the input, three stages, reliable component, and ground truth."""
 
     import matplotlib
 
@@ -282,11 +282,11 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"S1A {initial_solver_name} baseline "
+        f"E1 {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
-        f"S1A3 single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
+        f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
         scaffold_title,
-        f"S1A4 profiled final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"Profiled RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -351,7 +351,7 @@ def _append_diagnostic_rows(
     pose_rows: list[dict],
     completion_rows: list[dict],
 ) -> None:
-    """把 S1A4 的轮次、位置和回填候选完整展开，便于后续消融分析。"""
+    """Expand profiled RG-LNS rounds, poses, and fill candidates for later ablation analysis."""
 
     for round_record in result["rounds"]:
         graph = round_record["graph_statistics"]
@@ -502,7 +502,7 @@ def run_evaluation(
     config = JPLEG_CONFIGS[args.dataset]
     images, labels = load_jpleg_arrays(args.data_root, args.dataset, split)
     if args.start_index >= len(images):
-        raise ValueError(f"start-index {args.start_index} 超出数据集长度 {len(images)}")
+        raise ValueError(f"start-index {args.start_index} exceeds dataset length {len(images)}")
     end_index = (
         len(images)
         if args.max_samples == 0
@@ -561,7 +561,7 @@ def run_evaluation(
     started = time.perf_counter()
 
     print(
-        f"在 {args.dataset.upper()} {split} 上评估 S1A4："
+        f"Evaluating profiled RG-LNS on {args.dataset.upper()} {split}:"
         f"samples={len(sample_indices)}, grid={grid}x{grid}, "
         f"initial_solver={initial_solver_name}, beam={args.completion_beam_width}"
     )
@@ -956,7 +956,7 @@ def run_evaluation(
         ),
         "beam1_contract": (
             "after the same partial-layout completion, completion_beam_width=1 directly "
-            "reuses the formal S1A3 path"
+            "reuses the formal greedy path"
         ),
         "dataset": args.dataset,
         "split": split,
@@ -1031,7 +1031,7 @@ def run_evaluation(
         )
 
     summary_lines = [
-        f"JPwLEG S1A4 Profiled Large-Neighborhood Reassembly "
+        f"JPwLEG Profiled RG-LNS "
         f"({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {args.checkpoint}",
@@ -1052,10 +1052,10 @@ def run_evaluation(
         "",
     ]
     for label, metrics in (
-        (f"S1A {initial_solver_name} baseline", baseline_aggregate),
+        (f"E1 {initial_solver_name} baseline", baseline_aggregate),
         ("Label-free E1 partial-layout completion", completed_baseline_aggregate),
-        ("S1A3 single-path reference", s1a3_aggregate),
-        ("S1A4 profiled reassembly", selected_aggregate),
+        ("Greedy single-path reference", s1a3_aggregate),
+        ("Profiled RG-LNS", selected_aggregate),
     ):
         summary_lines.append(f"{label}:")
         summary_lines.extend(f"  {key}={metrics[key]:.4%}" for key in METRIC_KEYS)
@@ -1064,13 +1064,13 @@ def run_evaluation(
         [
             f"Partial completion diagnostics: {partial_completion_diagnostics}",
             f"Comparison: {comparison}",
-            f"Incremental vs S1A3: {incremental}",
+            f"Incremental vs greedy reassembly: {incremental}",
             f"Search diagnostics: {search_diagnostics}",
             f"PA repaired image list: pa_repaired_images.txt ({len(repaired)})",
             f"PA broken image list: pa_broken_images.txt ({len(broken)})",
-            f"PA repaired vs S1A3: pa_repaired_vs_s1a3_images.txt "
+            f"PA repaired vs greedy: pa_repaired_vs_s1a3_images.txt "
             f"({len(repaired_vs_s1a3)})",
-            f"PA broken vs S1A3: pa_broken_vs_s1a3_images.txt "
+            f"PA broken vs greedy: pa_broken_vs_s1a3_images.txt "
             f"({len(broken_vs_s1a3)})",
         ]
     )
@@ -1090,7 +1090,7 @@ def run_evaluation(
     print(f"device: {device}")
     for key in ("PA", "AA", "SRA"):
         print(
-            f"Final {key} ({initial_solver_name} -> completion -> S1A3 -> S1A4): "
+            f"Final {key} ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
             f"{baseline_aggregate[key]:.4%} -> {completed_baseline_aggregate[key]:.4%} "
             f"-> {s1a3_aggregate[key]:.4%} "
             f"-> {selected_aggregate[key]:.4%}"

@@ -1,6 +1,6 @@
 """
 @file: postprocess.py
-@description: 忠实移植 do_greedy_assembly、TrimPuzzle 和 Type-1 FillPuzzleHoles_V2_rui3 后处理。
+@description: Faithful port of do_greedy_assembly, TrimPuzzle, and Type-1 FillPuzzleHoles_V2_rui3 post-processing.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -29,7 +29,7 @@ def greedy_assemble_components(
     *,
     stop_threshold: float = 1.25,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
-    """以作者的 Gallagher 合并次序拼接 LP 刚性组件与剩余单 piece。"""
+    """Assemble LP rigid components and remaining single pieces in the author's Gallagher merge order."""
 
     scores = np.asarray(normalized_scores, dtype=np.float64).copy()
     blocks: list[np.ndarray | None] = [block.copy() for block in blocks_info.blocks]
@@ -138,7 +138,7 @@ def _hole_scores(
         known_piece = int(block[neighbor_row, neighbor_column])
         if known_piece <= 0:
             continue
-        # Type-1 时 getAllScoresForCands_rui.m 恰为 SCO(cands,pieceID,Relposition)。
+        # For Type-1, getAllScoresForCands_rui.m is exactly SCO(cands,pieceID,Relposition).
         total += scores[choices - 1, known_piece - 1, direction]
         present += 1
     return total if present else np.full(choices.size, np.inf)
@@ -147,7 +147,7 @@ def _hole_scores(
 def fill_puzzle_holes_type1(
     block: np.ndarray, rotations: np.ndarray, scores: np.ndarray, num_pieces: int
 ) -> tuple[np.ndarray, np.ndarray, int]:
-    """按“最可信洞优先、邻居代价求和”策略填充已知矩形内部空位。"""
+    """Fill empty positions inside the known rectangle using the most-trusted-hole-first, summed-neighbor-cost strategy."""
 
     block = block.copy()
     rotations = rotations.copy()
@@ -188,7 +188,7 @@ def trim_and_fill(
     *,
     stop_threshold: float = 1.25,
 ) -> tuple[np.ndarray, dict]:
-    """复现 ``trim_and_fill_v2.m`` 的 Type-1 完整后处理链。"""
+    """Reproduce the complete Type-1 post-processing chain from ``trim_and_fill_v2.m``."""
 
     updated_scores = sco_update(original_scores, blocks_info, labels, remove_boundary=True)
     normalized = normalize_scores(updated_scores)

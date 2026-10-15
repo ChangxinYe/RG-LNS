@@ -1,8 +1,8 @@
 """
-@file: s1a4_eval_gap_lp_profiled_large_neighborhood_reassembly.py
-@description: 在 GAP-3/GAP-5 上使用 BMVC 2016 Type-1 纯 Python LP 生成 S1A E1
-              初始布局，再执行 S1A4 profiled large-neighborhood reassembly，并与同一
-              LP 初始布局下的 S1A3 单路径结果进行严格对照。
+@file: evaluate_gap_linear_programming_rg_lns.py
+@description: Generate E1-compatibility initial GAP-3/GAP-5 layouts with the pure-Python BMVC 2016 Type-1 LP solver,
+              then run profiled large-neighborhood reassembly and compare it strictly with the greedy
+              single-path result from the same LP initial layout.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -45,7 +45,7 @@ DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate S1A4 on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP initialization"
+        "Evaluate profiled RG-LNS on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP initialization"
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,

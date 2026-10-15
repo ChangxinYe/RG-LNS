@@ -1,6 +1,6 @@
 """
 @file: metric_gap_evaluator.py
-@description: GAP-3/GAP-5 的 S1A 兼容性评分、Gallagher 重组、检索指标、拼图指标与 RGBA 可视化。
+@description: Compatibility scoring, Gallagher reassembly, retrieval metrics, jigsaw metrics, and RGBA visualization for GAP-3/GAP-5.
 @author: Changxin Ye
 @created: 2026-07-27
 @version: 1.0
@@ -211,7 +211,7 @@ def evaluate_gap_split(
     visual_limit: int = 20,
     visual_interval: int = 1,
     save_predictions: bool = True,
-    method_name: str = "S1A",
+    method_name: str = "E1 compatibility",
     configuration: dict | None = None,
 ) -> GAPMetrics:
     if max_samples < 0 or start_index < 0:
@@ -252,7 +252,7 @@ def evaluate_gap_split(
         rank_histogram += np.bincount(ranks["all"], minlength=num_pieces)[:num_pieces]
         horizontal_rank_histogram += np.bincount(ranks["horizontal"], minlength=num_pieces)[:num_pieces]
         vertical_rank_histogram += np.bincount(ranks["vertical"], minlength=num_pieces)[:num_pieces]
-        # Match the S1A3/S1A4 GAP evaluation path exactly: keep RGBA for metric
+        # Match the greedy/profiled GAP evaluation path exactly: keep RGBA for metric
         # scoring, but pass an RGB copy to every assembly solver.  Gallagher's
         # legacy renderer requires RGB, while LP and Pomeranz ignore the images.
         solver_pieces = [rgba_to_rgb(piece) for piece in pieces]

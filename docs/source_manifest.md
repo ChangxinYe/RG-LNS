@@ -11,13 +11,13 @@ analysis entry points. The main mapping is:
 | Submitted workspace | Release location |
 |---|---|
 | `metric_vit_model.py`, `metric_scorer.py`, transforms and geometry | `compatibility/` |
-| `s1a_train_{gap,jpleg,lsej}.py` | `compatibility/training/train_*.py` |
+| legacy compatibility-training entry points (`s1a_train_{gap,jpleg,lsej}.py`) | `compatibility/training/train_*.py` |
 | `metric_*_data.py` | `data_loaders/` |
 | Gallagher, Pomeranz, and LP assembly code | `initial_solvers/` |
 | `single_component_e1.py` | `rg_lns/component_search.py` |
 | `profiled_completion_e1.py` | `rg_lns/beam_search.py` |
 | dataset evaluators | `evaluation/{gap,jpleg,lsej}.py` |
-| former `s1a*`, `s1a3*`, and `s1a4*` entry points | `evaluation/commands/` |
+| former stage-labeled (`s1a*`, `s1a3*`, `s1a4*`) entry points | `evaluation/commands/` |
 | ablation, sensitivity, runtime, and failure notebook | `experiments/` |
 | compact `eval_result/` records | `results/reference/` |
 
@@ -39,3 +39,8 @@ Datasets, training logs, model checkpoints, caches, detailed visualization
 folders, and unreported exploratory methods are deliberately excluded from
 Git. The source migration does not modify or remove files in the original
 workspace.
+
+The public command names describe the operation directly (for example,
+`evaluate_gap_greedy_rg_lns.py` and `evaluate_lsej_rg_lns.py`). Historical
+stage labels are retained only inside machine-readable result fields and old
+artifact names where they are needed to read previously generated outputs.

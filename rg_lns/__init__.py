@@ -1,6 +1,6 @@
 """
 @file: __init__.py
-@description: 我们提出的迭代式组件重组求解器入口；当前提供单组件 E1 版本。
+@description: Entry point for the proposed iterative component-reassembly solver; currently provides the single-component E1 variant.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.0

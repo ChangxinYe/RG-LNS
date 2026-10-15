@@ -1,6 +1,6 @@
 """
 @file: metric_lsej_evaluator.py
-@description: s1a 在 ImageNet-LSEJ 上的 Gallagher 求解、PA/AA/SRA 统计、结果保存与可视化工具。
+@description: Gallagher solving, PA/AA/SRA statistics, result saving, and visualization for ImageNet-LSEJ.
 @author: Changxin Ye
 @created: 2026-07-17
 @version: 1.1
@@ -417,7 +417,7 @@ def save_evaluation_visual(
     target: np.ndarray,
     grid: int,
     title: str,
-    method_name: str = "s1a",
+    method_name: str = "E1 compatibility",
 ) -> None:
     import matplotlib
 
@@ -472,7 +472,7 @@ def write_evaluation_summary(
     checkpoint: str | Path | None,
     data_root: str | Path,
     max_samples: int,
-    method_name: str = "s1a",
+    method_name: str = "E1 compatibility",
     configuration: dict | None = None,
     runtime_environment: dict | None = None,
 ) -> None:
@@ -555,7 +555,7 @@ def evaluate_lsej_split(
     save_visuals: bool = True,
     visual_limit: int = 10,
     save_predictions: bool = True,
-    method_name: str = "s1a",
+    method_name: str = "E1 compatibility",
     solver=None,
     configuration: dict | None = None,
     dataset_override=None,

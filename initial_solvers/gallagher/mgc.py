@@ -1,6 +1,6 @@
 """
 @file: mgc.py
-@description: PuzzleDemoMGC CVPR 2012 的 Python 核心实现，包含切块、边界特征计算、MGC 兼容分数、贪心拼装、补洞、评估和可视化。
+@description: Python core implementation of PuzzleDemoMGC CVPR 2012, including tiling, boundary-feature extraction, MGC compatibility scoring, greedy assembly, hole filling, evaluation, and visualization.
 @author: Changxin Ye
 @created: 2026-07-06
 @version: 1.0

@@ -1,6 +1,6 @@
 """
 @file: __init__.py
-@description: Yu 等 BMVC 2016 Type-1 线性规划拼图算法的纯 Python 等价移植入口。
+@description: Entry point for the pure-Python equivalent of Yu et al.'s BMVC 2016 Type-1 linear-programming jigsaw algorithm.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0

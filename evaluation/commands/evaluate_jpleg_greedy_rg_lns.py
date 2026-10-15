@@ -1,6 +1,6 @@
 """
-@file: s1a3_eval_jpleg_iterative_component_reassembly.py
-@description: 在 JPLEG 上以 Gallagher 初始布局执行我们提出的单组件 E1 迭代重组，并对比重组前后指标。
+@file: evaluate_jpleg_greedy_rg_lns.py
+@description: Run the proposed single-component E1 greedy reassembly on a Gallagher initial layout for JPLEG and compare metrics before and after reassembly.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.1
@@ -76,7 +76,7 @@ DEFAULT_RUN_NAMES = {
 }
 DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 
-# 先与 LSEJ S1A3 保持同一组参数；正式结果应在 JPLEG valid 上选定后冻结。
+# First keep the same parameters as LSEJ greedy reassembly; freeze formal values after selecting them on JPLEG validation.
 DEFAULT_MUTUAL_TOP_K = 3
 DEFAULT_COMPONENT_INDEX = 0
 DEFAULT_MIN_COMPONENT_SIZE = 4
@@ -92,36 +92,36 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "在 JPLEG 上使用冻结的 S1A E1 兼容性执行迭代式高置信组件重组",
+        "Run greedy high-confidence component reassembly on JPLEG with frozen E1 compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPLEG_CONFIGS.keys(), help="要评估的 JPLEG 数据集；不同数据集使用各自 checkpoint")
-    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="要评估的数据划分")
-    parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset 数据集根目录")
-    parser.add_argument("--checkpoint", default=None, type=Path, help="精确 checkpoint 路径；设置后优先级最高")
+    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPLEG_CONFIGS.keys(), help="JPLEG dataset to evaluate; each dataset uses its own checkpoint")
+    parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="data split to evaluate")
+    parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset root")
+    parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")
     parser.add_argument(
         "--run-name",
         default=None,
-        help="logs/s1a_train_jpleg/<dataset> 下的实验文件夹名；留空时按 dataset 选择对应默认实验",
+        help="experiment directory under logs/train_jpleg/<dataset>; leave empty to select the dataset default",
     )
-    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="直接指定包含 checkpoints 的实验目录")
-    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="要读取的 checkpoint 文件名")
-    parser.add_argument("--start-index", default=DEFAULT_START_INDEX, type=int, help="从 split 中第几张拼图开始")
-    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="最多评估多少张拼图；0 表示完整 split")
-    parser.add_argument("--mutual-top-k", default=DEFAULT_MUTUAL_TOP_K, type=int, help="构造互惠邻接图时每个方向保留的候选数")
-    parser.add_argument("--component-index", default=DEFAULT_COMPONENT_INDEX, type=int, help="按规模排序后选取第几个闭环组件，0 表示最大组件")
-    parser.add_argument("--min-component-size", default=DEFAULT_MIN_COMPONENT_SIZE, type=int, help="允许执行重组的最小组件 piece 数")
-    parser.add_argument("--refinement-rounds", default=DEFAULT_REFINEMENT_ROUNDS, type=int, help="最多执行多少轮组件提取和平移重组")
-    parser.add_argument("--score-batch-size", default=DEFAULT_SCORE_BATCH_SIZE, type=int, help="提取边缘 embedding 时的前向批量")
-    parser.add_argument("--postprocess", default=DEFAULT_POSTPROCESS, type=parse_bool, help="是否执行 S1A 兼容分数后处理")
-    parser.add_argument("--device", default="auto", help="运行设备，例如 auto、cpu、cuda:0")
-    parser.add_argument("--gpu-id", default=0, type=int, help="device=auto 时使用的 GPU 编号")
-    parser.add_argument("--verbose-solver", action="store_true", help="显示初始求解器的内部信息")
-    parser.add_argument("--output-dir", default=None, type=Path, help="结果保存目录；留空时自动生成")
-    parser.add_argument("--save-visuals", default=DEFAULT_SAVE_VISUALS, type=parse_bool, help="是否保存重组前后可视化")
-    parser.add_argument("--visual-limit", default=DEFAULT_VISUAL_LIMIT, type=int, help="最多保存多少张可视化图片；0 表示不限制")
-    parser.add_argument("--save-predictions", default=DEFAULT_SAVE_PREDICTIONS, type=parse_bool, help="是否保存 predictions.npz")
-    parser.add_argument("--progress-interval", default=DEFAULT_PROGRESS_INTERVAL, type=int, help="每处理多少张拼图打印一次指标；0 表示关闭")
+    parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="directory containing checkpoints")
+    parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="checkpoint filename to load")
+    parser.add_argument("--start-index", default=DEFAULT_START_INDEX, type=int, help="starting puzzle index in the split")
+    parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="maximum puzzles to evaluate; 0 uses the full split")
+    parser.add_argument("--mutual-top-k", default=DEFAULT_MUTUAL_TOP_K, type=int, help="candidates retained per direction when building mutual adjacency")
+    parser.add_argument("--component-index", default=DEFAULT_COMPONENT_INDEX, type=int, help="cycle-supported component index after size sorting; 0 is the largest")
+    parser.add_argument("--min-component-size", default=DEFAULT_MIN_COMPONENT_SIZE, type=int, help="minimum component size in pieces for reassembly")
+    parser.add_argument("--refinement-rounds", default=DEFAULT_REFINEMENT_ROUNDS, type=int, help="maximum rounds of component extraction and translated reassembly")
+    parser.add_argument("--score-batch-size", default=DEFAULT_SCORE_BATCH_SIZE, type=int, help="forward batch size for edge embeddings")
+    parser.add_argument("--postprocess", default=DEFAULT_POSTPROCESS, type=parse_bool, help="whether to apply compatibility-score post-processing")
+    parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0")
+    parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
+    parser.add_argument("--verbose-solver", action="store_true", help="show initial-solver internals")
+    parser.add_argument("--output-dir", default=None, type=Path, help="result directory; leave empty to generate automatically")
+    parser.add_argument("--save-visuals", default=DEFAULT_SAVE_VISUALS, type=parse_bool, help="whether to save before/after reassembly visualizations")
+    parser.add_argument("--visual-limit", default=DEFAULT_VISUAL_LIMIT, type=int, help="maximum visualizations to save; 0 means unlimited")
+    parser.add_argument("--save-predictions", default=DEFAULT_SAVE_PREDICTIONS, type=parse_bool, help="whether to save predictions.npz")
+    parser.add_argument("--progress-interval", default=DEFAULT_PROGRESS_INTERVAL, type=int, help="print metrics every N puzzles; 0 disables output")
     return parser
 
 
@@ -131,17 +131,17 @@ def parse_args() -> argparse.Namespace:
 
 def validate_args(args: argparse.Namespace) -> None:
     if args.start_index < 0 or args.max_samples < 0:
-        raise ValueError("start-index 和 max-samples 必须非负")
+        raise ValueError("start-index and max-samples must be non-negative")
     if args.mutual_top_k <= 0:
-        raise ValueError("mutual-top-k 必须为正整数")
+        raise ValueError("mutual-top-k must be a positive integer")
     if args.component_index < 0:
-        raise ValueError("component-index 不能为负数")
+        raise ValueError("component-index cannot be negative")
     if args.min_component_size <= 0 or args.refinement_rounds <= 0:
-        raise ValueError("min-component-size 和 refinement-rounds 必须为正整数")
+        raise ValueError("min-component-size and refinement-rounds must be positive integers")
     if args.score_batch_size <= 0:
-        raise ValueError("score-batch-size 必须为正整数")
+        raise ValueError("score-batch-size must be a positive integer")
     if args.visual_limit < 0 or args.progress_interval < 0:
-        raise ValueError("visual-limit 和 progress-interval 必须非负")
+        raise ValueError("visual-limit and progress-interval must be non-negative")
 
 
 def _write_pa_case_lists(output_dir: Path, rows: list[dict]) -> tuple[list[str], list[str]]:
@@ -187,11 +187,11 @@ def _save_visual(
         compose_puzzle(pieces, target, grid),
     ]
     names = [
-        "输入乱序拼图",
-        f"S1A {initial_solver_name} 初始解（AA {np.count_nonzero(baseline == target)}/{grid * grid}）",
-        "最后一次组件种子（青色框）",
-        f"S1A3 最终解（AA {np.count_nonzero(selected == target)}/{grid * grid}）",
-        "真实拼图",
+        "Shuffled input puzzle",
+        f"E1 {initial_solver_name} initial solution (AA {np.count_nonzero(baseline == target)}/{grid * grid})",
+        "Last component seed (cyan box)",
+        f"Greedy reassembly final solution (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        "Ground-truth puzzle",
     ]
     component_set = {int(piece) for piece in component}
     piece_size = int(pieces[0].shape[0])
@@ -275,7 +275,7 @@ def run_evaluation(
     config = JPLEG_CONFIGS[args.dataset]
     images, labels = load_jpleg_arrays(args.data_root, args.dataset, split)
     if args.start_index >= len(images):
-        raise ValueError(f"start-index {args.start_index} 超出数据集长度 {len(images)}")
+        raise ValueError(f"start-index {args.start_index} exceeds dataset length {len(images)}")
     end_index = len(images) if args.max_samples == 0 else min(len(images), args.start_index + args.max_samples)
     sample_indices = list(range(args.start_index, end_index))
     grid = config.grid
@@ -312,7 +312,7 @@ def run_evaluation(
     status_counts: dict[str, int] = {}
     started = time.perf_counter()
 
-    print(f"在 {args.dataset.upper()} {split} 上评估 S1A3：samples={len(sample_indices)}, grid={grid}x{grid}")
+    print(f"Evaluating greedy reassembly on {args.dataset.upper()} {split}: samples={len(sample_indices)}, grid={grid}x{grid}")
     for evaluation_number, sample_index in enumerate(sample_indices, start=1):
         image = np.asarray(images[sample_index])
         pieces = list(image_to_pieces(image, grid))
@@ -508,7 +508,7 @@ def run_evaluation(
         )
 
     summary_lines = [
-        f"JPLEG S1A3 Iterative Component Reassembly ({initial_solver_name} initialization)",
+        f"JPLEG Greedy Component Reassembly ({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {args.checkpoint}",
         f"dataset/split: {args.dataset} / {split}",
@@ -517,7 +517,7 @@ def run_evaluation(
         f"selection: {payload['selection_rule']}",
         f"status: {status_counts}",
         "",
-        f"S1A {initial_solver_name} baseline:",
+        f"E1 {initial_solver_name} baseline:",
         f"  PA={baseline_aggregate['PA']:.4%}",
         f"  AA={baseline_aggregate['AA']:.4%}",
         f"  HA={baseline_aggregate['HA']:.4%}",
@@ -525,7 +525,7 @@ def run_evaluation(
         f"  SRA={baseline_aggregate['SRA']:.4%}",
         f"  NA={baseline_aggregate['NA']:.4%}",
         "",
-        "S1A3:",
+        "Greedy reassembly:",
         f"  PA={selected_aggregate['PA']:.4%}",
         f"  AA={selected_aggregate['AA']:.4%}",
         f"  HA={selected_aggregate['HA']:.4%}",

@@ -1,9 +1,9 @@
 """
-@file: s1a4_eval_lsej_lp_profiled_large_neighborhood_reassembly.py
-@description: 使用 BMVC 2016 Type-1 纯 Python 忠实移植生成 ImageNet-LSEJ 初始布局，
-              再执行 S1A4 基于多路径回填的 profiled large-neighborhood reassembly。
-              每个可靠组件放置位置均保留多条剩余 piece 回填路径，并由完整布局的
-              E1 目标选择代表解；beam=1 时严格退化为同配置的 S1A3 单路径重组。
+@file: evaluate_lsej_linear_programming_rg_lns.py
+@description: Generate an ImageNet-LSEJ initial layout with the faithful pure-Python BMVC 2016 Type-1 port,
+              then run profiled RG-LNS with multi-path completion.
+              Retain multiple remaining-piece fill paths at every reliable-component pose and select a representative
+              using the full-layout E1 objective; beam=1 strictly reduces to the matching greedy single-path reassembly.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -38,10 +38,10 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "以作者 BMVC 2016 Type-1 LP 的纯 Python 忠实移植作为 S1A4 初始求解器"
+        "Use the faithful pure-Python BMVC 2016 Type-1 LP port as the profiled RG-LNS initial solver"
     )
-    # 与已有 S1A/S1A3 LP 入口保持相同口径：LP 默认直接使用原始 E1，
-    # 不额外执行 Gallagher 版本默认开启的兼容性后处理。
+    # Keep the same convention as the existing compatibility/greedy LP entry points: LP uses raw E1 by default
+    # and does not apply the compatibility post-processing enabled by the Gallagher version.
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()

@@ -1,6 +1,6 @@
 """
 @file: linear_program.py
-@description: 忠实移植 lp_from_patch_and_weight_sp.m 的稀疏加权 L1 线性规划及刚性组件硬约束。
+@description: Faithful port of the sparse weighted L1 linear program and rigid-component constraints from lp_from_patch_and_weight_sp.m.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -15,7 +15,7 @@ from scipy.optimize import linprog
 from .matching import MatchInfo
 
 
-# MATLAB 坐标顺序是 x=行、y=列；配置 1..4 是上、右、下、左。
+# MATLAB coordinates use x=row and y=column; configurations 1..4 are up, right, down, and left.
 DIRECTION_OFFSETS = np.asarray(
     [[-1.0, 0.0], [0.0, 1.0], [1.0, 0.0], [0.0, -1.0]],
     dtype=np.float64,
@@ -23,7 +23,7 @@ DIRECTION_OFFSETS = np.asarray(
 
 
 def find_best_fix_piece(info: MatchInfo, num_pieces: int) -> int:
-    """复现 ``find_best_match.m``：选四个方向均有非 1 权重匹配的最可靠 piece。"""
+    """Reproduce ``find_best_match.m`` by selecting the most reliable piece with non-unit matches in all four directions."""
 
     counts = np.zeros(num_pieces, dtype=np.int32)
     sums = np.zeros(num_pieces, dtype=np.float64)
@@ -54,10 +54,10 @@ def solve_weighted_l1_lp(
     rigid_components: bool = False,
     time_limit: float = 0.0,
 ) -> tuple[np.ndarray, dict]:
-    """求解作者的等式形式 LP；刚性组件通过公共平移变量保持内部形状不变。"""
+    """Solve the author's equality-form LP; rigid components preserve their internal shape through shared translation variables."""
 
     if len(info) == 0:
-        raise RuntimeError("LP 候选集合为空")
+        raise RuntimeError("LP candidate set is empty")
     m = len(info)
     labels = None if previous_labels is None else np.asarray(previous_labels, dtype=np.int32)
     coordinates = (
@@ -66,7 +66,7 @@ def solve_weighted_l1_lp(
     component_ids: list[int] = []
     if rigid_components:
         if labels is None or coordinates is None:
-            raise ValueError("刚性组件约束需要 previous_labels 和 previous_coordinates")
+            raise ValueError("rigid-component constraints require previous_labels and previous_coordinates")
         component_ids = [int(x) for x in np.unique(labels) if int(x) >= 0]
 
     coordinate_variables = 2 * num_pieces
@@ -75,7 +75,7 @@ def solve_weighted_l1_lp(
     variable_count = coordinate_variables + auxiliary_variables + translation_variables
 
     objective = np.zeros(variable_count, dtype=np.float64)
-    # MATLAB 顺序：[横向观测权重; 纵向观测权重]，再分别对应 g、h。
+    # MATLAB order: [horizontal observation weights; vertical observation weights], then g and h respectively.
     observation_weights = np.concatenate([info.weights, info.weights])
     objective[coordinate_variables : coordinate_variables + 2 * m] = observation_weights
     objective[coordinate_variables + 2 * m : coordinate_variables + 4 * m] = observation_weights
@@ -93,7 +93,7 @@ def solve_weighted_l1_lp(
             values.append(value)
         rhs.append(float(target))
 
-    # 与 lp_from_patch_and_weight_sp.m 的 A1、A2、B 完全同构。
+    # Exactly matches A1, A2, and B in lp_from_patch_and_weight_sp.m.
     for observation, (anchor, neighbor, direction) in enumerate(
         zip(info.anchors, info.neighbors, info.directions)
     ):
@@ -128,7 +128,7 @@ def solve_weighted_l1_lp(
             0.0,
         )
 
-    # connected_comp(+fix_point)：每个组件只有两个公共平移自由度。
+    # connected_comp(+fix_point): each component has only two shared translation degrees of freedom.
     translation_start = coordinate_variables + auxiliary_variables
     for component_index, component_id in enumerate(component_ids):
         members = np.flatnonzero(labels == component_id)
@@ -164,7 +164,7 @@ def solve_weighted_l1_lp(
     )
     if not result.success or result.x is None:
         raise RuntimeError(
-            f"HiGHS LP 失败：status={result.status}, message={result.message}"
+            f"HiGHS LP failed: status={result.status}, message={result.message}"
         )
     solved = np.column_stack(
         [result.x[:num_pieces], result.x[num_pieces : 2 * num_pieces]]

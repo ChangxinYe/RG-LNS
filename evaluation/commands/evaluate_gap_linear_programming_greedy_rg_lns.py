@@ -1,8 +1,8 @@
 """
-@file: s1a3_eval_gap_lp_iterative_component_reassembly.py
-@description: 在 GAP-3/GAP-5 上使用 BMVC 2016 Type-1 纯 Python LP 生成 S1A E1
-              初始布局，再执行 S1A3 单路径迭代组件重组；输出与 Gallagher 版本一致的
-              重组前后诊断、拼图指标、邻居检索指标、预测和可视化结果。
+@file: evaluate_gap_linear_programming_greedy_rg_lns.py
+@description: Generate E1-compatibility initial GAP-3/GAP-5 layouts with the pure-Python BMVC 2016 Type-1 LP solver,
+              then run greedy single-path component reassembly. Output diagnostics before and after reassembly,
+              jigsaw metrics, neighbor-retrieval metrics, predictions, and visualizations consistent with the Gallagher version.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -39,9 +39,9 @@ DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate S1A3 on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP initialization"
+        "Evaluate greedy component reassembly on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP initialization"
     )
-    # 忠实 LP 设置直接使用原始 E1，默认不额外执行 S1A 后处理。
+    # The faithful LP setting uses the raw E1 scores directly and does not apply extra compatibility post-processing by default.
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,

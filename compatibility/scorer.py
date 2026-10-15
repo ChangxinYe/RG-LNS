@@ -1,6 +1,6 @@
 """
 @file: metric_scorer.py
-@description: handwritten ViT 度量学习 checkpoint 加载与拼图兼容性矩阵评分接口。
+@description: Checkpoint loading and jigsaw compatibility-matrix scoring interface for handwritten ViT metric learning.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.0

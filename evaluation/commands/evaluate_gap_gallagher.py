@@ -1,7 +1,7 @@
 """
-@file: s1a_eval_gap.py
-@description: 加载指定的 S1A GAP checkpoint，计算 RGBA piece 兼容性矩阵并用 Gallagher Solver
-              重组 GAP-3/GAP-5，输出 PA、AA、HA、VA、SRA、NA、Recall@K、预测与可视化。
+@file: evaluate_gap_gallagher.py
+@description: Load the specified compatibility checkpoint, compute the RGBA piece compatibility matrix, and use Gallagher Solver
+              to reassemble GAP-3/GAP-5. Output PA, AA, HA, VA, SRA, NA, Recall@K, predictions, and visualizations.
 @author: Changxin Ye
 @created: 2026-07-27
 @version: 1.0
@@ -49,12 +49,12 @@ def parse_bool(value: str | bool) -> bool:
         return True
     if value in {"false", "f", "0", "no", "n"}:
         return False
-    raise argparse.ArgumentTypeError("请输入 True 或 False")
+    raise argparse.ArgumentTypeError("please enter True or False")
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate an S1A metric checkpoint on GAP-3/GAP-5 with Gallagher",
+        "Evaluate a compatibility metric checkpoint on GAP-3/GAP-5 with Gallagher",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=GAP_CONFIGS.keys())
@@ -64,7 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--run-name",
         default=None,
-        help="checkpoints/train_gap/<dataset> 下的实验名；留空时按 dataset 使用 DEFAULT_RUN_NAMES",
+        help="experiment name under checkpoints/train_gap/<dataset>; leave empty to use DEFAULT_RUN_NAMES by dataset",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path)
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME)
@@ -137,12 +137,12 @@ def run_evaluation(
     *,
     solver=solve_with_gallagher,
     solver_name: str = "Gallagher",
-    method_name: str = "S1A",
+    method_name: str = "E1 compatibility",
     solver_configuration: dict | None = None,
     output_root: Path = DEFAULT_OUTPUT_ROOT,
     output_suffix: str = "",
 ) -> tuple[GAPMetrics, Path]:
-    """Run a standalone GAP baseline through the same scorer/solver path as S1A4."""
+    """Run a standalone GAP baseline through the same scorer/solver path as profiled RG-LNS."""
 
     validate_args(args)
     if args.run_name is None:

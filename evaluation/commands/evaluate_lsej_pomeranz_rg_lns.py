@@ -1,9 +1,9 @@
 """
-@file: s1a4_eval_lsej_pomeranz_profiled_large_neighborhood_reassembly.py
-@description: 使用 S1A E1 与 Pomeranz CVPR 2011 求解器生成 ImageNet-LSEJ 初始布局，
-              再执行 S1A4 基于多路径回填的 profiled large-neighborhood reassembly。
-              方法显式比较每个可靠组件放置位置下的多条完整回填结果，并且只在
-              全局 E1 目标严格改善时接受新布局；beam=1 时退化为 S1A3。
+@file: evaluate_lsej_pomeranz_rg_lns.py
+@description: Generate an ImageNet-LSEJ initial layout with E1 compatibility and the Pomeranz CVPR 2011 solver,
+              then run profiled RG-LNS with multi-path completion.
+              Compare multiple complete fills at each reliable-component pose and accept a new layout only
+              when the global E1 objective strictly improves; beam=1 reduces to greedy reassembly.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -44,7 +44,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "以 S1A E1 + Pomeranz CVPR 2011 完整解作为 S1A4 初始布局"
+        "Use the complete E1 compatibility + Pomeranz CVPR 2011 solution as the profiled initial layout"
     )
     add_pomeranz_arguments(parser)
     return parser.parse_args()

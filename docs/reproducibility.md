@@ -14,9 +14,20 @@ rewriting their numerical implementation:
 
 The move from the submitted workspace was intentionally mechanical. Function
 bodies for the paper-facing training, solver, and evaluation paths were kept;
-module imports and repository-relative paths were changed. The former
-`s1a*`, `s1a3*`, and `s1a4*` entry-point names were replaced by descriptive
-dataset/solver names under `evaluation/commands/`.
+module imports and repository-relative paths were changed. The former stage
+labels (`s1a*`, `s1a3*`, and `s1a4*`) were replaced by descriptive
+dataset/solver names under `evaluation/commands/`. Historical labels remain
+only where they are part of an existing result schema or artifact filename,
+so previously generated records remain readable.
+
+For readers, the public terminology is:
+
+- **E1 compatibility**: the learned piece-to-piece compatibility model and its
+  initial-solver baselines;
+- **greedy component reassembly**: the single-path component search formerly
+  labeled S1A3;
+- **profiled RG-LNS**: the multi-path large-neighborhood search formerly
+  labeled S1A4.
 
 ## Local directory contract
 

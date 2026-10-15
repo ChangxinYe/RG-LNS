@@ -1,6 +1,6 @@
 """
 @file: metric_transforms.py
-@description: Puzzle-level hard triplet 拼图 baseline 的碎片张量转换与 ViT 输入归一化工具。
+@description: Piece-tensor conversion and ViT input-normalization utilities for the puzzle-level hard-triplet jigsaw baseline.
 @author: Changxin Ye
 @created: 2026-07-10
 @version: 1.1
@@ -43,7 +43,7 @@ def piece_to_tensor(piece: np.ndarray, input_size: int, normalization: str = "vi
     if tensor.shape[-1] != input_size or tensor.shape[-2] != input_size:
         if tensor.shape[0] == 4:
             # Match PuzzleFlow's RGBA resizing and avoid bicubic overshoot on
-            # GAP's binary alpha masks. RGB-only S1A inputs retain their
+            # GAP's binary alpha masks. RGB-only compatibility inputs retain their
             # original bicubic preprocessing below.
             tensor = F.interpolate(
                 tensor.unsqueeze(0),
