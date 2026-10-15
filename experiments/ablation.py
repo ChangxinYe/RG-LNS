@@ -49,33 +49,9 @@ DEFAULT_LSEJ_DATA_ROOT = PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
 DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
 DEFAULT_JPWLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 
-DEFAULT_LSEJ_CHECKPOINT = (
-    PROJECT_ROOT
-    / "checkpoints"
-    / "train_lsej"
-    / "grid10_erode2"
-    / "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    / "checkpoints"
-    / "best.pth"
-)
-DEFAULT_GAP_CHECKPOINT = (
-    PROJECT_ROOT
-    / "checkpoints"
-    / "train_gap"
-    / "GAP-5"
-    / "hard_triplet_d128_s224_k15_2026-07-31-20-43-26"
-    / "checkpoints"
-    / "best.pth"
-)
-DEFAULT_JPWLEG_CHECKPOINT = (
-    PROJECT_ROOT
-    / "checkpoints"
-    / "train_jpwleg"
-    / "jpwleg5"
-    / "hard_triplet_d128_s224_2026-07-28-23-27-31"
-    / "checkpoints"
-    / "best.pth"
-)
+DEFAULT_LSEJ_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "lsej_grid10_erode2_best.pth"
+DEFAULT_GAP_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "gap5_best.pth"
+DEFAULT_JPWLEG_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "jpwleg5_best.pth"
 
 # One-click defaults.  Edit these values when launching directly from an IDE.
 DEFAULT_DATASETS = ("lsej", "gap", "jpwleg")

@@ -154,8 +154,8 @@ DEFAULT_REFINEMENT_ROUNDS = 1
 DEFAULT_VISUAL_LIMIT = 20
 
 
-def _checkpoint(*parts: str) -> Path:
-    return PROJECT_ROOT.joinpath("checkpoints", *parts, "checkpoints", "best.pth")
+def _checkpoint(filename: str) -> Path:
+    return PROJECT_ROOT / "checkpoints" / "compatibility" / filename
 
 
 @dataclass(frozen=True)
@@ -216,11 +216,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--task",
         selector_value="grid10_erode2",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_lsej",
-            "grid10_erode2",
-            "hard_triplet_d128_s224_k15_2026-07-25-10-22-41",
-        ),
+        checkpoint=_checkpoint("lsej_grid10_erode2_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="configs",
     ),
@@ -232,11 +228,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--task",
         selector_value="grid10_erode5",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_lsej",
-            "grid10_erode5",
-            "hard_triplet_d128_s224_k15_2026-08-02-21-16-37",
-        ),
+        checkpoint=_checkpoint("lsej_grid10_erode5_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="configs",
     ),
@@ -248,11 +240,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--task",
         selector_value="grid10_erode8",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_lsej",
-            "grid10_erode8",
-            "hard_triplet_d128_s224_k15_2026-08-02-21-17-06",
-        ),
+        checkpoint=_checkpoint("lsej_grid10_erode8_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="configs",
     ),
@@ -264,11 +252,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--dataset",
         selector_value="GAP-3",
         data_root=DEFAULT_GAP_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_gap",
-            "GAP-3",
-            "hard_triplet_d128_s224_kall_2026-07-31-20-21-04",
-        ),
+        checkpoint=_checkpoint("gap3_best.pth"),
         split_sizes={"val": 3000, "test": 3000},
         expected_data_entry="GAP-3",
     ),
@@ -280,11 +264,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--dataset",
         selector_value="GAP-5",
         data_root=DEFAULT_GAP_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_gap",
-            "GAP-5",
-            "hard_triplet_d128_s224_k15_2026-07-31-20-43-26",
-        ),
+        checkpoint=_checkpoint("gap5_best.pth"),
         split_sizes={"val": 3000, "test": 3000},
         expected_data_entry="GAP-5",
     ),
@@ -296,11 +276,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--dataset",
         selector_value="jpwleg3",
         data_root=DEFAULT_JPWLEG_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_jpwleg",
-            "jpwleg3",
-            "hard_triplet_d128_s224_2026-07-27-08-14-53",
-        ),
+        checkpoint=_checkpoint("jpwleg3_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="JPwLEG-3",
     ),
@@ -312,11 +288,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         selector_argument="--dataset",
         selector_value="jpwleg5",
         data_root=DEFAULT_JPWLEG_DATA_ROOT,
-        checkpoint=_checkpoint(
-            "train_jpwleg",
-            "jpwleg5",
-            "hard_triplet_d128_s224_2026-07-28-23-27-31",
-        ),
+        checkpoint=_checkpoint("jpwleg5_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="JPwLEG-5",
     ),
@@ -853,7 +825,10 @@ def _validate_args(args: argparse.Namespace) -> None:
                 f"under {data_root}"
             )
         if not checkpoint.is_file():
-            errors.append(f"{spec.display_name}: missing checkpoint: {checkpoint}")
+            errors.append(
+                f"{spec.display_name}: missing checkpoint: {checkpoint}; "
+                f"use --checkpoint {benchmark}=PATH to supply custom weights"
+            )
         for solver_key in args.solvers:
             evaluator_path = _evaluator_path(spec, SOLVERS[solver_key])
             if evaluator_path not in checked_evaluators and not evaluator_path.is_file():

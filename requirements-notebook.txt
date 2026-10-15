@@ -1,0 +1,6 @@
+-r requirements.txt
+
+# Optional dependencies for experiments/failure_analysis.ipynb.
+pandas==2.3.2
+jupyterlab==4.5.0
+ipykernel==7.1.0
