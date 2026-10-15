@@ -39,8 +39,8 @@ datasets/
 │   ├── GAP-3/{train,val,test}/
 │   └── GAP-5/{train,val,test}/
 ├── MET_Dataset/
-│   ├── JPLEG-3/                  # optional; not reported in the paper
-│   └── JPLEG-5/
+│   ├── JPwLEG-3/                  # optional; not reported in the paper
+│   └── JPwLEG-5/
 └── ImageNet_LSEJ/
     ├── configs/
     ├── images/
@@ -58,11 +58,11 @@ checkpoints/
 ├── compatibility/
 │   ├── gap3_best.pth
 │   ├── gap5_best.pth
-│   ├── jpleg5_best.pth
+│   ├── jpwleg5_best.pth
 │   ├── lsej_grid10_erode2_best.pth
 │   └── lsej_grid10_erode5_best.pth
 ├── train_gap/<dataset>/<run>/checkpoints/       # generated training runs
-├── train_jpleg/<dataset>/<run>/checkpoints/    # generated training runs
+├── train_jpwleg/<dataset>/<run>/checkpoints/    # generated training runs
 └── train_lsej/<task>/<run>/checkpoints/        # generated training runs
 ```
 
@@ -118,7 +118,7 @@ dispatches to:
 python -m evaluation.commands.evaluate_gap_rg_lns --checkpoint CHECKPOINT
 ```
 
-The same pattern covers three datasets (`gap`, `jpleg`, `lsej`), three initial
+The same pattern covers three datasets (`gap`, `jpwleg`, `lsej`), three initial
 solvers (`gallagher`, `pomeranz`, `linear-programming`), and three evaluation
 modes (`initial`, `greedy-rg-lns`, `rg-lns`). Keeping these commands explicit
 avoids silently sharing dataset-specific label conversion or solver wrappers.

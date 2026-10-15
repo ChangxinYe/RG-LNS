@@ -60,7 +60,7 @@ DEFAULT_LSEJ_DATA_ROOT = (
     PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
 )
 DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
-DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
+DEFAULT_JPWLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 
 # ---------------------------------------------------------------------------
 # One-click IDE run configuration
@@ -77,12 +77,12 @@ DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 #   "lsej10_e8"  = ImageNet-LSEJ-10，8-pixel erosion
 #   "gap3"       = GAP-3
 #   "gap5"       = GAP-5
-#   "jpleg3"     = JPwLEG-3
-#   "jpleg5"     = JPwLEG-5
+#   "jpwleg3"     = JPwLEG-3
+#   "jpwleg5"     = JPwLEG-5
 # Available aliases (expanded automatically):
 #   "lsej10" or "lsej" -> lsej10_e2, lsej10_e5, lsej10_e8
 #   "gap"              -> gap3, gap5
-#   "jpleg"            -> jpleg3, jpleg5
+#   "jpwleg"            -> jpwleg3, jpwleg5
 #   "all"              -> all seven exact settings above
 DEFAULT_BENCHMARKS = ("lsej10_e5", "gap5")
 
@@ -288,37 +288,37 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         split_sizes={"val": 3000, "test": 3000},
         expected_data_entry="GAP-5",
     ),
-    "jpleg3": BenchmarkSpec(
-        key="jpleg3",
+    "jpwleg3": BenchmarkSpec(
+        key="jpwleg3",
         display_name="JPwLEG-3",
-        family="jpleg",
-        module_token="jpleg",
+        family="jpwleg",
+        module_token="jpwleg",
         selector_argument="--dataset",
-        selector_value="jpleg3",
-        data_root=DEFAULT_JPLEG_DATA_ROOT,
+        selector_value="jpwleg3",
+        data_root=DEFAULT_JPWLEG_DATA_ROOT,
         checkpoint=_checkpoint(
-            "train_jpleg",
-            "jpleg3",
+            "train_jpwleg",
+            "jpwleg3",
             "hard_triplet_d128_s224_2026-07-27-08-14-53",
         ),
         split_sizes={"val": 1000, "test": 2000},
-        expected_data_entry="JPLEG-3",
+        expected_data_entry="JPwLEG-3",
     ),
-    "jpleg5": BenchmarkSpec(
-        key="jpleg5",
+    "jpwleg5": BenchmarkSpec(
+        key="jpwleg5",
         display_name="JPwLEG-5",
-        family="jpleg",
-        module_token="jpleg",
+        family="jpwleg",
+        module_token="jpwleg",
         selector_argument="--dataset",
-        selector_value="jpleg5",
-        data_root=DEFAULT_JPLEG_DATA_ROOT,
+        selector_value="jpwleg5",
+        data_root=DEFAULT_JPWLEG_DATA_ROOT,
         checkpoint=_checkpoint(
-            "train_jpleg",
-            "jpleg5",
+            "train_jpwleg",
+            "jpwleg5",
             "hard_triplet_d128_s224_2026-07-28-23-27-31",
         ),
         split_sizes={"val": 1000, "test": 2000},
-        expected_data_entry="JPLEG-5",
+        expected_data_entry="JPwLEG-5",
     ),
 }
 
@@ -326,7 +326,7 @@ BENCHMARK_ALIASES: dict[str, tuple[str, ...]] = {
     "lsej10": ("lsej10_e2", "lsej10_e5", "lsej10_e8"),
     "lsej": ("lsej10_e2", "lsej10_e5", "lsej10_e8"),
     "gap": ("gap3", "gap5"),
-    "jpleg": ("jpleg3", "jpleg5"),
+    "jpwleg": ("jpwleg3", "jpwleg5"),
     "all": tuple(BENCHMARKS),
 }
 
@@ -475,8 +475,8 @@ def build_parser(
         nargs="+",
         default=configured("benchmarks", list(DEFAULT_BENCHMARKS)),
         help=(
-            "Exact settings or aliases: lsej10_e2/e5/e8, gap3/5, jpleg3/5, "
-            "lsej10, gap, jpleg, all"
+            "Exact settings or aliases: lsej10_e2/e5/e8, gap3/5, jpwleg3/5, "
+            "lsej10, gap, jpwleg, all"
         ),
     )
     parser.add_argument(
@@ -574,7 +574,7 @@ def build_parser(
         action="append",
         default=configured("data_root", []),
         metavar="FAMILY=PATH",
-        help="Override a family data root; FAMILY is lsej, gap, or jpleg",
+        help="Override a family data root; FAMILY is lsej, gap, or jpwleg",
     )
     parser.add_argument(
         "--checkpoint",
@@ -746,7 +746,7 @@ def _normalize_args(args: argparse.Namespace) -> None:
         checkpoint_raw = config_payload["checkpoints"]
     args.data_root_overrides = _parse_assignments(
         data_root_raw,
-        valid_keys={"lsej", "gap", "jpleg"},
+        valid_keys={"lsej", "gap", "jpwleg"},
         label="data-root",
     )
     args.checkpoint_overrides = _parse_assignments(
@@ -1064,7 +1064,7 @@ def _run_signature_payload(
 
 
 def _normalized_observed_split(spec: BenchmarkSpec, split: str) -> str:
-    return "valid" if spec.family == "jpleg" and split == "val" else split
+    return "valid" if spec.family == "jpwleg" and split == "val" else split
 
 
 def _validate_metrics(
@@ -1360,11 +1360,11 @@ def _experiment_configuration(
                     {
                         "lsej": DEFAULT_LSEJ_DATA_ROOT,
                         "gap": DEFAULT_GAP_DATA_ROOT,
-                        "jpleg": DEFAULT_JPLEG_DATA_ROOT,
+                        "jpwleg": DEFAULT_JPWLEG_DATA_ROOT,
                     }[family],
                 )
             )
-            for family in ("lsej", "gap", "jpleg")
+            for family in ("lsej", "gap", "jpwleg")
         },
         "checkpoints": {
             benchmark: str(_checkpoint_for(args, BENCHMARKS[benchmark]))

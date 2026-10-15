@@ -46,7 +46,7 @@ Keep uncompressed datasets at these exact local paths:
 ```text
 datasets/GAP_fast/GAP-3
 datasets/GAP_fast/GAP-5
-datasets/MET_Dataset/JPLEG-5
+datasets/MET_Dataset/JPwLEG-5
 datasets/ImageNet_LSEJ/configs
 datasets/ImageNet_LSEJ/images
 ```
@@ -56,7 +56,7 @@ datasets/ImageNet_LSEJ/images
 The six model files are available in the public
 [v0.1.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v0.1.0).
 Download the files you need and place them under the repository root exactly
-as shown below:
+as shown below. Save the JPwLEG-5 download as `jpwleg5_best.pth`:
 
 ```text
 checkpoints/
@@ -65,7 +65,7 @@ checkpoints/
 └── compatibility/
     ├── gap3_best.pth
     ├── gap5_best.pth
-    ├── jpleg5_best.pth
+    ├── jpwleg5_best.pth
     ├── lsej_grid10_erode2_best.pth
     └── lsej_grid10_erode5_best.pth
 ```
@@ -107,7 +107,7 @@ python evaluate.py lsej linear-programming rg-lns --checkpoint checkpoints/compa
 ```bash
 # Stage-I compatibility training
 python train_compatibility.py gap --dataset GAP-5
-python train_compatibility.py jpleg --dataset jpleg5
+python train_compatibility.py jpwleg --dataset jpwleg5
 python train_compatibility.py lsej --task grid10_erode2
 
 # Paper-level experiments

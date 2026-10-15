@@ -35,7 +35,7 @@ DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "results" / "runs" / SCRIPT_PATH.stem
 
 DEFAULT_LSEJ_DATA_ROOT = PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
 DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
-DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
+DEFAULT_JPWLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 
 DEFAULT_LSEJ_CHECKPOINT = (
     PROJECT_ROOT
@@ -55,17 +55,17 @@ DEFAULT_GAP_CHECKPOINT = (
     / "checkpoints"
     / "best.pth"
 )
-DEFAULT_JPLEG_CHECKPOINT = (
+DEFAULT_JPWLEG_CHECKPOINT = (
     PROJECT_ROOT
     / "checkpoints"
-    / "train_jpleg"
-    / "jpleg5"
+    / "train_jpwleg"
+    / "jpwleg5"
     / "hard_triplet_d128_s224_2026-07-28-23-27-31"
     / "checkpoints"
     / "best.pth"
 )
 
-DEFAULT_DATASETS = ("lsej", "gap", "jpleg")
+DEFAULT_DATASETS = ("lsej", "gap", "jpwleg")
 DEFAULT_SOLVERS = ("gallagher", "lp", "pomeranz")
 DEFAULT_MAX_SAMPLES = 200  # Set to 0 for the complete test split.
 DEFAULT_RUNTIME_WARMUP_SAMPLES = 20
@@ -119,14 +119,14 @@ DATASETS = {
         data_root=DEFAULT_GAP_DATA_ROOT,
         checkpoint=DEFAULT_GAP_CHECKPOINT,
     ),
-    "jpleg": DatasetSpec(
-        key="jpleg",
+    "jpwleg": DatasetSpec(
+        key="jpwleg",
         display_name="JPwLEG-5",
-        module_token="jpleg",
+        module_token="jpwleg",
         selector_argument="--dataset",
-        selector_value="jpleg5",
-        data_root=DEFAULT_JPLEG_DATA_ROOT,
-        checkpoint=DEFAULT_JPLEG_CHECKPOINT,
+        selector_value="jpwleg5",
+        data_root=DEFAULT_JPWLEG_DATA_ROOT,
+        checkpoint=DEFAULT_JPWLEG_CHECKPOINT,
     ),
 }
 
@@ -213,14 +213,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--gap-data-root", type=Path, default=DEFAULT_GAP_DATA_ROOT)
     parser.add_argument(
-        "--jpleg-data-root", type=Path, default=DEFAULT_JPLEG_DATA_ROOT
+        "--jpwleg-data-root", type=Path, default=DEFAULT_JPWLEG_DATA_ROOT
     )
     parser.add_argument(
         "--lsej-checkpoint", type=Path, default=DEFAULT_LSEJ_CHECKPOINT
     )
     parser.add_argument("--gap-checkpoint", type=Path, default=DEFAULT_GAP_CHECKPOINT)
     parser.add_argument(
-        "--jpleg-checkpoint", type=Path, default=DEFAULT_JPLEG_CHECKPOINT
+        "--jpwleg-checkpoint", type=Path, default=DEFAULT_JPWLEG_CHECKPOINT
     )
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument(

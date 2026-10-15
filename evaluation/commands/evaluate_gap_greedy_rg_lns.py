@@ -26,7 +26,7 @@ try:
     from evaluation.runtime_info import append_runtime_environment
     from data_loaders.gap import DEFAULT_GAP_DATA_ROOT, GAP_CONFIGS, GAP_SPLITS, GAPPuzzleDataset
     from evaluation.gap import DEFAULT_NEIGHBOR_RECALL_KS, rgba_to_rgb
-    from evaluation.jpleg import (
+    from evaluation.jpwleg import (
         aggregate_ground_truth_metrics,
         compose_puzzle,
         is_complete_prediction,
@@ -50,7 +50,7 @@ except ImportError:
     from evaluation.runtime_info import append_runtime_environment
     from data_loaders.gap import DEFAULT_GAP_DATA_ROOT, GAP_CONFIGS, GAP_SPLITS, GAPPuzzleDataset
     from evaluation.gap import DEFAULT_NEIGHBOR_RECALL_KS, rgba_to_rgb
-    from evaluation.jpleg import (
+    from evaluation.jpwleg import (
         aggregate_ground_truth_metrics,
         compose_puzzle,
         is_complete_prediction,

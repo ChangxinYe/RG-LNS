@@ -9,7 +9,7 @@ import sys
 
 TRAINERS = {
     "gap": "compatibility.training.train_gap",
-    "jpleg": "compatibility.training.train_jpleg",
+    "jpwleg": "compatibility.training.train_jpwleg",
     "lsej": "compatibility.training.train_lsej",
 }
 

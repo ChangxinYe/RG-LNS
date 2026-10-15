@@ -9,12 +9,12 @@ from pathlib import Path
 import numpy as np
 
 from compatibility.scorer import MetricCompatibilityScorer
-from data_loaders.jpleg import (
-    JPLEG_CONFIGS,
+from data_loaders.jpwleg import (
+    JPWLEG_CONFIGS,
     SPLIT_ALIASES,
     image_to_pieces,
     label_to_target_positions,
-    load_jpleg_arrays,
+    load_jpwleg_arrays,
 )
 from initial_solvers.gallagher.mgc import do_all_assembly_of_puzzle
 
@@ -122,8 +122,8 @@ def evaluate_assembly_split(
     verbose_solver: bool = False,
 ) -> AssemblyMetrics:
     split = SPLIT_ALIASES[split]
-    config = JPLEG_CONFIGS[dataset]
-    images, labels = load_jpleg_arrays(data_root, dataset, split)
+    config = JPWLEG_CONFIGS[dataset]
+    images, labels = load_jpwleg_arrays(data_root, dataset, split)
     if start_index < 0 or start_index >= len(images):
         raise ValueError(f"start-index must be in [0, {len(images) - 1}], got {start_index}")
     end_index = len(images) if max_samples is None else min(len(images), start_index + int(max_samples))

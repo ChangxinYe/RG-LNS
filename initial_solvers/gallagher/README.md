@@ -68,7 +68,7 @@ Notes:
 
 ## Evaluation metrics
 
-The LSEJ and JPLEG evaluation scripts report the same six assembly metrics used
+The LSEJ and JPwLEG evaluation scripts report the same six assembly metrics used
 by the local TEN and Edge2Vec LSEJ evaluators:
 
 - `PA`: fraction of puzzles whose every piece is in the correct position.
@@ -96,5 +96,5 @@ uncompressed `GAP_fast` files and does not silently fall back to the older
 compressed dataset. The text and JSON summaries also record the host OS, CPU,
 RAM, resolved execution device, GPU usage, Python/PyTorch versions, CUDA/cuDNN,
 NVIDIA driver, and `CUDA_VISIBLE_DEVICES`, following the S1 evaluation format.
-The LSEJ and JPLEG test summaries and JSON metrics record the same runtime
+The LSEJ and JPwLEG test summaries and JSON metrics record the same runtime
 environment fields and identify their execution backend as NumPy CPU.

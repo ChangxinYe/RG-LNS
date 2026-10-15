@@ -24,7 +24,7 @@ try:
         print_metrics,
         run_evaluation,
     )
-    from evaluation.commands.evaluate_jpleg_linear_programming import add_lp_arguments, lp_config_from_args
+    from evaluation.commands.evaluate_jpwleg_linear_programming import add_lp_arguments, lp_config_from_args
 except ImportError:
     from initial_solvers.linear_programming import solve_with_lp
     from evaluation.output import script_output_root
@@ -38,7 +38,7 @@ except ImportError:
         print_metrics,
         run_evaluation,
     )
-    from evaluation.commands.evaluate_jpleg_linear_programming import add_lp_arguments, lp_config_from_args
+    from evaluation.commands.evaluate_jpwleg_linear_programming import add_lp_arguments, lp_config_from_args
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")

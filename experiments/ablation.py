@@ -47,7 +47,7 @@ DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "results" / "runs" / SCRIPT_PATH.stem
 
 DEFAULT_LSEJ_DATA_ROOT = PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
 DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
-DEFAULT_JPLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
+DEFAULT_JPWLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
 
 DEFAULT_LSEJ_CHECKPOINT = (
     PROJECT_ROOT
@@ -67,18 +67,18 @@ DEFAULT_GAP_CHECKPOINT = (
     / "checkpoints"
     / "best.pth"
 )
-DEFAULT_JPLEG_CHECKPOINT = (
+DEFAULT_JPWLEG_CHECKPOINT = (
     PROJECT_ROOT
     / "checkpoints"
-    / "train_jpleg"
-    / "jpleg5"
+    / "train_jpwleg"
+    / "jpwleg5"
     / "hard_triplet_d128_s224_2026-07-28-23-27-31"
     / "checkpoints"
     / "best.pth"
 )
 
 # One-click defaults.  Edit these values when launching directly from an IDE.
-DEFAULT_DATASETS = ("lsej", "gap", "jpleg")
+DEFAULT_DATASETS = ("lsej", "gap", "jpwleg")
 DEFAULT_DEVICE = "auto"
 DEFAULT_GPU_ID = 0
 DEFAULT_MAX_SAMPLES = 0
@@ -113,16 +113,16 @@ DATASET_RESULT_SOURCE_PATHS = {
     "gap": (
         PROJECT_ROOT / "data_loaders" / "gap.py",
         PROJECT_ROOT / "evaluation" / "gap.py",
-        PROJECT_ROOT / "evaluation" / "jpleg.py",
+        PROJECT_ROOT / "evaluation" / "jpwleg.py",
         PROJECT_ROOT / "evaluation" / "commands" / "evaluate_gap_gallagher.py",
         PROJECT_ROOT / "evaluation" / "commands" / "evaluate_gap_greedy_rg_lns.py",
     ),
-    "jpleg": (
-        PROJECT_ROOT / "data_loaders" / "jpleg_common.py",
-        PROJECT_ROOT / "data_loaders" / "jpleg.py",
-        PROJECT_ROOT / "evaluation" / "jpleg.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpleg_gallagher.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpleg_greedy_rg_lns.py",
+    "jpwleg": (
+        PROJECT_ROOT / "data_loaders" / "jpwleg_common.py",
+        PROJECT_ROOT / "data_loaders" / "jpwleg.py",
+        PROJECT_ROOT / "evaluation" / "jpwleg.py",
+        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpwleg_gallagher.py",
+        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpwleg_greedy_rg_lns.py",
     ),
 }
 
@@ -173,14 +173,14 @@ DATASETS: dict[str, DatasetSpec] = {
         full_sample_count=3000,
         expected_data_entry="GAP-5",
     ),
-    "jpleg": DatasetSpec(
-        key="jpleg",
+    "jpwleg": DatasetSpec(
+        key="jpwleg",
         display_name="JPwLEG-5",
-        module="evaluation.commands.evaluate_jpleg_rg_lns",
+        module="evaluation.commands.evaluate_jpwleg_rg_lns",
         selector_argument="--dataset",
-        selector_value="jpleg5",
+        selector_value="jpwleg5",
         full_sample_count=2000,
-        expected_data_entry="JPLEG-5",
+        expected_data_entry="JPwLEG-5",
     ),
 }
 
@@ -373,10 +373,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("--lsej-data-root", type=Path, default=DEFAULT_LSEJ_DATA_ROOT)
     parser.add_argument("--gap-data-root", type=Path, default=DEFAULT_GAP_DATA_ROOT)
-    parser.add_argument("--jpleg-data-root", type=Path, default=DEFAULT_JPLEG_DATA_ROOT)
+    parser.add_argument("--jpwleg-data-root", type=Path, default=DEFAULT_JPWLEG_DATA_ROOT)
     parser.add_argument("--lsej-checkpoint", type=Path, default=DEFAULT_LSEJ_CHECKPOINT)
     parser.add_argument("--gap-checkpoint", type=Path, default=DEFAULT_GAP_CHECKPOINT)
-    parser.add_argument("--jpleg-checkpoint", type=Path, default=DEFAULT_JPLEG_CHECKPOINT)
+    parser.add_argument("--jpwleg-checkpoint", type=Path, default=DEFAULT_JPWLEG_CHECKPOINT)
 
     rerun_group = parser.add_mutually_exclusive_group()
     rerun_group.add_argument(

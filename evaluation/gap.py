@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 
 from data_loaders.gap import GAPPuzzleDataset
-from evaluation.jpleg import (
+from evaluation.jpwleg import (
     aggregate_ground_truth_metrics,
     sample_ground_truth_metrics,
     solve_with_gallagher,

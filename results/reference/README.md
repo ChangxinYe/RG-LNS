@@ -16,6 +16,11 @@ The submitted main runs are organized as
 task, solver, and RG-LNS configuration remain recorded in each run's
 `metrics.json` and `summary.txt`.
 
+JPwLEG directories and filenames use the canonical `jpwleg` spelling.
+Archived record contents are preserved verbatim, including the original
+dataset identifiers, commands, source paths, and fingerprints. These
+historical identifiers refer to the same JPwLEG benchmark.
+
 ## Included analyses
 
 - cumulative ablation for paper Table 4: `table4_ablation/submitted/`;

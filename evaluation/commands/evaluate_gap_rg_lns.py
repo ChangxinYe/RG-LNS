@@ -36,7 +36,7 @@ try:
     )
     from data_loaders.gap import GAPPuzzleDataset
     from evaluation.gap import rgba_to_rgb
-    from evaluation.jpleg import (
+    from evaluation.jpwleg import (
         aggregate_ground_truth_metrics,
         compose_puzzle,
         is_complete_prediction,
@@ -70,7 +70,7 @@ except ImportError:
     )
     from data_loaders.gap import GAPPuzzleDataset
     from evaluation.gap import rgba_to_rgb
-    from evaluation.jpleg import (
+    from evaluation.jpwleg import (
         aggregate_ground_truth_metrics,
         compose_puzzle,
         is_complete_prediction,

@@ -11,12 +11,12 @@ analysis entry points. The main mapping is:
 | Submitted workspace | Release location |
 |---|---|
 | `metric_vit_model.py`, `metric_scorer.py`, transforms and geometry | `compatibility/` |
-| legacy compatibility-training entry points (`s1a_train_{gap,jpleg,lsej}.py`) | `compatibility/training/train_*.py` |
+| compatibility-training entry points in the submitted workspace | `compatibility/training/train_*.py` |
 | `metric_*_data.py` | `data_loaders/` |
 | Gallagher, Pomeranz, and LP assembly code | `initial_solvers/` |
 | `single_component_e1.py` | `rg_lns/component_search.py` |
 | `profiled_completion_e1.py` | `rg_lns/beam_search.py` |
-| dataset evaluators | `evaluation/{gap,jpleg,lsej}.py` |
+| dataset evaluators | `evaluation/{gap,jpwleg,lsej}.py` |
 | former stage-labeled (`s1a*`, `s1a3*`, `s1a4*`) entry points | `evaluation/commands/` |
 | ablation, sensitivity, runtime, and failure notebook | `experiments/` |
 | compact `eval_result/` records | `results/reference/` |
@@ -27,7 +27,7 @@ workspace are now self-contained:
 - the handwritten ViT definition is `compatibility/vit.py`;
 - the Gallagher MGC implementation is `initial_solvers/gallagher/mgc.py`.
 
-JPwLEG array/label conversion is vendored in `data_loaders/jpleg_common.py`, so
+JPwLEG array/label conversion is vendored in `data_loaders/jpwleg_common.py`, so
 the release no longer imports the Edge2Vec baseline tree.
 
 Unused reinforcement-learning prototype modules were excluded. The only part
