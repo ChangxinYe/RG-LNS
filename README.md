@@ -87,7 +87,7 @@ compatibility tensor plus an initial layout.
   $10\times10$ benchmark derived from ImageNet, with $50\times50$-pixel pieces
   under 2- and 5-pixel erosion.
 
-Keep uncompressed datasets at these exact local paths:
+By default, uncompressed datasets use the following paths:
 
 ```text
 datasets/GAP_fast/GAP-3
@@ -96,6 +96,11 @@ datasets/MET_Dataset/JPwLEG-5
 datasets/ImageNet_LSEJ/configs
 datasets/ImageNet_LSEJ/images
 ```
+
+Data may also be stored outside the repository or on another drive. Use
+`--data-root` in any training or evaluation command to override the default
+root (see [Quick Start](#quick-start)). For ImageNet-LSEJ, keep the official
+`lsej_dataloader.py` alongside `configs/`, `images/`, `permutations/`, and `splits/`.
 
 ## Checkpoints
 
@@ -125,15 +130,62 @@ After installing the requirements and preparing the dataset and matching
 checkpoint, run the following from the repository root. Released checkpoints
 can be evaluated without retraining Stage I.
 
+### RG-LNS evaluation
+
 ```bash
-# GAP-5: final layout after RG-LNS correction
-python evaluate.py gap gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
+# GAP-3 / GAP-5
+python evaluate.py gap gallagher rg-lns --dataset GAP-3 --checkpoint checkpoints/compatibility/gap3_best.pth
+python evaluate.py gap gallagher rg-lns --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
 
-# GAP-5: initial layout only
-python evaluate.py gap gallagher initial --checkpoint checkpoints/compatibility/gap5_best.pth
+# JPwLEG-5 (full test split)
+python evaluate.py jpwleg gallagher rg-lns --dataset jpwleg5 --max-samples 0 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
 
-# ImageNet-LSEJ: LP initialization followed by RG-LNS
-python evaluate.py lsej linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+# ImageNet-LSEJ: 2 px / 5 px erosion
+python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+python evaluate.py lsej gallagher rg-lns --task grid10_erode5 --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
+```
+
+### Initial solvers and evaluation options
+
+The command format is `python evaluate.py <dataset> <solver> <method> [options]`.
+For any dataset, select `gallagher`, `pomeranz`, or `linear-programming` as the
+solver. Use `initial` for the initial layout, `rg-lns` for the full method,
+or `greedy-rg-lns` for single-path component reassembly. For example:
+
+```bash
+# Initial layouts from each solver (GAP-5)
+python evaluate.py gap gallagher initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py gap pomeranz initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py gap linear-programming initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+
+# Pomeranz initialization followed by RG-LNS (JPwLEG-5)
+python evaluate.py jpwleg pomeranz rg-lns --dataset jpwleg5 --max-samples 0 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
+
+# LP initialization followed by RG-LNS (ImageNet-LSEJ)
+python evaluate.py lsej linear-programming rg-lns --task grid10_erode2 --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+
+# Show all options for a dataset/solver/method combination
+python evaluate.py gap gallagher rg-lns --help
+```
+
+All examples use the test split. Add `--split val` for validation or
+`--max-samples 10` for a short run; `--max-samples 0` evaluates the full split.
+Use `--output-dir` to choose where results are saved.
+
+### Custom data locations
+
+Set `--data-root` to the family root: the directory containing `GAP-3/` and
+`GAP-5/` for GAP, `JPwLEG-5/` for JPwLEG, or `lsej_dataloader.py` and the data
+subdirectories for ImageNet-LSEJ. For example, with code on `D:` and data on `E:`:
+
+```bash
+python evaluate.py gap gallagher rg-lns --dataset GAP-5 --data-root "E:/datasets/GAP_fast" --checkpoint checkpoints/compatibility/gap5_best.pth
+```
+
+The same option is available for training:
+
+```bash
+python train_compatibility.py gap --dataset GAP-5 --data-root "E:/datasets/GAP_fast"
 ```
 
 ## Training and Experiments

@@ -31,7 +31,7 @@ For readers, the public terminology is:
 
 ## Local directory contract
 
-Datasets are never committed. The loaders expect:
+Datasets are never committed. The default layout is:
 
 ```text
 datasets/
@@ -48,6 +48,15 @@ datasets/
     ├── splits/
     └── lsej_dataloader.py
 ```
+
+Training and evaluation accept `--data-root` for data stored elsewhere.
+Point it to `GAP_fast/`, `MET_Dataset/`, or `ImageNet_LSEJ/`, respectively,
+while preserving the subdirectory layout above. The ImageNet-LSEJ adapter is
+imported from `lsej_dataloader.py` in the selected root.
+
+For paper-level experiments, ablation and runtime accept `--gap-data-root`,
+`--jpwleg-data-root`, and `--lsej-data-root`. Sensitivity accepts repeatable
+`--data-root FAMILY=PATH` arguments, where `FAMILY` is `gap`, `jpwleg`, or `lsej`.
 
 Learned weights are also local:
 

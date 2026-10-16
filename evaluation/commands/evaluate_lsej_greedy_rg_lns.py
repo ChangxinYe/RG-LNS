@@ -314,7 +314,8 @@ def run_evaluation(
         raise FileNotFoundError(args.checkpoint)
     validate_checkpoint(args.checkpoint, args.task, args.loss_type)
 
-    dataset = load_official_dataset_class()(args.data_root, split=args.split, task=args.task, normalize=False)
+    dataset_class = load_official_dataset_class(args.data_root)
+    dataset = dataset_class(args.data_root, split=args.split, task=args.task, normalize=False)
     if args.start_index >= len(dataset):
         raise ValueError(f"start-index {args.start_index} is outside dataset length {len(dataset)}")
     end_index = len(dataset) if args.max_samples == 0 else min(len(dataset), args.start_index + args.max_samples)

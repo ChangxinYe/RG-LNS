@@ -466,7 +466,8 @@ def run_evaluation(
         raise FileNotFoundError(args.checkpoint)
     validate_checkpoint(args.checkpoint, args.task, args.loss_type)
 
-    dataset = load_official_dataset_class()(
+    dataset_class = load_official_dataset_class(args.data_root)
+    dataset = dataset_class(
         args.data_root,
         split=args.split,
         task=args.task,

@@ -569,7 +569,7 @@ def evaluate_lsej_split(
         solver = solve_with_gallagher
 
     if dataset_override is None:
-        dataset_class = load_official_dataset_class()
+        dataset_class = load_official_dataset_class(data_root)
         dataset = dataset_class(data_root, split=split, task=task, normalize=False)
     else:
         dataset = dataset_override

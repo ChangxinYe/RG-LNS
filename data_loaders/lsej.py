@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -33,12 +34,37 @@ OFFICIAL_TASKS = (
 )
 
 
-def load_official_dataset_class():
-    if str(OFFICIAL_LSEJ_DIR) not in sys.path:
-        sys.path.insert(0, str(OFFICIAL_LSEJ_DIR))
-    from lsej_dataloader import ImageNetLSEJDataset
-
-    return ImageNetLSEJDataset
+def load_official_dataset_class(data_root: str | Path = DEFAULT_LSEJ_DATA_ROOT):
+    """Load the official adapter from the selected dataset root."""
+    loader_path = Path(data_root).expanduser().resolve() / "lsej_dataloader.py"
+    if not loader_path.is_file():
+        raise FileNotFoundError(
+            f"ImageNet-LSEJ loader not found: {loader_path}. "
+            "Set --data-root to the dataset directory containing lsej_dataloader.py."
+        )
+    # Use an importable name so spawned DataLoader workers can unpickle the dataset.
+    root = str(loader_path.parent)
+    if root in sys.path:
+        sys.path.remove(root)
+    sys.path.insert(0, root)
+    module_name = "lsej_dataloader"
+    cached_module = sys.modules.get(module_name)
+    cached_path = getattr(cached_module, "__file__", None)
+    if cached_path is None or Path(cached_path).resolve() != loader_path:
+        spec = importlib.util.spec_from_file_location(module_name, loader_path)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Cannot load ImageNet-LSEJ adapter: {loader_path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        try:
+            spec.loader.exec_module(module)
+        except Exception:
+            if cached_module is None:
+                sys.modules.pop(module_name, None)
+            else:
+                sys.modules[module_name] = cached_module
+            raise
+    return sys.modules[module_name].ImageNetLSEJDataset
 
 
 def chw_uint8_to_hwc_numpy(pieces: torch.Tensor) -> np.ndarray:
@@ -109,7 +135,7 @@ class MetricLSEJTripletDataset(Dataset):
         if max_samples is not None and int(max_samples) < 0:
             raise ValueError("max_samples must be non-negative")
 
-        dataset_class = load_official_dataset_class()
+        dataset_class = load_official_dataset_class(data_root)
         self.dataset = dataset_class(data_root, split=split, task=task, normalize=False)
         self.data_root = Path(data_root)
         self.task = task
