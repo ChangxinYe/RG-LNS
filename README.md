@@ -100,18 +100,18 @@ datasets/ImageNet_LSEJ/images
 ## Checkpoints
 
 The six model files are available in the public
-[v0.1.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v0.1.0).
+[v1.0.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v1.0.0).
 Download the files you need and place them in the matching subdirectory under
-`checkpoints/`. Save the JPwLEG-5 download as `jpwleg5_best.pth`:
+`checkpoints/`:
 
 | Download | Used for |
 | :-- | :-- |
-| [ViT-Tiny pretrained weights](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth) | Training initialization |
-| [GAP-3 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/gap3_best.pth) | GAP-3 evaluation |
-| [GAP-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/gap5_best.pth) | GAP-5 evaluation |
-| [JPwLEG-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/jpleg5_best.pth) | JPwLEG-5 evaluation |
-| [ImageNet-LSEJ erode2 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/lsej_grid10_erode2_best.pth) | `grid10_erode2` evaluation |
-| [ImageNet-LSEJ erode5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v0.1.0/lsej_grid10_erode5_best.pth) | `grid10_erode5` evaluation |
+| [ViT-Tiny pretrained weights](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth) | Stage I initialization; timm-pretrained weights adapted to the repository's ViT implementation |
+| [GAP-3 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/gap3_best.pth) | GAP-3 evaluation |
+| [GAP-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/gap5_best.pth) | GAP-5 evaluation |
+| [JPwLEG-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/jpwleg5_best.pth) | JPwLEG-5 evaluation |
+| [ImageNet-LSEJ erode2 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode2_best.pth) | `grid10_erode2` evaluation |
+| [ImageNet-LSEJ erode5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode5_best.pth) | `grid10_erode5` evaluation |
 
 For evaluation, only the checkpoint matching the dataset or task is needed;
 pass its local path with `--checkpoint` as in the commands below. The
