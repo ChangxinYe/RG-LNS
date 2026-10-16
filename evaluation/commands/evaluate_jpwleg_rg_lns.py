@@ -20,7 +20,7 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_metric_summary, format_status
+from evaluation.reporting import format_metric_summary, format_run_configuration, format_status
 
 try:
     from rg_lns import (
@@ -564,9 +564,16 @@ def run_evaluation(
     started = time.perf_counter()
 
     print(
-        f"Evaluating RG-LNS on {config.folder} {split}: "
-        f"samples={len(sample_indices)}, grid={grid}x{grid}, "
-        f"initial_solver={initial_solver_name}, beam={args.completion_beam_width}"
+        "\n".join(format_run_configuration(
+            dataset=config.folder,
+            split=split,
+            samples=len(sample_indices),
+            initial_solver_name=initial_solver_name,
+            device=str(device),
+            data_root=args.data_root,
+            checkpoint=args.checkpoint,
+        )),
+        flush=True,
     )
     for evaluation_number, sample_index in enumerate(sample_indices, start=1):
         image = np.asarray(images[sample_index])
@@ -821,9 +828,8 @@ def run_evaluation(
             running_baseline = aggregate_ground_truth_metrics(baseline_metrics)
             running_selected = aggregate_ground_truth_metrics(selected_metrics)
             print(
-                f"[{evaluation_number}/{len(sample_indices)}] sample {sample_index}: "
-                f"{format_status(status)}, rounds={rounds_accepted}/{rounds_attempted}, "
-                f"completion={selected_completion_origin}:{selected_completion_index}, "
+                f"[{evaluation_number}/{len(sample_indices)}] Cumulative: "
+                f"Baseline (ViT-T + {initial_solver_name}) -> Baseline + RG-LNS | "
                 f"PA {running_baseline['PA']:.2%}->{running_selected['PA']:.2%}, "
                 f"AA {running_baseline['AA']:.2%}->{running_selected['AA']:.2%}, "
                 f"SRA {running_baseline['SRA']:.2%}->{running_selected['SRA']:.2%}"

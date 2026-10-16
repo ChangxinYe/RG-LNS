@@ -22,7 +22,7 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_metric_summary, format_status
+from evaluation.reporting import format_metric_summary, format_run_configuration, format_status
 
 try:
     from rg_lns import (
@@ -533,6 +533,19 @@ def run_evaluation(
     )
     started = time.perf_counter()
 
+    print(
+        "\n".join(format_run_configuration(
+            dataset="ImageNet-LSEJ",
+            task=args.task,
+            split=args.split,
+            samples=len(sample_indices),
+            initial_solver_name=initial_solver_name,
+            device=str(device),
+            data_root=args.data_root,
+            checkpoint=args.checkpoint,
+        )),
+        flush=True,
+    )
     for evaluation_number, sample_index in enumerate(sample_indices, start=1):
         sample = dataset[sample_index]
         lsej_id = str(sample["lsej_id"])
@@ -998,9 +1011,8 @@ def run_evaluation(
             running_baseline = _aggregate_metrics(baseline_metrics)
             running_selected = _aggregate_metrics(selected_metrics)
             print(
-                f"[{evaluation_number}/{len(sample_indices)}] {lsej_id}: {format_status(status)}, "
-                f"rounds={rounds_accepted}/{rounds_attempted}, "
-                f"completion={selected_completion_origin}:{selected_completion_index}, "
+                f"[{evaluation_number}/{len(sample_indices)}] Cumulative: "
+                f"Baseline (ViT-T + {initial_solver_name}) -> Baseline + RG-LNS | "
                 f"PA {running_baseline['PA']:.2%}->{running_selected['PA']:.2%}, "
                 f"AA {running_baseline['AA']:.2%}->{running_selected['AA']:.2%}, "
                 f"SRA {running_baseline['SRA']:.2%}->{running_selected['SRA']:.2%}"
