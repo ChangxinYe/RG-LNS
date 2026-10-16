@@ -37,7 +37,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Use the BMVC 2016 Type-1 LP solver as the profiled RG-LNS initial solver on JPwLEG"
+    parser.description = "Evaluate RG-LNS on JPwLEG with BMVC 2016 Type-1 LP initialization"
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()

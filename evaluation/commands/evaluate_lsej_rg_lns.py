@@ -22,6 +22,8 @@ from pathlib import Path
 
 import numpy as np
 
+from evaluation.reporting import format_metric_summary, format_status
+
 try:
     from rg_lns import (
         iterative_component_reassembly,
@@ -129,14 +131,14 @@ DEFAULT_PROGRESS_INTERVAL = 1
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Run multi-path profiled RG-LNS with frozen E1 compatibility",
+        "Evaluate RG-LNS on ImageNet-LSEJ with frozen visual compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "--task",
         default=DEFAULT_TASK,
         choices=SUPPORTED_TASKS,
-        help="official grid10 LSEJ task supported by the current profiled RG-LNS implementation",
+        help="official grid10 LSEJ task supported by RG-LNS",
     )
     parser.add_argument(
         "--loss-type",
@@ -191,7 +193,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--partial-completion-beam-width",
         default=DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="ground-truth-free E1 completion beam width for incomplete initial layouts",
+        help="ground-truth-free compatibility completion beam width for incomplete initial layouts",
     )
     parser.add_argument(
         "--mutual-top-k",
@@ -398,11 +400,11 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"E1 {initial_solver_name} baseline "
+        f"ViT-T + {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
         scaffold_title,
-        f"Profiled RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -483,7 +485,7 @@ def run_evaluation(
     sample_indices = list(range(args.start_index, end_index))
     grid = int(dataset.config["puzzle"]["grid_rows"])
     if grid != 10:
-        raise ValueError("Profiled RG-LNS currently supports grid10")
+        raise ValueError("RG-LNS currently supports grid10")
 
     device = resolve_device(args.device, args.gpu_id)
     scorer = MetricCompatibilityScorer.from_checkpoint(
@@ -984,7 +986,7 @@ def run_evaluation(
                 grid,
                 f"{args.task} | {lsej_id} | beam={args.completion_beam_width} | "
                 f"shift=({selected_row_shift},{selected_column_shift}) | "
-                f"completion={selected_completion_index} | {status}",
+                f"completion={selected_completion_index} | {format_status(status)}",
                 scaffold_title,
                 initial_solver_name,
             )
@@ -994,22 +996,14 @@ def run_evaluation(
             or evaluation_number == len(sample_indices)
         ):
             running_baseline = _aggregate_metrics(baseline_metrics)
-            running_completed_baseline = _aggregate_metrics(completed_baseline_metrics)
-            running_s1a3_reference = _aggregate_metrics(s1a3_reference_metrics)
             running_selected = _aggregate_metrics(selected_metrics)
             print(
-                f"[{evaluation_number}/{len(sample_indices)}] {lsej_id}: {status}, "
+                f"[{evaluation_number}/{len(sample_indices)}] {lsej_id}: {format_status(status)}, "
                 f"rounds={rounds_accepted}/{rounds_attempted}, "
                 f"completion={selected_completion_origin}:{selected_completion_index}, "
-                f"PA {running_baseline['PA']:.2%}->{running_completed_baseline['PA']:.2%}"
-                f"->{running_s1a3_reference['PA']:.2%}"
-                f"->{running_selected['PA']:.2%}, "
-                f"AA {running_baseline['AA']:.2%}->{running_completed_baseline['AA']:.2%}"
-                f"->{running_s1a3_reference['AA']:.2%}"
-                f"->{running_selected['AA']:.2%}, "
-                f"SRA {running_baseline['SRA']:.2%}"
-                f"->{running_completed_baseline['SRA']:.2%}"
-                f"->{running_s1a3_reference['SRA']:.2%}->{running_selected['SRA']:.2%}"
+                f"PA {running_baseline['PA']:.2%}->{running_selected['PA']:.2%}, "
+                f"AA {running_baseline['AA']:.2%}->{running_selected['AA']:.2%}, "
+                f"SRA {running_baseline['SRA']:.2%}->{running_selected['SRA']:.2%}"
             )
 
     elapsed_seconds = time.perf_counter() - started
@@ -1225,8 +1219,14 @@ def run_evaluation(
             )
         np.savez_compressed(args.output_dir / "predictions.npz", **prediction_payload)
 
+    metric_summary = format_metric_summary(
+        baseline_aggregate,
+        selected_aggregate,
+        initial_solver_name,
+        ("PA", "AA", "horizontal_SRA", "vertical_SRA", "SRA"),
+    )
     summary_lines = [
-        "ImageNet-LSEJ Profiled RG-LNS "
+        "ImageNet-LSEJ RG-LNS "
         f"({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {args.checkpoint}",
@@ -1235,7 +1235,6 @@ def run_evaluation(
         f"task/split: {args.task} / {args.split}",
         f"samples: [{args.start_index}, {end_index}) = {len(sample_indices)}",
         f"complete_initial_solver_baselines: {complete_initial_baselines}/{len(sample_indices)}",
-        f"complete_after_partial_completion: {complete_after_partial_completion}/{len(sample_indices)}",
         f"configuration: beam={args.completion_beam_width}, "
         f"partial_beam={args.partial_completion_beam_width}, k={args.mutual_top_k}, "
         f"translation={args.translation_mode}, "
@@ -1245,66 +1244,18 @@ def run_evaluation(
         f"artifacts: save_visuals={args.save_visuals}, visual_limit={args.visual_limit}, "
         f"save_predictions={args.save_predictions}, "
         f"save_completion_details={args.save_completion_details}",
-        f"beam=1 contract: {payload['beam1_contract']}",
-        f"selection: {payload['selection_rule']}",
         f"initial_solver: {initial_solver_name}",
-        f"initial_solver_config: {initial_solver_config or {}}",
-        f"status: {status_counts}",
-        "",
-        f"E1 {initial_solver_name} baseline:",
-        f"  PA={baseline_aggregate['PA']:.4%}",
-        f"  AA={baseline_aggregate['AA']:.4%}",
-        f"  Horizontal SRA={baseline_aggregate['horizontal_SRA']:.4%}",
-        f"  Vertical SRA={baseline_aggregate['vertical_SRA']:.4%}",
-        f"  SRA={baseline_aggregate['SRA']:.4%}",
-        "",
-        "Label-free E1 partial-layout completion:",
-        f"  PA={completed_baseline_aggregate['PA']:.4%}",
-        f"  AA={completed_baseline_aggregate['AA']:.4%}",
-        f"  Horizontal SRA={completed_baseline_aggregate['horizontal_SRA']:.4%}",
-        f"  Vertical SRA={completed_baseline_aggregate['vertical_SRA']:.4%}",
-        f"  SRA={completed_baseline_aggregate['SRA']:.4%}",
-        f"  diagnostics={partial_completion_diagnostics}",
+        f"status: {format_status(str(status_counts))}",
         "",
     ]
-    if s1a3_reference_aggregate is not None:
-        summary_lines.extend(
-            [
-                "Greedy single-path reference (same E1 scores and initial layout):",
-                f"  PA={s1a3_reference_aggregate['PA']:.4%}",
-                f"  AA={s1a3_reference_aggregate['AA']:.4%}",
-                f"  Horizontal SRA={s1a3_reference_aggregate['horizontal_SRA']:.4%}",
-                f"  Vertical SRA={s1a3_reference_aggregate['vertical_SRA']:.4%}",
-                f"  SRA={s1a3_reference_aggregate['SRA']:.4%}",
-                "",
-            ]
-        )
+    summary_lines.extend(metric_summary)
     summary_lines.extend(
         [
-            "Profiled RG-LNS:",
-            f"  PA={selected_aggregate['PA']:.4%}",
-            f"  AA={selected_aggregate['AA']:.4%}",
-            f"  Horizontal SRA={selected_aggregate['horizontal_SRA']:.4%}",
-            f"  Vertical SRA={selected_aggregate['vertical_SRA']:.4%}",
-            f"  SRA={selected_aggregate['SRA']:.4%}",
-            "",
             f"Comparison: {comparison}",
-            f"Partial completion diagnostics: {partial_completion_diagnostics}",
-                f"Incremental vs greedy reassembly: {incremental_vs_s1a3}",
-            f"Search diagnostics: {search_diagnostics}",
             f"PA repaired image list: pa_repaired_images.txt ({len(repaired_images)})",
             f"PA broken image list: pa_broken_images.txt ({len(broken_images)})",
         ]
     )
-    if s1a3_reference_aggregate is not None:
-        summary_lines.extend(
-            [
-                f"PA repaired vs greedy: pa_repaired_vs_s1a3_images.txt "
-                f"({len(s1a3_repaired_images)})",
-                f"PA broken vs greedy: pa_broken_vs_s1a3_images.txt "
-                f"({len(s1a3_broken_images)})",
-            ]
-        )
     summary_lines.extend(["", *format_stage_timing_summary(runtime_summary), ""])
     summary_lines.append(f"elapsed_seconds: {_float_metric(elapsed_seconds)}")
     (args.output_dir / "summary.txt").write_text(
@@ -1319,36 +1270,7 @@ def run_evaluation(
     )
 
     print(f"device: {device}")
-    if s1a3_reference_aggregate is None:
-        print(
-            f"Final PA: {baseline_aggregate['PA']:.4%} -> "
-            f"{completed_baseline_aggregate['PA']:.4%} -> {selected_aggregate['PA']:.4%}; "
-            f"AA: {baseline_aggregate['AA']:.4%} -> "
-            f"{completed_baseline_aggregate['AA']:.4%} -> {selected_aggregate['AA']:.4%}; "
-            f"SRA: {baseline_aggregate['SRA']:.4%} -> "
-            f"{completed_baseline_aggregate['SRA']:.4%} -> {selected_aggregate['SRA']:.4%}"
-        )
-    else:
-        print(
-            f"Final PA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
-            f"{baseline_aggregate['PA']:.4%} -> {completed_baseline_aggregate['PA']:.4%} "
-            f"-> {s1a3_reference_aggregate['PA']:.4%} "
-            f"-> {selected_aggregate['PA']:.4%}"
-        )
-        print(
-            f"Final AA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
-            f"{baseline_aggregate['AA']:.4%} -> {completed_baseline_aggregate['AA']:.4%} "
-            f"-> {s1a3_reference_aggregate['AA']:.4%} "
-            f"-> {selected_aggregate['AA']:.4%}"
-        )
-        print(
-            f"Final SRA ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
-            f"{baseline_aggregate['SRA']:.4%} -> {completed_baseline_aggregate['SRA']:.4%} "
-            f"-> {s1a3_reference_aggregate['SRA']:.4%} "
-            f"-> {selected_aggregate['SRA']:.4%}"
-        )
-    print(f"Partial completion diagnostics: {partial_completion_diagnostics}")
-    print(f"Search diagnostics: {search_diagnostics}")
+    print("\n".join(metric_summary))
     print(f"Saved: {args.output_dir}")
     return payload
 

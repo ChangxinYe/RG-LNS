@@ -38,7 +38,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Use the faithful pure-Python BMVC 2016 Type-1 LP port as the profiled RG-LNS initial solver"
+        "Evaluate RG-LNS on ImageNet-LSEJ with BMVC 2016 Type-1 LP initialization"
     )
     # Keep the same convention as the existing compatibility/greedy LP entry points: LP uses raw E1 by default
     # and does not apply the compatibility post-processing enabled by the Gallagher version.

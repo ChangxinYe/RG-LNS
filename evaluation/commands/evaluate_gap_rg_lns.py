@@ -22,6 +22,8 @@ from pathlib import Path
 
 import numpy as np
 
+from evaluation.reporting import format_metric_summary, format_status
+
 try:
     from rg_lns import (
         iterative_component_reassembly,
@@ -120,7 +122,8 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 def build_parser() -> argparse.ArgumentParser:
     parser = build_greedy_parser()
-    parser.description = "Evaluate profiled RG-LNS on GAP-3/GAP-5"
+    parser.description = "Evaluate RG-LNS on GAP-3/GAP-5"
+    parser.prog = "Evaluate RG-LNS on GAP-3/GAP-5"
     parser.add_argument(
         "--completion-beam-width",
         default=DEFAULT_COMPLETION_BEAM_WIDTH,
@@ -131,7 +134,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--partial-completion-beam-width",
         default=DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH,
         type=int,
-        help="ground-truth-free E1 completion beam width for incomplete initial layouts",
+        help="ground-truth-free compatibility completion beam width for incomplete initial layouts",
     )
     parser.add_argument(
         "--translation-mode",
@@ -240,11 +243,11 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"E1 {initial_solver_name} baseline "
+        f"ViT-T + {initial_solver_name} baseline "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
         scaffold_title,
-        f"Profiled RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
+        f"RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
     ]
     component_set = {int(piece) for piece in component}
@@ -495,7 +498,7 @@ def run_evaluation(
     started = time.perf_counter()
 
     print(
-        f"Evaluating profiled RG-LNS on {args.dataset} {args.split}: samples={len(gap_data)}, "
+        f"Evaluating RG-LNS on {args.dataset} {args.split}: samples={len(gap_data)}, "
         f"grid={grid}x{grid}, beam={args.completion_beam_width}"
     )
     for evaluation_number in range(1, len(gap_data) + 1):
@@ -755,7 +758,7 @@ def run_evaluation(
                 f"{args.dataset} {args.split} | sample {sample_index} | "
                 f"beam={args.completion_beam_width} | "
                 f"shift=({selected_row_shift},{selected_column_shift}) | "
-                f"completion={selected_completion_index} | {status}",
+                f"completion={selected_completion_index} | {format_status(status)}",
                 scaffold_title,
                 initial_solver_name,
             )
@@ -765,24 +768,14 @@ def run_evaluation(
             or evaluation_number == len(gap_data)
         ):
             running_baseline = aggregate_ground_truth_metrics(baseline_metrics)
-            running_completed_baseline = aggregate_ground_truth_metrics(
-                completed_baseline_metrics
-            )
-            running_s1a3 = aggregate_ground_truth_metrics(s1a3_metrics)
             running_selected = aggregate_ground_truth_metrics(selected_metrics)
             print(
-                f"[{evaluation_number}/{len(gap_data)}] sample {sample_index}: {status}, "
+                f"[{evaluation_number}/{len(gap_data)}] sample {sample_index}: {format_status(status)}, "
                 f"rounds={rounds_accepted}/{rounds_attempted}, "
                 f"completion={selected_completion_origin}:{selected_completion_index}, "
-                f"PA {running_baseline['PA']:.2%}->{running_completed_baseline['PA']:.2%}"
-                f"->{running_s1a3['PA']:.2%}"
-                f"->{running_selected['PA']:.2%}, "
-                f"AA {running_baseline['AA']:.2%}->{running_completed_baseline['AA']:.2%}"
-                f"->{running_s1a3['AA']:.2%}"
-                f"->{running_selected['AA']:.2%}, "
-                f"SRA {running_baseline['SRA']:.2%}->{running_completed_baseline['SRA']:.2%}"
-                f"->{running_s1a3['SRA']:.2%}"
-                f"->{running_selected['SRA']:.2%}"
+                f"PA {running_baseline['PA']:.2%}->{running_selected['PA']:.2%}, "
+                f"AA {running_baseline['AA']:.2%}->{running_selected['AA']:.2%}, "
+                f"SRA {running_baseline['SRA']:.2%}->{running_selected['SRA']:.2%}"
             )
 
     elapsed_seconds = time.perf_counter() - started
@@ -989,8 +982,11 @@ def run_evaluation(
             split=np.asarray(args.split),
         )
 
+    metric_summary = format_metric_summary(
+        baseline_aggregate, selected_aggregate, initial_solver_name, METRIC_KEYS
+    )
     summary_lines = [
-        f"GAP Profiled RG-LNS "
+        f"GAP RG-LNS "
         f"({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {checkpoint}",
@@ -998,29 +994,17 @@ def run_evaluation(
         f"dataset/split: {args.dataset} / {args.split}",
         f"samples: {len(sample_rows)} (start_index={args.start_index})",
         f"complete_initial_solver_baselines: {complete_initial_baselines}/{len(sample_rows)}",
-        f"complete_after_partial_completion: {complete_after_partial_completion}/{len(sample_rows)}",
         f"configuration: beam={args.completion_beam_width}, "
         f"partial_beam={args.partial_completion_beam_width}, k={args.mutual_top_k}, "
         f"translation={args.translation_mode}, "
         f"component={args.component_index}, min_size={args.min_component_size}, "
         f"rounds={args.refinement_rounds}, postprocess={args.postprocess}, "
         f"score_batch_size={args.score_batch_size}",
-        f"beam=1 contract: {payload['beam1_contract']}",
-        f"selection: {payload['selection_rule']}",
         f"initial_solver: {initial_solver_name}",
-        f"initial_solver_config: {initial_solver_config or {}}",
-        f"status: {status_counts}",
+        f"status: {format_status(str(status_counts))}",
         "",
     ]
-    for label, metrics in (
-        (f"E1 {initial_solver_name} baseline", baseline_aggregate),
-        ("Label-free E1 partial-layout completion", completed_baseline_aggregate),
-        ("Greedy single-path reference", s1a3_aggregate),
-        ("Profiled RG-LNS", selected_aggregate),
-    ):
-        summary_lines.append(f"{label}:")
-        summary_lines.extend(f"  {key}={metrics[key]:.4%}" for key in METRIC_KEYS)
-        summary_lines.append("")
+    summary_lines.extend(metric_summary)
     summary_lines.extend(
         [
             f"True-Neighbor MRR: {retrieval.mrr:.6f}",
@@ -1032,14 +1016,9 @@ def run_evaluation(
     summary_lines.extend(
         [
             "",
-            f"Partial completion diagnostics: {partial_completion_diagnostics}",
             f"Comparison: {comparison}",
-            f"Incremental vs greedy reassembly: {incremental}",
-            f"Search diagnostics: {search_diagnostics}",
             f"PA repaired image list: pa_repaired_images.txt ({len(repaired)})",
             f"PA broken image list: pa_broken_images.txt ({len(broken)})",
-            f"PA repaired vs greedy: pa_repaired_vs_s1a3_images.txt ({len(repaired_vs_s1a3)})",
-            f"PA broken vs greedy: pa_broken_vs_s1a3_images.txt ({len(broken_vs_s1a3)})",
         ]
     )
     summary_lines.extend(["", *format_stage_timing_summary(runtime_summary), ""])
@@ -1053,15 +1032,7 @@ def run_evaluation(
     )
 
     print(f"device: {device}")
-    for key in ("PA", "AA", "SRA", "NA"):
-        print(
-            f"Final {key} ({initial_solver_name} -> completion -> greedy -> profiled RG-LNS): "
-            f"{baseline_aggregate[key]:.4%} -> {completed_baseline_aggregate[key]:.4%} "
-            f"-> {s1a3_aggregate[key]:.4%} "
-            f"-> {selected_aggregate[key]:.4%}"
-        )
-    print(f"Partial completion diagnostics: {partial_completion_diagnostics}")
-    print(f"Search diagnostics: {search_diagnostics}")
+    print("\n".join(metric_summary))
     print(f"Saved: {output_dir}")
     return payload
 

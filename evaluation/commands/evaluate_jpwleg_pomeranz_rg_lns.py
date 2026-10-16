@@ -44,7 +44,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Use the complete E1 compatibility + Pomeranz CVPR 2011 solution as the profiled initial layout on JPwLEG"
+        "Evaluate RG-LNS on JPwLEG with Pomeranz CVPR 2011 initialization"
     )
     add_pomeranz_arguments(parser)
     return parser.parse_args()

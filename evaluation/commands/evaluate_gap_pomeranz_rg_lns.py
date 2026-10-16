@@ -45,7 +45,7 @@ DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate profiled RG-LNS on GAP-3/GAP-5 with Pomeranz CVPR 2011 initialization"
+        "Evaluate RG-LNS on GAP-3/GAP-5 with Pomeranz CVPR 2011 initialization"
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
