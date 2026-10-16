@@ -30,6 +30,48 @@ python -m pip install -r requirements.txt
 For CUDA, install the PyTorch build matching the local driver before installing
 the remaining requirements.
 
+## Code Layout
+
+```text
+RG-LNS/
+├── compatibility/          Stage I: ViT compatibility model, scorer, and training
+├── data_loaders/            GAP, JPwLEG, and ImageNet-LSEJ adapters
+├── initial_solvers/         Gallagher, Pomeranz, LP, and partial-layout completion
+├── rg_lns/                  Stage II: the proposed destroy/translate/repair search
+├── evaluation/              Metrics and explicit dataset/solver evaluation commands
+├── experiments/             Ablation, sensitivity, runtime, and failure analysis
+├── scripts/                 Standalone data preparation tools
+├── assets/                  Figures used in the documentation
+├── datasets/                Local datasets; ignored by Git
+│   ├── GAP_fast/
+│   │   ├── GAP-3/
+│   │   └── GAP-5/
+│   ├── ImageNet_LSEJ/
+│   └── MET_Dataset/
+│       ├── JPwLEG-3/
+│       └── JPwLEG-5/
+├── checkpoints/             Local weights; ignored by Git
+│   ├── pretrained/
+│   │   └── vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth
+│   └── compatibility/
+│       ├── gap3_best.pth
+│       ├── gap5_best.pth
+│       ├── jpwleg5_best.pth
+│       ├── lsej_grid10_erode2_best.pth
+│       └── lsej_grid10_erode5_best.pth
+├── results/
+│   ├── reference/            Compact records from submitted experiments
+│   └── runs/                 Newly generated runs; ignored by Git
+├── evaluate.py               Unified evaluation entry point
+├── reproduce.py              Paper-level experiment dispatcher
+├── requirements.txt
+└── README.md
+```
+
+Stage-I perception is deliberately outside `rg_lns/`. The latter contains
+only the proposed layout-correction algorithm and consumes a fixed directional
+compatibility tensor plus an initial layout.
+
 ## Benchmarks
 
 - **[GAP-3 / GAP-5](https://github.com/OfirShahar/puzzle-flow-matching):**
@@ -59,20 +101,8 @@ datasets/ImageNet_LSEJ/images
 
 The six model files are available in the public
 [v0.1.0 checkpoint release](https://github.com/ChangxinYe/RG-LNS/releases/tag/v0.1.0).
-Download the files you need and place them under the repository root exactly
-as shown below. Save the JPwLEG-5 download as `jpwleg5_best.pth`:
-
-```text
-checkpoints/
-├── pretrained/
-│   └── vit_tiny_patch16_224_augreg_in21k_ft_in1k_handwritten.pth
-└── compatibility/
-    ├── gap3_best.pth
-    ├── gap5_best.pth
-    ├── jpwleg5_best.pth
-    ├── lsej_grid10_erode2_best.pth
-    └── lsej_grid10_erode5_best.pth
-```
+Download the files you need and place them in the matching subdirectory under
+`checkpoints/`. Save the JPwLEG-5 download as `jpwleg5_best.pth`:
 
 | Download | Used for |
 | :-- | :-- |
@@ -124,26 +154,6 @@ All original dataset/solver combinations remain available as explicit modules
 under `evaluation/commands/`, which keeps each reported path independently
 auditable. Compact submitted records are inventoried in
 [`results/reference/README.md`](results/reference/README.md).
-
-## Code Layout
-
-```text
-compatibility/          Stage I: ViT compatibility model, scorer, and training
-data_loaders/           GAP, JPwLEG, and ImageNet-LSEJ adapters
-initial_solvers/        Gallagher, Pomeranz, LP, and partial-layout completion
-rg_lns/                 Stage II: the proposed destroy/translate/repair search
-evaluation/             Metrics plus explicit dataset/solver evaluation commands
-experiments/            Ablation, sensitivity, runtime, and failure analysis
-scripts/                Standalone data preparation tools
-datasets/               Local data only; ignored by Git
-checkpoints/            Local pretrained/trained weights; ignored by Git
-results/reference/      Compact records from the submitted experiments
-results/runs/           Newly generated runs; ignored by Git
-```
-
-Stage-I perception is deliberately outside `rg_lns/`. The latter contains
-only the proposed layout-correction algorithm and consumes a fixed directional
-compatibility tensor plus an initial layout.
 
 ## Method Overview
 
