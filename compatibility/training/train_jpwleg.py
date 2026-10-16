@@ -54,7 +54,7 @@ def parse_bool(value: str | bool) -> bool:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Train a puzzle-level hard triplet metric-learning baseline on JPwLEG",
+        "Train directional visual compatibility on JPwLEG",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default="jpwleg3", choices=JPWLEG_CONFIGS.keys())

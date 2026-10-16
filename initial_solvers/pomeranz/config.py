@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class PomeranzSolverConfig:
-    """Pomeranz solver parameters when using the unified E1 compatibility distance."""
+    """Pomeranz solver parameters when using the unified learned compatibility distance."""
 
     restarts: int = 10
     max_refinement_rounds: int = 0

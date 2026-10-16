@@ -1,6 +1,6 @@
 """
 @file: evaluate_gap_pomeranz_greedy_rg_lns.py
-@description: Generate initial GAP-3/GAP-5 layouts with the E1 compatibility distance and Pomeranz CVPR 2011 solver,
+@description: Generate initial GAP-3/GAP-5 layouts with the learned compatibility distance and Pomeranz CVPR 2011 solver,
               then run greedy single-path component reassembly. Output complete metrics, search diagnostics,
               predictions, PA repair/degradation lists, and visualizations with correctness boxes.
 @author: Changxin Ye

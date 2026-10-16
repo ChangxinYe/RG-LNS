@@ -211,7 +211,7 @@ def evaluate_gap_split(
     visual_limit: int = 20,
     visual_interval: int = 1,
     save_predictions: bool = True,
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
     configuration: dict | None = None,
 ) -> GAPMetrics:
     if max_samples < 0 or start_index < 0:

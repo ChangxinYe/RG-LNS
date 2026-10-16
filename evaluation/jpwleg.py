@@ -348,7 +348,7 @@ def evaluate_jpwleg_split(
     save_visuals: bool = True,
     visual_limit: int = 20,
     save_predictions: bool = True,
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
     configuration: dict | None = None,
 ) -> JPWLEGMetrics:
     if dataset not in JPWLEG_CONFIGS:

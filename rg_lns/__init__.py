@@ -1,6 +1,6 @@
 """
 @file: __init__.py
-@description: Entry point for the proposed iterative component-reassembly solver; currently provides the single-component E1 variant.
+@description: Public RG-LNS search and reliable-region utilities.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.0

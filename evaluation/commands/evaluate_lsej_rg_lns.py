@@ -1,15 +1,10 @@
 """
 @file: evaluate_lsej_rg_lns.py
-@description: Reuse converged E1 compatibility and the Gallagher initial solution, perform profiled
-              ground-truth-free completion of partial initial layouts, and run profiled RG-LNS
-              reassembly. Treat cycle-supported components as reliable relative skeletons, release their absolute
-              positions, enumerate legal translations, retain multiple remaining-piece fill paths with deterministic
-              beam completion at each pose, and select a representative using the full-layout E1 objective.
-              Accept a new layout only under strict global E1 improvement; never use the ground-truth permutation
-              to select candidates or create a new training checkpoint.
+@description: Compare a ViT-T compatibility baseline with the complete RG-LNS method.
+              Complete partial initial layouts without labels, then search reliable-component
+              translations and beam completions using a fixed compatibility objective.
+              Save detailed search records only when diagnostics are requested.
 @author: Changxin Ye
-@created: 2026-07-31
-@version: 1.1
 """
 
 from __future__ import annotations
@@ -22,7 +17,7 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_metric_summary, format_run_configuration, format_status
+from evaluation.reporting import format_evaluation_summary, format_metric_summary, format_run_configuration
 
 try:
     from rg_lns import (
@@ -30,11 +25,10 @@ try:
         profiled_large_neighborhood_reassembly,
     )
     from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import append_runtime_environment
+    from evaluation.runtime_info import collect_runtime_environment
     from evaluation.timing import (
         StageTimingCollector,
         add_stage_timing_arguments,
-        format_stage_timing_summary,
     )
     from data_loaders.lsej import (
         DEFAULT_LSEJ_DATA_ROOT,
@@ -63,11 +57,10 @@ except ImportError:
         profiled_large_neighborhood_reassembly,
     )
     from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import append_runtime_environment
+    from evaluation.runtime_info import collect_runtime_environment
     from evaluation.timing import (
         StageTimingCollector,
         add_stage_timing_arguments,
-        format_stage_timing_summary,
     )
     from data_loaders.lsej import (
         DEFAULT_LSEJ_DATA_ROOT,
@@ -111,7 +104,7 @@ if DEFAULT_LOSS_TYPE == "hard_triplet":
 DEFAULT_RUN_DIR = None
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 
-# Profiled RG-LNS hyperparameters. B=1 directly calls greedy reassembly for strict-equivalence ablations.
+# RG-LNS hyperparameters. B=1 directly calls greedy reassembly for strict-equivalence ablations.
 DEFAULT_COMPLETION_BEAM_WIDTH = 4
 DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH = 2
 DEFAULT_MUTUAL_TOP_K = 3
@@ -125,7 +118,7 @@ DEFAULT_POSTPROCESS = True
 DEFAULT_SAVE_VISUALS = True
 DEFAULT_VISUAL_LIMIT = 10
 DEFAULT_SAVE_PREDICTIONS = True
-DEFAULT_SAVE_COMPLETION_DETAILS = True
+DEFAULT_SAVE_COMPLETION_DETAILS = False
 DEFAULT_PROGRESS_INTERVAL = 1
 
 
@@ -223,7 +216,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--refinement-rounds",
         default=DEFAULT_REFINEMENT_ROUNDS,
         type=int,
-        help="maximum profiled reassembly rounds",
+        help="maximum RG-LNS refinement rounds",
     )
     parser.add_argument(
         "--score-batch-size",
@@ -269,10 +262,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="whether to save predictions.npz",
     )
     parser.add_argument(
-        "--save-completion-details",
+        "--save-diagnostics", "--save-completion-details",
+        dest="save_completion_details",
         default=DEFAULT_SAVE_COMPLETION_DETAILS,
         type=parse_bool,
-        help="whether to save diagnostic CSVs for all retained completions at each pose",
+        help="save detailed search CSVs and single-path comparison lists",
     )
     parser.add_argument(
         "--progress-interval",
@@ -341,8 +335,10 @@ def _write_csv(path: Path, rows: list[dict]) -> None:
 def _write_s1a3_incremental_pa_case_lists(
     output_dir: Path,
     rows: list[dict],
+    *,
+    write_files: bool = True,
 ) -> tuple[list[str], list[str]]:
-    """Save greedy-to-profiled PA repair/degradation samples without mixing them with the initial-solver comparison."""
+    """Save single-path-to-RG-LNS PA comparisons separately from baseline comparisons."""
 
     repaired = [
         f"sample_{int(row['sample_index']):06d}_{row['lsej_id']}.png"
@@ -358,6 +354,8 @@ def _write_s1a3_incremental_pa_case_lists(
         and int(row["s1a3_reference_PA"]) == 1
         and int(row["selected_PA"]) == 0
     ]
+    if not write_files:
+        return repaired, broken
     for filename, values in (
         ("pa_repaired_vs_s1a3_images.txt", repaired),
         ("pa_broken_vs_s1a3_images.txt", broken),
@@ -374,83 +372,19 @@ def _save_visual(
     path: Path,
     pieces: list[np.ndarray],
     baseline: np.ndarray,
-    s1a3_reference: np.ndarray,
-    scaffold_layout: np.ndarray,
     selected: np.ndarray,
     target: np.ndarray,
-    component: np.ndarray,
     grid: int,
     title: str,
-    scaffold_title: str,
     initial_solver_name: str = "Gallagher",
 ) -> None:
-    import matplotlib
+    """Save a comparison of the baseline and complete RG-LNS method."""
+    from evaluation.visualization import save_comparison_visual
 
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Rectangle
-
-    images = [
-        compose_puzzle(pieces, np.arange(grid * grid), grid),
-        compose_puzzle(pieces, baseline, grid),
-        compose_puzzle(pieces, s1a3_reference, grid),
-        compose_puzzle(pieces, scaffold_layout, grid),
-        compose_puzzle(pieces, selected, grid),
-        compose_puzzle(pieces, target, grid),
-    ]
-    names = [
-        "Official shuffled input",
-        f"ViT-T + {initial_solver_name} baseline "
-        f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
-        f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
-        scaffold_title,
-        f"RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
-        "Ground truth",
-    ]
-    component_set = {int(piece) for piece in component}
-    piece_size = int(pieces[0].shape[0])
-    path.parent.mkdir(parents=True, exist_ok=True)
-    figure, axes = plt.subplots(1, 6, figsize=(30, 5), constrained_layout=True)
-    for panel, (axis, image, name) in enumerate(zip(axes, images, names)):
-        axis.imshow(image)
-        axis.set_title(name)
-        axis.axis("off")
-        if panel in {1, 2, 4}:
-            positions = {1: baseline, 2: s1a3_reference, 4: selected}[panel]
-            for piece, position in enumerate(positions):
-                if not 0 <= int(position) < grid * grid:
-                    continue
-                row, column = divmod(int(position), grid)
-                color = "#2fb344" if int(position) == int(target[piece]) else "#e03131"
-                axis.add_patch(
-                    Rectangle(
-                        (column * piece_size + 1.5, row * piece_size + 1.5),
-                        piece_size - 4,
-                        piece_size - 4,
-                        fill=False,
-                        edgecolor=color,
-                        linewidth=1.8,
-                    )
-                )
-        if panel == 3:
-            for piece in component_set:
-                position = int(scaffold_layout[piece])
-                if not 0 <= position < grid * grid:
-                    continue
-                row, column = divmod(position, grid)
-                axis.add_patch(
-                    Rectangle(
-                        (column * piece_size + 1.5, row * piece_size + 1.5),
-                        piece_size - 4,
-                        piece_size - 4,
-                        fill=False,
-                        edgecolor="#15aabf",
-                        linewidth=2.0,
-                    )
-                )
-    figure.suptitle(title)
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
+    save_comparison_visual(
+        path, pieces, baseline, selected, target, grid,
+        title, initial_solver_name, compose_puzzle=compose_puzzle,
+    )
 
 
 def run_evaluation(
@@ -585,7 +519,6 @@ def run_evaluation(
             # If completion fails, neither refinement can start, so retain the original partial layout.
             s1a3_reference = baseline.copy()
             display_component = np.empty(0, dtype=np.int32)
-            scaffold_layout = baseline.copy()
             rounds_attempted = 0
             rounds_accepted = 0
             total_candidates = 0
@@ -600,7 +533,6 @@ def run_evaluation(
             selected_column_shift = 0
             selected_completion_index = -1
             selected_completion_origin = "partial_completion_failed"
-            scaffold_title = f"No scaffold (partial completion failed: {initial_solver_name})"
         else:
             with runtime_collector.measure() as rgls_timing:
                 result = profiled_large_neighborhood_reassembly(
@@ -618,9 +550,8 @@ def run_evaluation(
             selected = result["prediction"]
             s1a3_reference = result["single_path_reference_prediction"]
             if s1a3_reference is None:
-            # With multiple rounds, greedy and profiled RG-LNS may diverge after the first round; do not label a
-            # single-path candidate on the current profiled seed as greedy. Run greedy reassembly independently
-                # from the same initial layout to preserve a fair comparison.
+                # Multiple rounds may use different seeds, so compute the standalone
+                # single-path reference from the same completed initial layout.
                 s1a3_reference = iterative_component_reassembly(
                     e1_scores,
                     completed_baseline,
@@ -656,16 +587,12 @@ def run_evaluation(
             final_e1_score = float(result["final_score"]["mean_adjacency_score"])
             final_mutual_top1 = int(result["final_score"]["mutual_top1_edges"])
             display_component = result["last_accepted_component"]
-            scaffold_layout = selected.copy()
             selected_row_shift = int(result["last_accepted_row_shift"])
             selected_column_shift = int(result["last_accepted_column_shift"])
             selected_completion_index = int(result["last_accepted_completion_index"])
             selected_completion_origin = str(result["last_accepted_completion_origin"])
-            scaffold_title = "Accepted reliable scaffold pose (cyan)"
             if len(display_component) == 0 and result["rounds"]:
                 display_component = result["rounds"][-1]["component"]
-                scaffold_layout = result["rounds"][-1]["seed_prediction"]
-                scaffold_title = "Last extracted scaffold (no accepted move)"
 
             for round_record in result["rounds"]:
                 graph = round_record["graph_statistics"]
@@ -989,18 +916,8 @@ def run_evaluation(
         ):
             _save_visual(
                 visual_dir / f"sample_{sample_index:06d}_{lsej_id}.png",
-                pieces,
-                baseline,
-                s1a3_reference,
-                scaffold_layout,
-                selected,
-                target,
-                display_component,
-                grid,
-                f"{args.task} | {lsej_id} | beam={args.completion_beam_width} | "
-                f"shift=({selected_row_shift},{selected_column_shift}) | "
-                f"completion={selected_completion_index} | {format_status(status)}",
-                scaffold_title,
+                pieces, baseline, selected, target, grid,
+                f"ImageNet-LSEJ | {args.task} | {args.split} | {lsej_id}",
                 initial_solver_name,
             )
 
@@ -1121,6 +1038,7 @@ def run_evaluation(
         s1a3_repaired_images, s1a3_broken_images = _write_s1a3_incremental_pa_case_lists(
             args.output_dir,
             sample_rows,
+            write_files=args.save_completion_details,
         )
     payload = {
         "method": (
@@ -1189,6 +1107,7 @@ def run_evaluation(
             None
             if s1a3_reference_aggregate is None
             else {
+                "files_written": args.save_completion_details,
                 "repaired": "pa_repaired_vs_s1a3_images.txt",
                 "broken": "pa_broken_vs_s1a3_images.txt",
                 "repaired_images": len(s1a3_repaired_images),
@@ -1196,16 +1115,19 @@ def run_evaluation(
             }
         ),
     }
+    payload["runtime_environment"] = collect_runtime_environment(
+        requested_device=args.device, resolved_device=device, gpu_id=args.gpu_id,
+    )
     (args.output_dir / "metrics.json").write_text(
         json.dumps(payload, indent=2),
         encoding="utf-8",
     )
 
     _write_csv(args.output_dir / "sample_results.csv", sample_rows)
-    _write_csv(args.output_dir / "round_results.csv", round_rows)
-    _write_csv(args.output_dir / "candidates.csv", candidate_rows)
-    _write_csv(args.output_dir / "pose_results.csv", pose_rows)
     if args.save_completion_details:
+        _write_csv(args.output_dir / "round_results.csv", round_rows)
+        _write_csv(args.output_dir / "candidates.csv", candidate_rows)
+        _write_csv(args.output_dir / "pose_results.csv", pose_rows)
         _write_csv(args.output_dir / "completion_results.csv", completion_rows)
 
     if args.save_predictions:
@@ -1237,51 +1159,19 @@ def run_evaluation(
         initial_solver_name,
         ("PA", "AA", "horizontal_SRA", "vertical_SRA", "SRA"),
     )
-    summary_lines = [
-        "ImageNet-LSEJ RG-LNS "
-        f"({initial_solver_name} initialization)",
-        "=" * 80,
-        f"checkpoint: {args.checkpoint}",
-        f"loss_type: {args.loss_type}",
-        f"data_root: {args.data_root}",
-        f"task/split: {args.task} / {args.split}",
-        f"samples: [{args.start_index}, {end_index}) = {len(sample_indices)}",
-        f"complete_initial_solver_baselines: {complete_initial_baselines}/{len(sample_indices)}",
-        f"configuration: beam={args.completion_beam_width}, "
-        f"partial_beam={args.partial_completion_beam_width}, k={args.mutual_top_k}, "
-        f"translation={args.translation_mode}, "
-        f"component={args.component_index}, min_size={args.min_component_size}, "
-        f"rounds={args.refinement_rounds}, postprocess={args.postprocess}",
-        f"runtime: device={device}, score_batch_size={args.score_batch_size}",
-        f"artifacts: save_visuals={args.save_visuals}, visual_limit={args.visual_limit}, "
-        f"save_predictions={args.save_predictions}, "
-        f"save_completion_details={args.save_completion_details}",
-        f"initial_solver: {initial_solver_name}",
-        f"status: {format_status(str(status_counts))}",
-        "",
-    ]
-    summary_lines.extend(metric_summary)
-    summary_lines.extend(
-        [
-            f"Comparison: {comparison}",
-            f"PA repaired image list: pa_repaired_images.txt ({len(repaired_images)})",
-            f"PA broken image list: pa_broken_images.txt ({len(broken_images)})",
-        ]
+    summary_lines = format_run_configuration(
+        dataset="ImageNet-LSEJ", split=args.split, samples=len(sample_indices),
+        initial_solver_name=initial_solver_name, device=str(device),
+        data_root=args.data_root, checkpoint=args.checkpoint,
+        task=args.task,
     )
-    summary_lines.extend(["", *format_stage_timing_summary(runtime_summary), ""])
-    summary_lines.append(f"elapsed_seconds: {_float_metric(elapsed_seconds)}")
+    summary_lines = format_evaluation_summary(
+        summary_lines, metric_summary, payload, args.output_dir, loss_type=args.loss_type,
+    )
     (args.output_dir / "summary.txt").write_text(
-        "\n".join(summary_lines) + "\n",
-        encoding="utf-8",
-    )
-    append_runtime_environment(
-        args.output_dir / "summary.txt",
-        requested_device=args.device,
-        resolved_device=device,
-        gpu_id=args.gpu_id,
+        "\n".join(summary_lines), encoding="utf-8",
     )
 
-    print(f"device: {device}")
     print("\n".join(metric_summary))
     print(f"Saved: {args.output_dir}")
     return payload

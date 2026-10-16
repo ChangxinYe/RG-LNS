@@ -73,7 +73,7 @@ def add_lp_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate JPwLEG E1 compatibility with the pure-Python BMVC 2016 Type-1 LP solver",
+        "Evaluate JPwLEG learned compatibility with the pure-Python BMVC 2016 Type-1 LP solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPWLEG_CONFIGS.keys(), help="JPwLEG dataset to evaluate; each dataset uses its own checkpoint")
@@ -173,7 +173,7 @@ def main() -> None:
         save_visuals=args.save_visuals,
         visual_limit=args.visual_limit,
         save_predictions=args.save_predictions,
-        method_name="E1 compatibility + faithful Python LP",
+        method_name="Baseline (ViT-T + LP)",
         configuration={
             "implementation": "faithful_bmvc2016_type1_python_port",
             "postprocess": args.postprocess,

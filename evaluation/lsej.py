@@ -417,7 +417,7 @@ def save_evaluation_visual(
     target: np.ndarray,
     grid: int,
     title: str,
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
 ) -> None:
     import matplotlib
 
@@ -472,7 +472,7 @@ def write_evaluation_summary(
     checkpoint: str | Path | None,
     data_root: str | Path,
     max_samples: int,
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
     configuration: dict | None = None,
     runtime_environment: dict | None = None,
 ) -> None:
@@ -555,7 +555,7 @@ def evaluate_lsej_split(
     save_visuals: bool = True,
     visual_limit: int = 10,
     save_predictions: bool = True,
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
     solver=None,
     configuration: dict | None = None,
     dataset_override=None,

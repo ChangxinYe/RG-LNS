@@ -1,15 +1,10 @@
 """
 @file: evaluate_gap_rg_lns.py
-@description: Load the corresponding compatibility model on GAP-3/GAP-5 and use Gallagher Solver
-              to produce a shared initial layout. If the initial prediction is incomplete, first perform
-              ground-truth-free compatibility completion, then run greedy single-path component reassembly and
-              profiled large-neighborhood reassembly. The profiled method retains multiple remaining-piece fill paths
-              for each reliable-component pose and selects candidates using the full-layout E1 objective.
-              The script outputs three-stage metrics, neighbor Recall@K, full search diagnostics, predictions,
-              PA repair/degradation lists, and visualizations with correctness boxes.
+@description: Compare a ViT-T compatibility baseline with the complete RG-LNS method.
+              Complete partial initial layouts without labels, then search reliable-component
+              translations and beam completions using a fixed compatibility objective.
+              Save detailed search records only when diagnostics are requested.
 @author: Changxin Ye
-@created: 2026-08-01
-@version: 1.1
 """
 
 from __future__ import annotations
@@ -22,7 +17,7 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_metric_summary, format_run_configuration, format_status
+from evaluation.reporting import format_evaluation_summary, format_metric_summary, format_run_configuration
 
 try:
     from rg_lns import (
@@ -30,11 +25,10 @@ try:
         profiled_large_neighborhood_reassembly,
     )
     from evaluation.output import script_output_root
-    from evaluation.runtime_info import append_runtime_environment
+    from evaluation.runtime_info import collect_runtime_environment
     from evaluation.timing import (
         StageTimingCollector,
         add_stage_timing_arguments,
-        format_stage_timing_summary,
     )
     from data_loaders.gap import GAPPuzzleDataset
     from evaluation.gap import rgba_to_rgb
@@ -64,11 +58,10 @@ except ImportError:
         profiled_large_neighborhood_reassembly,
     )
     from evaluation.output import script_output_root
-    from evaluation.runtime_info import append_runtime_environment
+    from evaluation.runtime_info import collect_runtime_environment
     from evaluation.timing import (
         StageTimingCollector,
         add_stage_timing_arguments,
-        format_stage_timing_summary,
     )
     from data_loaders.gap import GAPPuzzleDataset
     from evaluation.gap import rgba_to_rgb
@@ -114,7 +107,7 @@ DEFAULT_REFINEMENT_ROUNDS = 1
 DEFAULT_SCORE_BATCH_SIZE = 128
 DEFAULT_POSTPROCESS = True
 DEFAULT_SAVE_VISUALS = True
-DEFAULT_SAVE_COMPLETION_DETAILS = True
+DEFAULT_SAVE_COMPLETION_DETAILS = False
 DEFAULT_VISUAL_LIMIT = 10
 DEFAULT_SAVE_PREDICTIONS = True
 DEFAULT_PROGRESS_INTERVAL = 25
@@ -143,10 +136,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="keep the component at its current absolute position or enumerate all legal translations",
     )
     parser.add_argument(
-        "--save-completion-details",
+        "--save-diagnostics", "--save-completion-details",
+        dest="save_completion_details",
         default=DEFAULT_SAVE_COMPLETION_DETAILS,
         type=parse_bool,
-        help="whether to save diagnostic CSVs for all retained completions at each component pose",
+        help="save detailed search CSVs and single-path comparison lists",
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
@@ -192,6 +186,7 @@ def _write_pa_case_lists(
     *,
     reference_prefix: str,
     filename_suffix: str,
+    write_files: bool = True,
 ) -> tuple[list[str], list[str]]:
     repaired = [
         f"sample_{int(row['sample_index']):06d}.png"
@@ -203,6 +198,8 @@ def _write_pa_case_lists(
         for row in rows
         if int(row[f"{reference_prefix}_PA"]) == 1 and int(row["selected_PA"]) == 0
     ]
+    if not write_files:
+        return repaired, broken
     for kind, values in (("repaired", repaired), ("broken", broken)):
         filename = f"pa_{kind}{filename_suffix}_images.txt"
         text = "\n".join(values)
@@ -214,86 +211,19 @@ def _save_visual(
     path: Path,
     pieces: list[np.ndarray],
     baseline: np.ndarray,
-    s1a3_reference: np.ndarray,
-    scaffold_layout: np.ndarray,
     selected: np.ndarray,
     target: np.ndarray,
-    component: np.ndarray,
     grid: int,
     title: str,
-    scaffold_title: str,
-    initial_solver_name: str,
+    initial_solver_name: str = "Gallagher",
 ) -> None:
-    """Save the initial-solver, greedy, and profiled RG-LNS stages together with reliable-component poses."""
+    """Save a comparison of the baseline and complete RG-LNS method."""
+    from evaluation.visualization import save_comparison_visual
 
-    import matplotlib
-
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Rectangle
-
-    rgb_pieces = [rgba_to_rgb(piece) for piece in pieces]
-    images = [
-        compose_puzzle(rgb_pieces, np.arange(grid * grid), grid),
-        compose_puzzle(rgb_pieces, baseline, grid),
-        compose_puzzle(rgb_pieces, s1a3_reference, grid),
-        compose_puzzle(rgb_pieces, scaffold_layout, grid),
-        compose_puzzle(rgb_pieces, selected, grid),
-        compose_puzzle(rgb_pieces, target, grid),
-    ]
-    names = [
-        "Official shuffled input",
-        f"ViT-T + {initial_solver_name} baseline "
-        f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
-        f"Greedy single-path (AA {np.count_nonzero(s1a3_reference == target)}/{grid * grid})",
-        scaffold_title,
-        f"RG-LNS final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
-        "Ground truth",
-    ]
-    component_set = {int(piece) for piece in component}
-    piece_height, piece_width = rgb_pieces[0].shape[:2]
-    path.parent.mkdir(parents=True, exist_ok=True)
-    figure, axes = plt.subplots(1, 6, figsize=(30, 5), constrained_layout=True)
-    for panel, (axis, image, name) in enumerate(zip(axes, images, names)):
-        axis.imshow(image)
-        axis.set_title(name)
-        axis.axis("off")
-        if panel in {1, 2, 4}:
-            positions = {1: baseline, 2: s1a3_reference, 4: selected}[panel]
-            for piece, position in enumerate(positions):
-                if not 0 <= int(position) < grid * grid:
-                    continue
-                row, column = divmod(int(position), grid)
-                color = "#2fb344" if int(position) == int(target[piece]) else "#e03131"
-                axis.add_patch(
-                    Rectangle(
-                        (column * piece_width + 1.5, row * piece_height + 1.5),
-                        piece_width - 4,
-                        piece_height - 4,
-                        fill=False,
-                        edgecolor=color,
-                        linewidth=1.8,
-                    )
-                )
-        if panel == 3:
-            for piece in component_set:
-                position = int(scaffold_layout[piece])
-                if not 0 <= position < grid * grid:
-                    continue
-                row, column = divmod(position, grid)
-                axis.add_patch(
-                    Rectangle(
-                        (column * piece_width + 1.5, row * piece_height + 1.5),
-                        piece_width - 4,
-                        piece_height - 4,
-                        fill=False,
-                        edgecolor="#15aabf",
-                        linewidth=2.0,
-                    )
-                )
-    figure.suptitle(title)
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
+    save_comparison_visual(
+        path, [rgba_to_rgb(piece) for piece in pieces], baseline, selected, target, grid,
+        title, initial_solver_name, compose_puzzle=compose_puzzle,
+    )
 
 
 def _prefixed_metrics(prefix: str, metrics: dict) -> dict:
@@ -312,7 +242,7 @@ def _append_diagnostic_rows(
     pose_rows: list[dict],
     completion_rows: list[dict],
 ) -> None:
-    """Expand every profiled RG-LNS round, component pose, and fill path to inspect improvements."""
+    """Expand every RG-LNS round, component pose, and fill path to inspect improvements."""
 
     for round_record in result["rounds"]:
         graph = round_record["graph_statistics"]
@@ -568,10 +498,6 @@ def run_evaluation(
             selected = baseline.copy()
             s1a3_reference = baseline.copy()
             display_component = np.empty(0, dtype=np.int32)
-            scaffold_layout = baseline.copy()
-            scaffold_title = (
-                f"No scaffold (partial completion failed: {initial_solver_name})"
-            )
             rounds_attempted = rounds_accepted = 0
             total_candidates = total_poses = total_recorded_poses = 0
             total_completions = total_recorded_completions = 0
@@ -627,18 +553,12 @@ def run_evaluation(
             final_e1_score = float(result["final_score"]["mean_adjacency_score"])
             final_mutual_top1 = int(result["final_score"]["mutual_top1_edges"])
             display_component = np.asarray(result["last_accepted_component"], dtype=np.int32)
-            scaffold_layout = selected.copy()
             selected_row_shift = int(result["last_accepted_row_shift"])
             selected_column_shift = int(result["last_accepted_column_shift"])
             selected_completion_index = int(result["last_accepted_completion_index"])
             selected_completion_origin = str(result["last_accepted_completion_origin"])
-            scaffold_title = "Accepted reliable scaffold placement (cyan)"
             if len(display_component) == 0 and result["rounds"]:
                 display_component = np.asarray(result["rounds"][-1]["component"], dtype=np.int32)
-                scaffold_layout = np.asarray(
-                    result["rounds"][-1]["seed_prediction"], dtype=np.int32
-                )
-                scaffold_title = "Last extracted scaffold (no accepted move)"
 
             _append_diagnostic_rows(
                 args=args,
@@ -755,19 +675,8 @@ def run_evaluation(
         ):
             _save_visual(
                 visual_dir / f"sample_{sample_index:06d}.png",
-                pieces,
-                baseline,
-                s1a3_reference,
-                scaffold_layout,
-                selected,
-                target,
-                display_component,
-                grid,
-                f"{args.dataset} {args.split} | sample {sample_index} | "
-                f"beam={args.completion_beam_width} | "
-                f"shift=({selected_row_shift},{selected_column_shift}) | "
-                f"completion={selected_completion_index} | {format_status(status)}",
-                scaffold_title,
+                pieces, baseline, selected, target, grid,
+                f"{args.dataset} | {args.split} | sample {sample_index}",
                 initial_solver_name,
             )
 
@@ -893,6 +802,7 @@ def run_evaluation(
         sample_rows,
         reference_prefix="s1a3_reference",
         filename_suffix="_vs_s1a3",
+        write_files=args.save_completion_details,
     )
 
     payload = {
@@ -960,14 +870,17 @@ def run_evaluation(
             "broken_vs_s1a3_images": len(broken_vs_s1a3),
         },
     }
+    payload["runtime_environment"] = collect_runtime_environment(
+        requested_device=args.device, resolved_device=device, gpu_id=args.gpu_id,
+    )
     (output_dir / "metrics.json").write_text(
         json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     _write_csv(output_dir / "sample_results.csv", sample_rows)
-    _write_csv(output_dir / "round_results.csv", round_rows)
-    _write_csv(output_dir / "candidates.csv", candidate_rows)
-    _write_csv(output_dir / "pose_results.csv", pose_rows)
     if args.save_completion_details:
+        _write_csv(output_dir / "round_results.csv", round_rows)
+        _write_csv(output_dir / "candidates.csv", candidate_rows)
+        _write_csv(output_dir / "pose_results.csv", pose_rows)
         _write_csv(output_dir / "completion_results.csv", completion_rows)
 
     if args.save_predictions:
@@ -992,53 +905,16 @@ def run_evaluation(
     metric_summary = format_metric_summary(
         baseline_aggregate, selected_aggregate, initial_solver_name, METRIC_KEYS
     )
-    summary_lines = [
-        f"GAP RG-LNS "
-        f"({initial_solver_name} initialization)",
-        "=" * 80,
-        f"checkpoint: {checkpoint}",
-        f"data_root: {Path(args.data_root).expanduser().resolve()}",
-        f"dataset/split: {args.dataset} / {args.split}",
-        f"samples: {len(sample_rows)} (start_index={args.start_index})",
-        f"complete_initial_solver_baselines: {complete_initial_baselines}/{len(sample_rows)}",
-        f"configuration: beam={args.completion_beam_width}, "
-        f"partial_beam={args.partial_completion_beam_width}, k={args.mutual_top_k}, "
-        f"translation={args.translation_mode}, "
-        f"component={args.component_index}, min_size={args.min_component_size}, "
-        f"rounds={args.refinement_rounds}, postprocess={args.postprocess}, "
-        f"score_batch_size={args.score_batch_size}",
-        f"initial_solver: {initial_solver_name}",
-        f"status: {format_status(str(status_counts))}",
-        "",
-    ]
-    summary_lines.extend(metric_summary)
-    summary_lines.extend(
-        [
-            f"True-Neighbor MRR: {retrieval.mrr:.6f}",
-            f"Mean True-Neighbor Rank: {retrieval.mean_rank:.3f}",
-        ]
+    summary_lines = format_run_configuration(
+        dataset=args.dataset, split=args.split, samples=len(sample_rows),
+        initial_solver_name=initial_solver_name, device=str(device),
+        data_root=args.data_root, checkpoint=checkpoint,
     )
-    for k in retrieval.recall_ks:
-        summary_lines.append(f"True-Neighbor Recall@{k}: {retrieval.recall_at(k):.4%}")
-    summary_lines.extend(
-        [
-            "",
-            f"Comparison: {comparison}",
-            f"PA repaired image list: pa_repaired_images.txt ({len(repaired)})",
-            f"PA broken image list: pa_broken_images.txt ({len(broken)})",
-        ]
-    )
-    summary_lines.extend(["", *format_stage_timing_summary(runtime_summary), ""])
-    summary_lines.append(f"elapsed_seconds: {elapsed_seconds:.10g}")
-    (output_dir / "summary.txt").write_text("\n".join(summary_lines) + "\n", encoding="utf-8")
-    append_runtime_environment(
-        output_dir / "summary.txt",
-        requested_device=args.device,
-        resolved_device=device,
-        gpu_id=args.gpu_id,
+    summary_lines = format_evaluation_summary(summary_lines, metric_summary, payload, output_dir)
+    (output_dir / "summary.txt").write_text(
+        "\n".join(summary_lines), encoding="utf-8",
     )
 
-    print(f"device: {device}")
     print("\n".join(metric_summary))
     print(f"Saved: {output_dir}")
     return payload

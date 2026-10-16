@@ -1,7 +1,7 @@
 """
 @file: evaluate_jpwleg_pomeranz_rg_lns.py
-@description: Generate an initial JPwLEG layout with E1 compatibility and Pomeranz CVPR 2011,
-              then run profiled RG-LNS with multi-path completion.
+@description: Generate an initial JPwLEG layout with learned compatibility and Pomeranz CVPR 2011,
+              then run RG-LNS with multi-path completion.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -59,7 +59,6 @@ def main() -> None:
         f"pomeranzr{config.restarts}m{config.max_refinement_rounds}"
         f"s{config.random_seed}"
     )
-    print(f"Pomeranz configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

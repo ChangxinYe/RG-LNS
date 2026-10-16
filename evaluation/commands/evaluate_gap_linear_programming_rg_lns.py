@@ -67,7 +67,6 @@ def main() -> None:
     config = lp_config_from_args(args)
     config.validate(GAP_CONFIGS[args.dataset].num_pieces)
     solver = partial(solve_with_lp, config=config)
-    print(f"LP configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

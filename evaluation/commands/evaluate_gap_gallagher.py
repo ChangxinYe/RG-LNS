@@ -137,12 +137,12 @@ def run_evaluation(
     *,
     solver=solve_with_gallagher,
     solver_name: str = "Gallagher",
-    method_name: str = "E1 compatibility",
+    method_name: str = "Baseline (ViT-T)",
     solver_configuration: dict | None = None,
     output_root: Path = DEFAULT_OUTPUT_ROOT,
     output_suffix: str = "",
 ) -> tuple[GAPMetrics, Path]:
-    """Run a standalone GAP baseline through the same scorer/solver path as profiled RG-LNS."""
+    """Run a standalone GAP baseline through the same scorer/solver path as RG-LNS."""
 
     validate_args(args)
     if args.run_name is None:

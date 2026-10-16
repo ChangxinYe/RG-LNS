@@ -1,6 +1,6 @@
 """
 @file: best_buddies.py
-@description: Construct Pomeranz Best-Buddies relations and ground-truth-free layout scores from directional E1 compatibility distances.
+@description: Construct Pomeranz Best-Buddies relations and ground-truth-free layout scores from directional learned compatibility distances.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -17,9 +17,9 @@ def validate_scores(scores: np.ndarray, num_pieces: int) -> np.ndarray:
     scores = np.asarray(scores, dtype=np.float64)
     expected = (num_pieces, num_pieces, 4)
     if scores.shape != expected:
-        raise ValueError(f"E1 scores must have shape {expected}, got {scores.shape}")
+        raise ValueError(f"compatibility scores must have shape {expected}, got {scores.shape}")
     if np.any(np.isnan(scores)) or np.any(np.isneginf(scores)):
-        raise ValueError("E1 scores cannot contain NaN or negative infinity")
+        raise ValueError("compatibility scores cannot contain NaN or negative infinity")
     candidates = scores.copy()
     piece_ids = np.arange(num_pieces)
     candidates[piece_ids, piece_ids, :] = np.inf

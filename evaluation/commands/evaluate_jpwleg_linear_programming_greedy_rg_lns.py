@@ -1,6 +1,6 @@
 """
 @file: evaluate_jpwleg_linear_programming_greedy_rg_lns.py
-@description: Generate an initial JPwLEG layout with the pure-Python BMVC 2016 Type-1 LP solver, then run our single-component E1 iterative reassembly.
+@description: Generate an initial JPwLEG layout with the pure-Python BMVC 2016 Type-1 LP solver, then run our single-component greedy refinement.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.0

@@ -217,7 +217,7 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"E1 {initial_solver_name} baseline "
+        f"Baseline (ViT-T + {initial_solver_name}) "
         f"(AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         "Last component seed (cyan)",
         f"Greedy reassembly final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
@@ -625,7 +625,7 @@ def run_evaluation(
         "",
     ]
     for label, metrics in (
-        (f"E1 {initial_solver_name} baseline", baseline_aggregate),
+        (f"Baseline (ViT-T + {initial_solver_name})", baseline_aggregate),
         ("Greedy reassembly", selected_aggregate),
     ):
         summary_lines.append(f"{label}:")

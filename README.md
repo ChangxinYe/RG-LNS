@@ -132,8 +132,10 @@ can be evaluated without retraining Stage I.
 
 ### RG-LNS evaluation
 
-Each run reports both the initial-solver baseline and the final RG-LNS metrics
-in `metrics.json` and `summary.txt`, so no separate baseline run is needed.
+Each run reports **Baseline (ViT-T + solver)** and **Baseline + RG-LNS** in
+`summary.txt` and `metrics.json`, so no separate baseline run is needed.
+Saved figures show the input, both results, and ground truth. Detailed search
+records are optional; see the [output guide](docs/reproducibility.md#evaluation-outputs).
 
 ```bash
 # GAP-3 / GAP-5
@@ -186,9 +188,8 @@ python reproduce.py sensitivity
 python reproduce.py runtime
 ```
 
-All original dataset/solver combinations remain available as explicit modules
-under `evaluation/commands/`, which keeps each reported path independently
-auditable. Compact submitted records are inventoried in
+Dataset/solver combinations have explicit modules under `evaluation/commands/`.
+Compact reference results are inventoried in
 [`results/reference/README.md`](results/reference/README.md).
 
 ## Method Overview

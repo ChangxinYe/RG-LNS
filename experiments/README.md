@@ -26,9 +26,9 @@ After preparing ImageNet-LSEJ and its released erode2 checkpoint, generate
 paired results for all three initial solvers from the repository root:
 
 ```bash
-python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-completion-details true --output-dir results/runs/failure_analysis/gallagher/grid10_erode2
-python evaluate.py lsej pomeranz rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-completion-details true --output-dir results/runs/failure_analysis/pomeranz/grid10_erode2
-python evaluate.py lsej linear-programming rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-completion-details true --output-dir results/runs/failure_analysis/lp/grid10_erode2
+python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/gallagher/grid10_erode2
+python evaluate.py lsej pomeranz rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/pomeranz/grid10_erode2
+python evaluate.py lsej linear-programming rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/lp/grid10_erode2
 python -m jupyterlab experiments/failure_analysis.ipynb
 ```
 
@@ -36,7 +36,14 @@ Run all notebook cells in order. The setup cell exposes `TASKS`, `DATA_ROOT`,
 `CHECKPOINTS`, and `RESULT_ROOT`; update them together when analyzing other
 tasks or local paths. All solvers must use the same test samples, checkpoint,
 and RG-LNS structural parameters. Each RG-LNS archive already includes its
-paired initial predictions, so separate initial-only runs are unnecessary.
+paired baseline predictions, so separate initial-only runs are unnecessary.
+
+The notebook compares **Baseline** with **Baseline + RG-LNS**. Optional
+environment settings use the `RG_LNS_ANALYSIS_` prefix, including
+`RG_LNS_ANALYSIS_DATA_ROOT`, `RG_LNS_ANALYSIS_RESULT_ROOT`, and
+`RG_LNS_ANALYSIS_MAX_FAILED`; earlier environment names are still accepted.
+`--save-diagnostics true` exports search records for detailed inspection.
+It does not change the predictions used by this analysis.
 
 Full-population statistics require complete test splits. For a workflow
 check, add `--max-samples N` to each evaluation command and set

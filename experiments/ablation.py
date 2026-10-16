@@ -186,7 +186,7 @@ TABLE_ROWS: tuple[TableRowSpec, ...] = (
         key="reliability_guided_destroy",
         label="+ Reliability-Guided Destroy",
         run_variant="reliability_destroy_fixed_b1",
-        # Historical result key retained for compatibility; the public name is profiled RG-LNS.
+        # Historical result key retained for compatibility; the result is the complete RG-LNS method.
         metric_section="s1a4",
     ),
     TableRowSpec(
@@ -200,7 +200,7 @@ TABLE_ROWS: tuple[TableRowSpec, ...] = (
         key="beam_search_completion",
         label="+ Beam-Search Completion",
         run_variant="full_rg_lns_b4",
-        # Historical result key retained for compatibility; the public name is profiled RG-LNS.
+        # Historical result key retained for compatibility; the result is the complete RG-LNS method.
         metric_section="s1a4",
     ),
 )
@@ -909,7 +909,7 @@ def _write_result_files(
         "  + Reliability-Guided Destroy: fixed component position, greedy completion (B=1)",
         "  + Component Translations: all legal component translations, greedy completion (B=1)",
         "  + Beam-Search Completion: all legal component translations, beam width B=4",
-        "  All RG-LNS rows share the same partial-layout completion and strict E1 acceptance rule.",
+        "  All RG-LNS rows share the same partial-layout completion and strict compatibility-objective acceptance rule.",
         "",
         "MGC + Gallagher is intentionally excluded because it is an external compatibility baseline,",
         "not an ablation of the frozen ViT-T compatibility and RG-LNS modules.",

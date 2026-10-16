@@ -1,9 +1,9 @@
 """
 @file: evaluate_lsej_pomeranz_rg_lns.py
-@description: Generate an ImageNet-LSEJ initial layout with E1 compatibility and the Pomeranz CVPR 2011 solver,
-              then run profiled RG-LNS with multi-path completion.
+@description: Generate an ImageNet-LSEJ initial layout with learned compatibility and the Pomeranz CVPR 2011 solver,
+              then run RG-LNS with multi-path completion.
               Compare multiple complete fills at each reliable-component pose and accept a new layout only
-              when the global E1 objective strictly improves; beam=1 reduces to greedy reassembly.
+              when the global compatibility objective strictly improves; beam=1 reduces to greedy reassembly.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -60,7 +60,6 @@ def main() -> None:
         f"pomeranzr{config.restarts}m{config.max_refinement_rounds}"
         f"s{config.random_seed}"
     )
-    print(f"Pomeranz configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

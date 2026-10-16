@@ -41,7 +41,7 @@ def parse_args():
     parser.description = (
         "Evaluate greedy component reassembly on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP initialization"
     )
-    # The faithful LP setting uses the raw E1 scores directly and does not apply extra compatibility post-processing by default.
+    # The faithful LP setting uses the raw compatibility scores directly and does not apply extra compatibility post-processing by default.
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,

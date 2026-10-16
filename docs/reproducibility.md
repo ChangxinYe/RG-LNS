@@ -1,33 +1,21 @@
 # Reproducibility notes
 
-The public layout separates the two stages described in the paper without
-rewriting their numerical implementation:
+Normal evaluation compares two results on the same samples and frozen ViT-T
+compatibility model:
 
-1. `compatibility/` trains or loads the frozen directional compatibility
-   model and produces an `N x N x 4` distance tensor.
-2. `initial_solvers/` produces the initial piece-to-position layout. If it is
-   incomplete, `initial_solvers/partial_completion.py` completes it before
-   RG-LNS begins.
-3. `rg_lns/` applies reliability-guided component selection, legal rigid
-   translations, profiled beam completion, the fixed E1 objective, and the
-   strict-improvement acceptance rule.
+- **Baseline (ViT-T + solver)**: the original layout from Gallagher, Pomeranz,
+  or LP.
+- **Baseline + RG-LNS**: the final layout after applying the complete RG-LNS
+  method to that baseline.
 
-The move from the submitted workspace was intentionally mechanical. Function
-bodies for the paper-facing training, solver, and evaluation paths were kept;
-module imports and repository-relative paths were changed. The former stage
-labels (`s1a*`, `s1a3*`, and `s1a4*`) were replaced by descriptive
-dataset/solver names under `evaluation/commands/`. Historical labels remain
-only where they are part of an existing result schema or artifact filename,
-so previously generated records remain readable.
+RG-LNS automatically completes partial initial layouts before reliable-region
+selection, translation, and beam completion. Candidate selection uses the
+compatibility objective, never ground-truth positions. These operations are
+internal parts of one method; they do not require separate evaluation runs.
 
-For readers, the public terminology is:
-
-- **E1 compatibility**: the learned piece-to-piece compatibility model and its
-  initial-solver baselines;
-- **greedy component reassembly**: the single-path component search formerly
-  labeled S1A3;
-- **profiled RG-LNS**: the multi-path large-neighborhood search formerly
-  labeled S1A4.
+The implementation is organized into `compatibility/` for visual compatibility,
+`initial_solvers/` for initial layouts and partial-layout completion, and
+`rg_lns/` for layout refinement.
 
 ## Local directory contract
 
@@ -88,9 +76,6 @@ The resulting paths must be `datasets/GAP_fast/GAP-3/{train,val,test}/` and
 `datasets/GAP_fast/GAP-5/{train,val,test}/`, with `puzzles.h5` and
 `labels_indices.h5` in each split. No conversion is needed after extraction.
 
-If `GAP_fast.zip` is not yet listed under **Files and versions**, use the
-conversion method below or check back after the archive is uploaded.
-
 Alternatively, download the original dataset from
 [Ofirish/GAP](https://huggingface.co/datasets/Ofirish/GAP) and place its
 `GAP-3/` and `GAP-5/` directories under `datasets/GAP_Download/GAP/`. After
@@ -127,10 +112,42 @@ dispatches to:
 python -m evaluation.commands.evaluate_gap_rg_lns --checkpoint CHECKPOINT
 ```
 
-The same pattern covers three datasets (`gap`, `jpwleg`, `lsej`), three initial
-solvers (`gallagher`, `pomeranz`, `linear-programming`), and three evaluation
-modes (`initial`, `greedy-rg-lns`, `rg-lns`). Keeping these commands explicit
-avoids silently sharing dataset-specific label conversion or solver wrappers.
+The same pattern covers three datasets (`gap`, `jpwleg`, `lsej`) and three
+initial solvers (`gallagher`, `pomeranz`, `linear-programming`). The `rg-lns`
+mode already reports both the baseline and the refined result. Standalone
+`initial` and `greedy-rg-lns` modes remain available for targeted comparisons.
+
+## Evaluation outputs
+
+The terminal shows the run configuration followed by **Baseline (ViT-T + solver)**
+and **Baseline + RG-LNS**. Progress metrics are cumulative over the samples
+evaluated so far. `summary.txt` additionally records the exact sample range,
+evaluation settings, baseline-to-final improvements and degradations, runtime
+statistics, saved output files, and **Runtime Environment**. GAP summaries also
+retain true-neighbor MRR, mean rank, and Recall@K. Saved visualizations show
+`Input`, `Baseline`, `Baseline + RG-LNS`, and `Ground truth`; colored boxes
+indicate correct (green) or incorrect (red) piece positions.
+
+Normal runs save `metrics.json`, `sample_results.csv`, optional
+`predictions.npz` and `visuals/`, and baseline-to-final repair/degradation lists.
+`metrics.json` retains intermediate metrics, search diagnostics, stage timings,
+and the runtime environment for reproducibility.
+
+The summary's runtime section reports compatibility scoring, the initial solver,
+RG-LNS refinement (including partial-layout completion), and total inference.
+Its per-puzzle statistics exclude warmup samples; evaluation elapsed time also
+includes loop overhead such as metrics and visualization. Detailed internal
+stage timings remain available in `metrics.json`.
+
+For detailed candidate and round records, add `--save-diagnostics true`.
+This also writes `round_results.csv`, `candidates.csv`, `pose_results.csv`,
+`completion_results.csv`, and single-path comparison lists. The existing
+`--save-completion-details` argument is an alias for the same option.
+Diagnostic export does not change the selected layout or evaluation metrics.
+
+Existing JSON/NPZ keys are retained so analysis scripts can read earlier runs.
+In `metrics.json`, `baseline` is the original baseline, `s1a4` is the final
+RG-LNS result, and the other stage sections are diagnostic records.
 
 ## Verification policy
 
@@ -142,9 +159,8 @@ Refactoring beyond imports and paths should only be accepted after comparing:
   predictions;
 - aggregate PA, AA, HA, VA, SRA, and NA.
 
-The compact submitted records under `results/reference/` are the regression
-oracle for aggregate results. Generated runs go to `results/runs/`, which is
-ignored by Git.
+The compact records under `results/reference/` provide aggregate reference
+results. Generated runs go to `results/runs/`, which is ignored by Git.
 
 ## Failure-analysis notebook
 

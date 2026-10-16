@@ -1,10 +1,10 @@
 """
 @file: evaluate_lsej_greedy_rg_lns.py
-@description: Reuse the trained E1 compatibility embedding and matrix, obtain an initial
+@description: Reuse the trained learned compatibility embedding and matrix, obtain an initial
               solution with Gallagher, and iteratively extract high-confidence connected components using mutual
-              E1 Top-K relations and local four-edge cycle constraints. Enumerate legal component translations,
-              greedily refill remaining pieces with E1 compatibility, and accept a new layout only when the global
-              E1 adjacency objective strictly improves.
+              compatibility Top-K relations and local four-edge cycle constraints. Enumerate legal component translations,
+              greedily refill remaining pieces with learned compatibility, and accept a new layout only when the global
+              compatibility adjacency objective strictly improves.
 @author: Changxin Ye
 @created: 2026-07-24
 @version: 1.2
@@ -87,7 +87,7 @@ DEFAULT_PROGRESS_INTERVAL = 1
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Run greedy high-confidence component-guided reassembly with frozen E1 compatibility",
+        "Run greedy high-confidence component-guided reassembly with frozen learned compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
@@ -227,7 +227,7 @@ def _save_visual(
     ]
     names = [
         "Official shuffled input",
-        f"E1 {initial_solver_name} baseline (AA {np.count_nonzero(baseline == target)}/{grid * grid})",
+        f"Baseline (ViT-T + {initial_solver_name}) (AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         "Last component seed (cyan)",
         f"Greedy reassembly final (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground truth",
@@ -598,7 +598,7 @@ def run_evaluation(
         f"selection: {payload['selection_rule']}",
         f"status: {status_counts}",
         "",
-        f"E1 {initial_solver_name} baseline:",
+        f"Baseline (ViT-T + {initial_solver_name}):",
         f"  PA={baseline_aggregate['PA']:.4%}",
         f"  AA={baseline_aggregate['AA']:.4%}",
         f"  Horizontal SRA={baseline_aggregate['horizontal_SRA']:.4%}",

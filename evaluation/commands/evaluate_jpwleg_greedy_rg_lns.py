@@ -1,6 +1,6 @@
 """
 @file: evaluate_jpwleg_greedy_rg_lns.py
-@description: Run the proposed single-component E1 greedy reassembly on a Gallagher initial layout for JPwLEG and compare metrics before and after reassembly.
+@description: Run the single-path component-reassembly comparison on a Gallagher initial layout for JPwLEG and compare metrics before and after reassembly.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.1
@@ -92,7 +92,7 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Run greedy high-confidence component reassembly on JPwLEG with frozen E1 compatibility",
+        "Run greedy high-confidence component reassembly on JPwLEG with frozen learned compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPWLEG_CONFIGS.keys(), help="JPwLEG dataset to evaluate; each dataset uses its own checkpoint")
@@ -188,7 +188,7 @@ def _save_visual(
     ]
     names = [
         "Shuffled input puzzle",
-        f"E1 {initial_solver_name} initial solution (AA {np.count_nonzero(baseline == target)}/{grid * grid})",
+        f"Baseline (ViT-T + {initial_solver_name}) (AA {np.count_nonzero(baseline == target)}/{grid * grid})",
         "Last component seed (cyan box)",
         f"Greedy reassembly final solution (AA {np.count_nonzero(selected == target)}/{grid * grid})",
         "Ground-truth puzzle",
@@ -517,7 +517,7 @@ def run_evaluation(
         f"selection: {payload['selection_rule']}",
         f"status: {status_counts}",
         "",
-        f"E1 {initial_solver_name} baseline:",
+        f"Baseline (ViT-T + {initial_solver_name}):",
         f"  PA={baseline_aggregate['PA']:.4%}",
         f"  AA={baseline_aggregate['AA']:.4%}",
         f"  HA={baseline_aggregate['HA']:.4%}",

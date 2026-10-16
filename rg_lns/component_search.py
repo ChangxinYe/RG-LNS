@@ -1,6 +1,6 @@
 """
-@file: single_component_e1.py
-@description: Single-component E1 iterative reassembly algorithm for arbitrary Type-1 square jigsaw datasets.
+@file: component_search.py
+@description: Single-path component refinement for arbitrary Type-1 square jigsaw datasets.
 @author: Changxin Ye
 @created: 2026-07-26
 @version: 1.1
@@ -162,7 +162,7 @@ def seeded_greedy_fill(
     """Translate a rigid component and greedily place all remaining pieces.
 
     Candidate slots with the most already placed neighbors are filled first.
-    E1 compatibility to all occupied neighbors is averaged, and deterministic
+    Learned compatibility to all occupied neighbors is averaged, and deterministic
     piece/row/column tie breaks make the diagnostic exactly reproducible.
     """
 
@@ -271,14 +271,14 @@ def macro_layout_rank_score(macro_scores: np.ndarray, macro_grid: int) -> dict[s
 
 
 def e1_layout_selection_key(candidate: dict) -> tuple[float, int, int, int, int]:
-    """Return the deterministic, ground-truth-free E1 candidate order."""
+    """Return the deterministic, ground-truth-free compatibility candidate order."""
 
     row_shift = int(candidate["row_shift"])
     column_shift = int(candidate["column_shift"])
     mean_score = candidate.get("e1_mean_adjacency_score", candidate.get("mean_adjacency_score"))
     mutual_top1 = candidate.get("e1_mutual_top1_edges", candidate.get("mutual_top1_edges"))
     if mean_score is None or mutual_top1 is None:
-        raise KeyError("candidate is missing E1 layout statistics")
+        raise KeyError("candidate is missing compatibility layout statistics")
     return (
         float(mean_score),
         -int(mutual_top1),
@@ -299,12 +299,12 @@ def iterative_component_reassembly(
     max_rounds: int = 1,
     translation_mode: str = "all",
 ) -> dict:
-    """Iteratively rebuild a layout around one reliable E1 component.
+    """Iteratively rebuild a layout around one reliable component.
 
     Every round keeps the current layout as a candidate, enumerates all legal
     translations of the selected component (or only its current pose in
-    ``fixed`` mode), greedily fills the remaining pieces using the frozen E1
-    matrix, and accepts a new layout only when its E1 objective strictly
+    ``fixed`` mode), greedily fills the remaining pieces using the frozen compatibility
+    matrix, and accepts a new layout only when its compatibility objective strictly
     improves. Ground-truth positions are never used.
     """
 

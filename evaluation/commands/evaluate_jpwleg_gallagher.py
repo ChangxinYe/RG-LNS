@@ -396,7 +396,7 @@ def save_visual_comparison(
     sample_index: int,
     correct_pieces: int,
     perfect: bool,
-    method_name: str = "Puzzle hard triplet",
+    method_name: str = "Baseline (ViT-T + Gallagher)",
 ) -> None:
     import matplotlib
 
@@ -461,7 +461,7 @@ def evaluate_dataset(
     visual_interval: int,
     save_predictions: bool,
     verbose_solver: bool,
-    method_name: str = "E1 hard-triplet compatibility",
+    method_name: str = "Baseline (ViT-T + Gallagher)",
 ) -> DatasetMetrics:
     config = JPWLEG_CONFIGS[dataset]
     images, labels = load_jpwleg_arrays(data_root, dataset, split)
@@ -566,7 +566,7 @@ def evaluate_dataset(
 
 def print_summary(metrics_list: list[DatasetMetrics]) -> None:
     print("")
-    print("=============== JPwLEG PUZZLE-LEVEL HARD TRIPLET RESULT SUMMARY ===============")
+    print("=============== JPwLEG BASELINE RESULT SUMMARY ===============")
     for metrics in metrics_list:
         print(
             f"{JPWLEG_CONFIGS[metrics.dataset].folder} {metrics.split}: "

@@ -1,6 +1,6 @@
 """
 @file: solver.py
-@description: Organize the Pomeranz Placer, Segmenter, and Shifter according to the paper workflow and connect them to the E1 compatibility distance.
+@description: Organize the Pomeranz Placer, Segmenter, and Shifter according to the paper workflow and connect them to the learned compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -119,9 +119,9 @@ def solve_with_pomeranz(
     verbose: bool = False,
     return_diagnostics: bool = False,
 ):
-    """Run the multi-seed Pomeranz CVPR 2011 solving workflow using a unified E1 compatibility matrix."""
+    """Run the multi-seed Pomeranz CVPR 2011 solving workflow using a unified learned compatibility matrix."""
 
-    del pieces  # Keep a uniform call signature with other solvers; Pomeranz uses only precomputed E1 scores.
+    del pieces  # Keep a uniform call signature with other solvers; Pomeranz uses only precomputed compatibility scores.
     config = config or PomeranzSolverConfig()
     num_pieces = grid * grid
     config.validate(num_pieces)

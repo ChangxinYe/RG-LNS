@@ -1,6 +1,6 @@
 """
 @file: __init__.py
-@description: Entry point for the pure-Python Pomeranz CVPR 2011 solver using the unified E1 compatibility distance.
+@description: Entry point for the pure-Python Pomeranz CVPR 2011 solver using the unified learned compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0

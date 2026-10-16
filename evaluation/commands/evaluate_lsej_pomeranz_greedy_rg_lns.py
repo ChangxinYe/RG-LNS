@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_pomeranz_greedy_rg_lns.py
-@description: Generate an LSEJ initial solution with E1 compatibility + Pomeranz, then run greedy component reassembly.
+@description: Generate an LSEJ initial solution with learned compatibility + Pomeranz, then run greedy component reassembly.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -28,7 +28,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Use the complete E1 compatibility + Pomeranz CVPR 2011 solution as the greedy initial layout"
+    parser.description = "Use the complete learned compatibility + Pomeranz CVPR 2011 solution as the greedy initial layout"
     add_pomeranz_arguments(parser)
     return parser.parse_args()
 

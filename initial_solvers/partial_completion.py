@@ -1,8 +1,8 @@
 """
-@file: partial_layout_completion.py
-@description: Complete incomplete layouts produced by Gallagher/LP and other solvers without ground-truth labels using frozen E1 scores.
+@file: partial_completion.py
+@description: Complete incomplete layouts produced by Gallagher/LP and other solvers without ground-truth labels using frozen compatibility scores.
               Treat placed pieces as a rigid scaffold, enumerate legal global translations, then use a profiled beam
-              to fill all unplaced pieces and deterministically select the final candidate by the full-layout E1 objective.
+              to fill all unplaced pieces and deterministically select the final candidate by the full-layout compatibility objective.
 @author: Changxin Ye
 @created: 2026-08-05
 @version: 1.0
@@ -37,7 +37,7 @@ def validate_partial_layout(positions: np.ndarray, grid: int) -> tuple[np.ndarra
     if len(np.unique(placed_slots)) != len(placed_slots):
         raise ValueError("partial layout contains duplicate grid positions and cannot be used as a rigid scaffold")
     if len(placed_pieces) == 0:
-        raise ValueError("partial layout contains no placed pieces; E1 scaffold completion cannot start")
+        raise ValueError("partial layout contains no placed pieces; partial-layout completion cannot start")
     return positions, placed_pieces
 
 
@@ -79,7 +79,7 @@ def complete_partial_layout(
     count = grid * grid
     scores = np.asarray(scores, dtype=np.float32)
     if scores.shape != (count, count, 4):
-        raise ValueError(f"E1 scores must have shape {(count, count, 4)}, got {scores.shape}")
+        raise ValueError(f"compatibility scores must have shape {(count, count, 4)}, got {scores.shape}")
     if is_complete_layout(positions, grid):
         return {
             "prediction": positions.copy(),

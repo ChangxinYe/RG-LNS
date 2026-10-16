@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_pomeranz.py
-@description: Evaluate ImageNet-LSEJ with the unified E1 compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
+@description: Evaluate ImageNet-LSEJ with the unified learned compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -95,7 +95,7 @@ def pomeranz_config_from_args(args: argparse.Namespace) -> PomeranzSolverConfig:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate ImageNet-LSEJ with the E1 compatibility distance and Pomeranz CVPR 2011 solver",
+        "Evaluate ImageNet-LSEJ with the learned compatibility distance and Pomeranz CVPR 2011 solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
@@ -109,7 +109,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="maximum puzzles; 0 uses the full split")
     parser.add_argument("--start-index", default=0, type=int, help="starting puzzle index in the split")
     parser.add_argument("--score-batch-size", default=128, type=int, help="forward batch size for edge embeddings")
-    parser.add_argument("--postprocess", default=True, type=parse_bool, help="whether to apply the existing compatibility post-processing to E1 distances")
+    parser.add_argument("--postprocess", default=True, type=parse_bool, help="whether to apply the existing compatibility post-processing to compatibility distances")
     parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0")
     parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
     parser.add_argument("--progress-interval", default=1, type=int, help="print metrics every N puzzles; 0 disables output")
@@ -182,7 +182,7 @@ def main() -> None:
         save_visuals=args.save_visuals,
         visual_limit=args.visual_limit,
         save_predictions=args.save_predictions,
-        method_name="E1 compatibility + Pomeranz CVPR 2011",
+        method_name="Baseline (ViT-T + Pomeranz)",
         solver=solver,
         configuration={
             "implementation": "paper_guided_python_reimplementation_with_s1a_e1",

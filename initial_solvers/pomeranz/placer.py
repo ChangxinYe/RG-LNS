@@ -1,6 +1,6 @@
 """
 @file: placer.py
-@description: Floating-canvas greedy Pomeranz Placer using the E1 compatibility distance.
+@description: Floating-canvas greedy Pomeranz Placer using the learned compatibility distance.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0

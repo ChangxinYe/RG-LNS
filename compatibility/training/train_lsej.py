@@ -161,7 +161,7 @@ def parse_bool(value: str | bool) -> bool:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Train the puzzle-level E1 compatibility model on ImageNet-LSEJ",
+        "Train directional visual compatibility on ImageNet-LSEJ",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default="grid10_erode2", choices=OFFICIAL_TASKS, help="official LSEJ task name")

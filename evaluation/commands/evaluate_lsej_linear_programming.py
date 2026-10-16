@@ -89,7 +89,7 @@ def add_lp_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Evaluate E1 compatibility with the faithful pure-Python BMVC 2016 Type-1 LP solver",
+        "Evaluate learned compatibility with the faithful pure-Python BMVC 2016 Type-1 LP solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
@@ -186,7 +186,7 @@ def main() -> None:
         save_visuals=args.save_visuals,
         visual_limit=args.visual_limit,
         save_predictions=args.save_predictions,
-        method_name="E1 compatibility + faithful Python LP",
+        method_name="Baseline (ViT-T + LP)",
         solver=solver,
         configuration={
             "implementation": "faithful_bmvc2016_type1_python_port",

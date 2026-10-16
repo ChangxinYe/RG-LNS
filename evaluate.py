@@ -24,7 +24,10 @@ def evaluator_module(dataset: str, solver: str, method: str) -> str:
 
 
 def main() -> None:
-    help_parser = argparse.ArgumentParser(description="Evaluate initial layouts or RG-LNS.")
+    help_parser = argparse.ArgumentParser(
+        description="Compare a ViT-T baseline with Baseline + RG-LNS.",
+        epilog="Use rg-lns for normal evaluation; initial and greedy-rg-lns are standalone comparison modes.",
+    )
     help_parser.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
     help_parser.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
     help_parser.add_argument("method", choices=("initial", "greedy-rg-lns", "rg-lns"))

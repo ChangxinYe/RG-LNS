@@ -1,6 +1,6 @@
 """
 @file: evaluate_gap_pomeranz_rg_lns.py
-@description: Generate initial GAP-3/GAP-5 layouts with the E1 compatibility distance and Pomeranz CVPR 2011 solver,
+@description: Generate initial GAP-3/GAP-5 layouts with the learned compatibility distance and Pomeranz CVPR 2011 solver,
               then run profiled large-neighborhood reassembly and compare it strictly with the greedy
               single-path result from the same Pomeranz initial layout.
 @author: Changxin Ye
@@ -70,7 +70,6 @@ def main() -> None:
         f"pomeranzr{config.restarts}m{config.max_refinement_rounds}"
         f"s{config.random_seed}"
     )
-    print(f"Pomeranz configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

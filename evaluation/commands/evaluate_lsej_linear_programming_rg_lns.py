@@ -1,9 +1,9 @@
 """
 @file: evaluate_lsej_linear_programming_rg_lns.py
 @description: Generate an ImageNet-LSEJ initial layout with the faithful pure-Python BMVC 2016 Type-1 port,
-              then run profiled RG-LNS with multi-path completion.
+              then run RG-LNS with multi-path completion.
               Retain multiple remaining-piece fill paths at every reliable-component pose and select a representative
-              using the full-layout E1 objective; beam=1 strictly reduces to the matching greedy single-path reassembly.
+              using the full-layout compatibility objective; beam=1 strictly reduces to the matching greedy single-path reassembly.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -40,7 +40,7 @@ def parse_args():
     parser.description = (
         "Evaluate RG-LNS on ImageNet-LSEJ with BMVC 2016 Type-1 LP initialization"
     )
-    # Keep the same convention as the existing compatibility/greedy LP entry points: LP uses raw E1 by default
+    # Keep the same convention as the existing compatibility/greedy LP entry points: LP uses raw compatibility scores by default
     # and does not apply the compatibility post-processing enabled by the Gallagher version.
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
@@ -53,7 +53,6 @@ def main() -> None:
     grid = int(str(args.task).split("_", 1)[0].removeprefix("grid"))
     config.validate(grid * grid)
     solver = partial(solve_with_lp, config=config)
-    print(f"LP configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

@@ -1,7 +1,7 @@
 """
 @file: evaluate_jpwleg_linear_programming_rg_lns.py
 @description: Generate an initial JPwLEG layout with the pure-Python BMVC 2016 Type-1 LP solver,
-              then run profiled RG-LNS with multi-path completion.
+              then run RG-LNS with multi-path completion.
 @author: Changxin Ye
 @created: 2026-08-01
 @version: 1.0
@@ -48,7 +48,6 @@ def main() -> None:
     config = lp_config_from_args(args)
     config.validate(JPWLEG_CONFIGS[args.dataset].num_pieces)
     solver = partial(solve_with_lp, config=config)
-    print(f"LP configuration: {asdict(config)}")
     run_evaluation(
         args,
         initial_solver=solver,

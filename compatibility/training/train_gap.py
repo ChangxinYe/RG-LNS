@@ -1,6 +1,6 @@
 """
 @file: train_gap.py
-@description: Train the E1 compatibility model on irregular RGBA GAP-3/GAP-5 puzzles.
+@description: Train directional visual compatibility on irregular RGBA GAP-3/GAP-5 puzzles.
               The model retains the pretrained handwritten ViT, right-edge normalization, same-puzzle hard negatives, and Hard Triplet;
               RGBA inputs first pass through a learnable 1x1 channel adapter. Training uses only train/val and runs for all epochs;
               test is used only by independent evaluation scripts.
@@ -80,7 +80,7 @@ def parse_bool(value: str | bool) -> bool:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Train E1 compatibility with hard-triplet metric learning on GAP-3/GAP-5",
+        "Train directional visual compatibility on GAP-3/GAP-5",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=GAP_CONFIGS.keys())
