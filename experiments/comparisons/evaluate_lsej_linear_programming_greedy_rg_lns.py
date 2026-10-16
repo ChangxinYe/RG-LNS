@@ -11,16 +11,10 @@ from __future__ import annotations
 from dataclasses import asdict
 from functools import partial
 
-try:
-    from evaluation.output import script_output_root
-    from initial_solvers.linear_programming import solve_with_lp
-    from evaluation.commands.evaluate_lsej_greedy_rg_lns import build_parser, run_evaluation
-    from evaluation.commands.evaluate_lsej_linear_programming import add_lp_arguments, lp_config_from_args
-except ImportError:
-    from evaluation.output import script_output_root
-    from initial_solvers.linear_programming import solve_with_lp
-    from evaluation.commands.evaluate_lsej_greedy_rg_lns import build_parser, run_evaluation
-    from evaluation.commands.evaluate_lsej_linear_programming import add_lp_arguments, lp_config_from_args
+from evaluation.output import script_output_root
+from initial_solvers.linear_programming import solve_with_lp
+from experiments.comparisons.evaluate_lsej_greedy_rg_lns import build_parser, run_evaluation
+from evaluation.common.solver_options import add_lp_arguments, lp_config_from_args
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")

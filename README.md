@@ -38,8 +38,12 @@ RG-LNS/
 ├── data_loaders/            GAP, JPwLEG, and ImageNet-LSEJ adapters
 ├── initial_solvers/         Gallagher, Pomeranz, LP, and partial-layout completion
 ├── rg_lns/                  Stage II: the proposed destroy/translate/repair search
-├── evaluation/              Metrics and explicit dataset/solver evaluation commands
+├── evaluation/              Metrics and evaluation support
+│   ├── commands/            Full evaluation: Baseline and Baseline + RG-LNS
+│   ├── common/              Shared arguments, checkpoint lookup, and utilities
+│   └── baselines/           Optional standalone baseline evaluations
 ├── experiments/             Ablation, sensitivity, runtime, and failure analysis
+│   └── comparisons/         Optional standalone greedy comparisons
 ├── scripts/                 Standalone data preparation tools
 ├── assets/                  Figures used in the documentation
 ├── datasets/                Local datasets; ignored by Git
@@ -188,7 +192,9 @@ python reproduce.py sensitivity
 python reproduce.py runtime
 ```
 
-Dataset/solver combinations have explicit modules under `evaluation/commands/`.
+Complete dataset/solver evaluations have explicit modules under `evaluation/commands/`.
+Standalone comparisons are separate from the normal evaluation workflow; see
+the [experiment instructions](experiments/README.md#standalone-comparisons).
 Compact reference results are inventoried in
 [`results/reference/README.md`](results/reference/README.md).
 

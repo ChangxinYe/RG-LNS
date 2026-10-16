@@ -17,72 +17,43 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_evaluation_summary, format_metric_summary, format_run_configuration
+from evaluation.reporting import (
+    format_evaluation_summary,
+    format_metric_summary,
+    format_run_configuration,
+)
 
-try:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.lsej import (
-        DEFAULT_LSEJ_DATA_ROOT,
-        OFFICIAL_TASKS,
-        chw_uint8_to_hwc_numpy,
-        load_official_dataset_class,
-    )
-    from evaluation.lsej import compose_puzzle, is_complete_prediction, solve_with_gallagher
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_lsej_greedy_rg_lns import (
-        _aggregate_metrics,
-        _float_metric,
-        _ground_truth_metrics,
-        _write_pa_case_lists,
-    )
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
-except ImportError:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.lsej import (
-        DEFAULT_LSEJ_DATA_ROOT,
-        OFFICIAL_TASKS,
-        chw_uint8_to_hwc_numpy,
-        load_official_dataset_class,
-    )
-    from evaluation.lsej import compose_puzzle, is_complete_prediction, solve_with_gallagher
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_lsej_greedy_rg_lns import (
-        _aggregate_metrics,
-        _float_metric,
-        _ground_truth_metrics,
-        _write_pa_case_lists,
-    )
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
+from rg_lns import (
+    iterative_component_reassembly,
+    profiled_large_neighborhood_reassembly,
+)
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from evaluation.runtime_info import collect_runtime_environment
+from evaluation.timing import (
+    StageTimingCollector,
+    add_stage_timing_arguments,
+)
+from data_loaders.lsej import (
+    DEFAULT_LSEJ_DATA_ROOT,
+    OFFICIAL_TASKS,
+    chw_uint8_to_hwc_numpy,
+    load_official_dataset_class,
+)
+from evaluation.lsej import compose_puzzle, is_complete_prediction, solve_with_gallagher
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from initial_solvers.partial_completion import complete_partial_layout
+from evaluation.common.lsej_metrics import (
+    _aggregate_metrics,
+    _float_metric,
+    _ground_truth_metrics,
+    _write_pa_case_lists,
+)
+from evaluation.common.lsej_inputs import (
+    LOSS_TYPES,
+    parse_bool,
+    resolve_checkpoint_arg,
+    validate_checkpoint,
+)
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")

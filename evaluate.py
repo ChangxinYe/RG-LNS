@@ -15,28 +15,30 @@ def evaluator_module(dataset: str, solver: str, method: str) -> str:
     }[solver]
     if method == "initial":
         initial_token = "_gallagher" if solver == "gallagher" else solver_token
-        return f"evaluation.commands.evaluate_{dataset}{initial_token}"
-    method_token = {
-        "greedy-rg-lns": "_greedy_rg_lns",
-        "rg-lns": "_rg_lns",
-    }[method]
-    return f"evaluation.commands.evaluate_{dataset}{solver_token}{method_token}"
+        return f"evaluation.baselines.evaluate_{dataset}{initial_token}"
+    if method == "greedy-rg-lns":
+        return f"experiments.comparisons.evaluate_{dataset}{solver_token}_greedy_rg_lns"
+    if method != "rg-lns":
+        raise ValueError(f"Unknown evaluation method: {method}")
+    return f"evaluation.commands.evaluate_{dataset}{solver_token}_rg_lns"
 
 
 def main() -> None:
     help_parser = argparse.ArgumentParser(
         description="Compare a ViT-T baseline with Baseline + RG-LNS.",
-        epilog="Use rg-lns for normal evaluation; initial and greedy-rg-lns are standalone comparison modes.",
+        epilog="Each rg-lns run reports both Baseline and Baseline + RG-LNS.",
     )
     help_parser.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
     help_parser.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
-    help_parser.add_argument("method", choices=("initial", "greedy-rg-lns", "rg-lns"))
+    help_parser.add_argument("method", choices=("rg-lns",))
     if len(sys.argv) == 1 or sys.argv[1] in {"-h", "--help"}:
         help_parser.print_help()
         return
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
     parser.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
+    # Preserve earlier dispatcher commands without presenting comparison variants
+    # as choices required for normal evaluation.
     parser.add_argument("method", choices=("initial", "greedy-rg-lns", "rg-lns"))
     args, remaining = parser.parse_known_args()
     sys.argv = [sys.argv[0], *remaining]

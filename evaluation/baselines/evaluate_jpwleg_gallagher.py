@@ -8,6 +8,18 @@
 
 from __future__ import annotations
 
+from evaluation.common.jpwleg_inputs import (
+    DEFAULT_CHECKPOINT_NAME,
+    DEFAULT_LOG_ROOT,
+    DEFAULT_RUN_DIR,
+    LEGACY_LOG_ROOT,
+    SCRIPT_DIR,
+    checkpoint_from_run_dir,
+    parse_bool,
+    resolve_checkpoint_arg,
+    resolve_default_checkpoint,
+)
+
 import argparse
 import contextlib
 import json
@@ -19,19 +31,12 @@ from pathlib import Path
 
 import numpy as np
 
-try:
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import append_runtime_environment
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-except ImportError:
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import append_runtime_environment
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from evaluation.runtime_info import append_runtime_environment
+from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
 
 
-SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 EDGE2VEC_DIR = PROJECT_ROOT / "baselines" / "Edge2Vec_arxiv_2022"
 GALLAGHER_IMPLEMENTATION_DIR = PROJECT_ROOT / "baselines" / "PuzzleDemoMGC_CVPR2012_Python"
@@ -39,12 +44,15 @@ for path in (EDGE2VEC_DIR, GALLAGHER_IMPLEMENTATION_DIR):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-from data_loaders.jpwleg_common import PIECE_SIZE, image_to_pieces, label_to_target_positions, load_jpwleg_arrays  # noqa: E402
+from data_loaders.jpwleg_common import (
+    PIECE_SIZE,
+    image_to_pieces,
+    label_to_target_positions,
+    load_jpwleg_arrays,
+)
 from initial_solvers.gallagher.mgc import do_all_assembly_of_puzzle  # noqa: E402
 
 
-DEFAULT_LOG_ROOT = script_output_root(SCRIPT_DIR / "train_jpwleg.py", "logs")
-LEGACY_LOG_ROOT = SCRIPT_DIR / "logs" / "puzzle_hard_triplet_jpwleg"
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET = "jpwleg3"
 DEFAULT_SPLIT = "test"
@@ -57,8 +65,6 @@ DEFAULT_RUN_NAMES = {
     "all": "",
 }
 DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
-DEFAULT_RUN_DIR = None
-DEFAULT_CHECKPOINT_NAME = "best.pth"
 
 
 @dataclass
@@ -141,17 +147,6 @@ class DatasetMetrics:
         }
 
 
-def parse_bool(value: str | bool) -> bool:
-    if isinstance(value, bool):
-        return value
-    value = value.strip().lower()
-    if value in {"true", "t", "1", "yes", "y"}:
-        return True
-    if value in {"false", "f", "0", "no", "n"}:
-        return False
-    raise argparse.ArgumentTypeError("Expected True or False")
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         "Evaluate puzzle-level hard triplet metric compatibility with the Gallagher solver on JPwLEG",
@@ -182,73 +177,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gpu-id", default=0, type=int)
     parser.add_argument("--verbose-solver", action="store_true")
     return parser.parse_args()
-
-
-def checkpoint_from_run_dir(run_dir: Path, checkpoint_name: str) -> Path:
-    checkpoint = run_dir / "checkpoints" / checkpoint_name
-    if checkpoint.exists():
-        return checkpoint
-    available = []
-    dataset_root = run_dir.parent
-    if dataset_root.exists():
-        available = sorted(path.name for path in dataset_root.iterdir() if path.is_dir())
-    suffix = f" Available runs under {dataset_root}: {available}" if available else ""
-    raise FileNotFoundError(f"Checkpoint not found: {checkpoint}.{suffix}")
-
-
-def resolve_default_checkpoint(dataset: str, checkpoint_name: str, log_root: Path = DEFAULT_LOG_ROOT) -> Path:
-    log_roots = [log_root]
-    if log_root == DEFAULT_LOG_ROOT and LEGACY_LOG_ROOT != DEFAULT_LOG_ROOT:
-        log_roots.append(LEGACY_LOG_ROOT)
-    search_roots = [root if dataset == "all" else root / dataset for root in log_roots]
-    candidates = sorted(
-        (path for root in search_roots for path in root.glob(f"**/checkpoints/{checkpoint_name}")),
-        key=lambda path: path.stat().st_mtime,
-        reverse=True,
-    )
-    if not candidates:
-        candidates = sorted(
-            (path for root in search_roots for path in root.glob("**/checkpoints/last.pth")),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )
-    if candidates:
-        return candidates[0]
-    raise FileNotFoundError(
-        "No default metric-learning checkpoint was found. "
-        f"Searched under: {search_roots} for {checkpoint_name} and last.pth. "
-        "Train first with train_compatibility.py jpwleg, or pass --checkpoint explicitly."
-    )
-
-
-def resolve_checkpoint_arg(args: argparse.Namespace) -> Path:
-    if args.checkpoint is not None:
-        return Path(args.checkpoint).resolve()
-    if args.run_dir is not None:
-        checkpoint = checkpoint_from_run_dir(Path(args.run_dir), args.checkpoint_name)
-        print(f"Using checkpoint from run dir: {checkpoint}")
-        return checkpoint.resolve()
-    run_name = (args.run_name or "").strip()
-    if run_name:
-        if args.dataset == "all":
-            raise ValueError("--run-name requires a concrete --dataset, not --dataset all")
-        run_dirs = [
-            DEFAULT_LOG_ROOT / args.dataset / run_name,
-            LEGACY_LOG_ROOT / args.dataset / run_name,
-        ]
-        checkpoint = next(
-            (run_dir / "checkpoints" / args.checkpoint_name for run_dir in run_dirs
-             if (run_dir / "checkpoints" / args.checkpoint_name).exists()),
-            None,
-        )
-        if checkpoint is None:
-            searched = [run_dir / "checkpoints" / args.checkpoint_name for run_dir in run_dirs]
-            raise FileNotFoundError(f"Checkpoint not found. Searched: {searched}")
-        print(f"Using checkpoint from run name: {checkpoint}")
-        return checkpoint.resolve()
-    checkpoint = resolve_default_checkpoint(args.dataset, args.checkpoint_name)
-    print(f"Using latest default checkpoint: {checkpoint}")
-    return checkpoint.resolve()
 
 
 def default_output_dir(checkpoint: Path, dataset: str, split: str) -> Path:

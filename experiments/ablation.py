@@ -83,22 +83,22 @@ DATASET_RESULT_SOURCE_PATHS = {
     "lsej": (
         PROJECT_ROOT / "data_loaders" / "lsej.py",
         PROJECT_ROOT / "evaluation" / "lsej.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_lsej_gallagher.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_lsej_greedy_rg_lns.py",
+        PROJECT_ROOT / "evaluation" / "common" / "lsej_inputs.py",
+        PROJECT_ROOT / "evaluation" / "common" / "lsej_metrics.py",
     ),
     "gap": (
         PROJECT_ROOT / "data_loaders" / "gap.py",
         PROJECT_ROOT / "evaluation" / "gap.py",
         PROJECT_ROOT / "evaluation" / "jpwleg.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_gap_gallagher.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_gap_greedy_rg_lns.py",
+        PROJECT_ROOT / "evaluation" / "common" / "gap_inputs.py",
+        PROJECT_ROOT / "evaluation" / "common" / "gap_search.py",
     ),
     "jpwleg": (
         PROJECT_ROOT / "data_loaders" / "jpwleg_common.py",
         PROJECT_ROOT / "data_loaders" / "jpwleg.py",
         PROJECT_ROOT / "evaluation" / "jpwleg.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpwleg_gallagher.py",
-        PROJECT_ROOT / "evaluation" / "commands" / "evaluate_jpwleg_greedy_rg_lns.py",
+        PROJECT_ROOT / "evaluation" / "common" / "jpwleg_inputs.py",
+        PROJECT_ROOT / "evaluation" / "common" / "jpwleg_search.py",
     ),
 }
 

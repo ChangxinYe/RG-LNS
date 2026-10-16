@@ -13,22 +13,18 @@ from dataclasses import asdict
 from functools import partial
 from pathlib import Path
 
-try:
-    from initial_solvers.pomeranz import solve_with_pomeranz
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
-    from evaluation.jpwleg import evaluate_jpwleg_split
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_jpwleg_gallagher import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_DIR, parse_bool, resolve_checkpoint_arg
-    from evaluation.commands.evaluate_lsej_pomeranz import add_pomeranz_arguments, pomeranz_config_from_args
-except ImportError:
-    from initial_solvers.pomeranz import solve_with_pomeranz
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
-    from evaluation.jpwleg import evaluate_jpwleg_split
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_jpwleg_gallagher import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_DIR, parse_bool, resolve_checkpoint_arg
-    from evaluation.commands.evaluate_lsej_pomeranz import add_pomeranz_arguments, pomeranz_config_from_args
+from initial_solvers.pomeranz import solve_with_pomeranz
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
+from evaluation.jpwleg import evaluate_jpwleg_split
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from evaluation.common.jpwleg_inputs import (
+    DEFAULT_CHECKPOINT_NAME,
+    DEFAULT_RUN_DIR,
+    parse_bool,
+    resolve_checkpoint_arg,
+)
+from evaluation.common.solver_options import add_pomeranz_arguments, pomeranz_config_from_args
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")

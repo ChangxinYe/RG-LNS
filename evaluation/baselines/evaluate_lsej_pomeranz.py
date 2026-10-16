@@ -8,39 +8,32 @@
 
 from __future__ import annotations
 
+from evaluation.common.solver_options import (
+    DEFAULT_POMERANZ_MAX_REFINEMENT_ROUNDS,
+    DEFAULT_POMERANZ_RANDOM_SEED,
+    DEFAULT_POMERANZ_RESTARTS,
+    add_pomeranz_arguments,
+    pomeranz_config_from_args,
+)
+
 import argparse
 from dataclasses import asdict
 from functools import partial
 from pathlib import Path
 
-try:
-    from initial_solvers.pomeranz import PomeranzSolverConfig, solve_with_pomeranz
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
-    from evaluation.lsej import evaluate_lsej_split
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        DEFAULT_CHECKPOINT_NAME,
-        DEFAULT_RUN_DIR,
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
-except ImportError:
-    from initial_solvers.pomeranz import PomeranzSolverConfig, solve_with_pomeranz
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
-    from evaluation.lsej import evaluate_lsej_split
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        DEFAULT_CHECKPOINT_NAME,
-        DEFAULT_RUN_DIR,
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
+from initial_solvers.pomeranz import PomeranzSolverConfig, solve_with_pomeranz
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
+from evaluation.lsej import evaluate_lsej_split
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from evaluation.common.lsej_inputs import (
+    DEFAULT_CHECKPOINT_NAME,
+    DEFAULT_RUN_DIR,
+    LOSS_TYPES,
+    parse_bool,
+    resolve_checkpoint_arg,
+    validate_checkpoint,
+)
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
@@ -57,40 +50,6 @@ if DEFAULT_LOSS_TYPE == "hard_triplet":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
     elif DEFAULT_TASK == "grid10_erode8":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-17-06"
-
-DEFAULT_POMERANZ_RESTARTS = 10
-DEFAULT_POMERANZ_MAX_REFINEMENT_ROUNDS = 0
-DEFAULT_POMERANZ_RANDOM_SEED = 0
-
-
-def add_pomeranz_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
-    parser.add_argument(
-        "--pomeranz-restarts",
-        default=DEFAULT_POMERANZ_RESTARTS,
-        type=int,
-        help="number of distinct initial seeds for independent Pomeranz runs; select the result by final BBM",
-    )
-    parser.add_argument(
-        "--pomeranz-max-refinement-rounds",
-        default=DEFAULT_POMERANZ_MAX_REFINEMENT_ROUNDS,
-        type=int,
-        help="maximum reassembly rounds per seed; 0 runs until BBM no longer strictly improves",
-    )
-    parser.add_argument(
-        "--pomeranz-random-seed",
-        default=DEFAULT_POMERANZ_RANDOM_SEED,
-        type=int,
-        help="fixed random seed for generating initial pieces across restarts",
-    )
-    return parser
-
-
-def pomeranz_config_from_args(args: argparse.Namespace) -> PomeranzSolverConfig:
-    return PomeranzSolverConfig(
-        restarts=args.pomeranz_restarts,
-        max_refinement_rounds=args.pomeranz_max_refinement_rounds,
-        random_seed=args.pomeranz_random_seed,
-    )
 
 
 def build_parser() -> argparse.ArgumentParser:

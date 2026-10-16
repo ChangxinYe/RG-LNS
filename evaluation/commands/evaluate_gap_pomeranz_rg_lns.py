@@ -13,26 +13,12 @@ from __future__ import annotations
 from dataclasses import asdict
 from functools import partial
 
-try:
-    from initial_solvers.pomeranz import solve_with_pomeranz
-    from evaluation.output import script_output_root
-    from data_loaders.gap import GAP_CONFIGS
-    from evaluation.commands.evaluate_gap_rg_lns import (
-        build_parser,
-        run_evaluation,
-    )
-    from evaluation.commands.evaluate_gap_gallagher import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_NAMES
-    from evaluation.commands.evaluate_gap_pomeranz import add_pomeranz_arguments, pomeranz_config_from_args
-except ImportError:
-    from initial_solvers.pomeranz import solve_with_pomeranz
-    from evaluation.output import script_output_root
-    from data_loaders.gap import GAP_CONFIGS
-    from evaluation.commands.evaluate_gap_rg_lns import (
-        build_parser,
-        run_evaluation,
-    )
-    from evaluation.commands.evaluate_gap_gallagher import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_NAMES
-    from evaluation.commands.evaluate_gap_pomeranz import add_pomeranz_arguments, pomeranz_config_from_args
+from initial_solvers.pomeranz import solve_with_pomeranz
+from evaluation.output import script_output_root
+from data_loaders.gap import GAP_CONFIGS
+from evaluation.commands.evaluate_gap_rg_lns import build_parser, run_evaluation
+from evaluation.common.gap_inputs import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_NAMES
+from evaluation.common.solver_options import add_pomeranz_arguments, pomeranz_config_from_args
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")

@@ -17,74 +17,44 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_evaluation_summary, format_metric_summary, format_run_configuration
+from evaluation.reporting import (
+    format_evaluation_summary,
+    format_metric_summary,
+    format_run_configuration,
+)
 
-try:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.gap import GAPPuzzleDataset
-    from evaluation.gap import rgba_to_rgb
-    from evaluation.jpwleg import (
-        aggregate_ground_truth_metrics,
-        compose_puzzle,
-        is_complete_prediction,
-        sample_ground_truth_metrics,
-        solve_with_gallagher,
-    )
-    from evaluation.lsej import compute_true_neighbor_ranks
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_gap_greedy_rg_lns import (
-        METRIC_KEYS,
-        _build_scorer,
-        _default_output_dir,
-        _prepare_output_dir,
-        _retrieval_metrics,
-        _write_csv,
-        build_parser as build_greedy_parser,
-        validate_args as validate_greedy_args,
-    )
-    from evaluation.commands.evaluate_gap_gallagher import parse_bool, resolve_checkpoint
-except ImportError:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.gap import GAPPuzzleDataset
-    from evaluation.gap import rgba_to_rgb
-    from evaluation.jpwleg import (
-        aggregate_ground_truth_metrics,
-        compose_puzzle,
-        is_complete_prediction,
-        sample_ground_truth_metrics,
-        solve_with_gallagher,
-    )
-    from evaluation.lsej import compute_true_neighbor_ranks
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_gap_greedy_rg_lns import (
-        METRIC_KEYS,
-        _build_scorer,
-        _default_output_dir,
-        _prepare_output_dir,
-        _retrieval_metrics,
-        _write_csv,
-        build_parser as build_greedy_parser,
-        validate_args as validate_greedy_args,
-    )
-    from evaluation.commands.evaluate_gap_gallagher import parse_bool, resolve_checkpoint
+from rg_lns import (
+    iterative_component_reassembly,
+    profiled_large_neighborhood_reassembly,
+)
+from evaluation.output import script_output_root
+from evaluation.runtime_info import collect_runtime_environment
+from evaluation.timing import (
+    StageTimingCollector,
+    add_stage_timing_arguments,
+)
+from data_loaders.gap import GAPPuzzleDataset
+from evaluation.gap import rgba_to_rgb
+from evaluation.jpwleg import (
+    aggregate_ground_truth_metrics,
+    compose_puzzle,
+    is_complete_prediction,
+    sample_ground_truth_metrics,
+    solve_with_gallagher,
+)
+from evaluation.lsej import compute_true_neighbor_ranks
+from initial_solvers.partial_completion import complete_partial_layout
+from evaluation.common.gap_search import (
+    METRIC_KEYS,
+    _build_scorer,
+    _default_output_dir,
+    _prepare_output_dir,
+    _retrieval_metrics,
+    _write_csv,
+    build_parser as build_search_parser,
+    validate_args as validate_search_args,
+)
+from evaluation.common.gap_inputs import parse_bool, resolve_checkpoint
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
@@ -114,7 +84,7 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = build_greedy_parser()
+    parser = build_search_parser()
     parser.description = "Evaluate RG-LNS on GAP-3/GAP-5"
     parser.prog = "Evaluate RG-LNS on GAP-3/GAP-5"
     parser.add_argument(
@@ -169,7 +139,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
-    validate_greedy_args(args)
+    validate_search_args(args)
     if args.completion_beam_width <= 0:
         raise ValueError("completion-beam-width must be a positive integer")
     if args.partial_completion_beam_width <= 0:

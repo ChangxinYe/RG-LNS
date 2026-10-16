@@ -8,39 +8,26 @@
 
 from __future__ import annotations
 
+from evaluation.common.solver_options import add_lp_arguments, lp_config_from_args
+
 import argparse
 from dataclasses import asdict
 from functools import partial
 from pathlib import Path
 
-try:
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
-    from evaluation.lsej import evaluate_lsej_split
-    from initial_solvers.linear_programming import LPSolverConfig, solve_with_lp
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        DEFAULT_CHECKPOINT_NAME,
-        DEFAULT_RUN_DIR,
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
-except ImportError:
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
-    from evaluation.lsej import evaluate_lsej_split
-    from initial_solvers.linear_programming import LPSolverConfig, solve_with_lp
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from evaluation.commands.evaluate_lsej_gallagher import (
-        DEFAULT_CHECKPOINT_NAME,
-        DEFAULT_RUN_DIR,
-        LOSS_TYPES,
-        parse_bool,
-        resolve_checkpoint_arg,
-        validate_checkpoint,
-    )
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
+from evaluation.lsej import evaluate_lsej_split
+from initial_solvers.linear_programming import LPSolverConfig, solve_with_lp
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from evaluation.common.lsej_inputs import (
+    DEFAULT_CHECKPOINT_NAME,
+    DEFAULT_RUN_DIR,
+    LOSS_TYPES,
+    parse_bool,
+    resolve_checkpoint_arg,
+    validate_checkpoint,
+)
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
@@ -71,20 +58,6 @@ DEFAULT_LP_GREEDY_STOP_THRESHOLD = 1.25
 DEFAULT_LP_TIME_LIMIT = 0.0
 
 
-def add_lp_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
-    """Add LP parameters corresponding one by one to the author's MATLAB Type-1 implementation."""
-
-    parser.add_argument("--lp-top-k", default=DEFAULT_LP_TOP_K, type=int, help="candidate count kk retained per piece and direction")
-    parser.add_argument("--lp-refinement-iterations", default=DEFAULT_LP_REFINEMENT_ITERATIONS, type=int, help="maximum rigid-component optimization rounds after the initial LP")
-    parser.add_argument("--lp-probability-lambda", default=DEFAULT_LP_PROBABILITY_LAMBDA, type=float, help="lambda in the probability weight exp(-lambda * ratio^2)")
-    parser.add_argument("--lp-minimum-weight", default=DEFAULT_LP_MINIMUM_WEIGHT, type=float, help="numeric cutoff t in the author's code; candidates at the cutoff are removed")
-    parser.add_argument("--lp-match-tolerance", default=DEFAULT_LP_MATCH_TOLERANCE, type=float, help="absolute tolerance for LP adjacency equalities")
-    parser.add_argument("--lp-rigid-components", default=DEFAULT_LP_RIGID_COMPONENTS, type=parse_bool, help="whether hard equality constraints preserve prior connected-component shapes")
-    parser.add_argument("--lp-buddy-check", default=DEFAULT_LP_BUDDY_CHECK, type=parse_bool, help="whether to retain only candidates with reverse-mirror records")
-    parser.add_argument("--lp-loop-check", default=DEFAULT_LP_LOOP_CHECK, type=parse_bool, help="whether to run the author's eight four-step cycle checks")
-    parser.add_argument("--lp-greedy-stop-threshold", default=DEFAULT_LP_GREEDY_STOP_THRESHOLD, type=float, help="normalized stop threshold for component-level Gallagher merging")
-    parser.add_argument("--lp-time-limit", default=DEFAULT_LP_TIME_LIMIT, type=float, help="time limit in seconds for each HiGHS solve; 0 means unlimited")
-    return parser
 
 
 def parse_args() -> argparse.Namespace:
@@ -115,19 +88,6 @@ def parse_args() -> argparse.Namespace:
     return add_lp_arguments(parser).parse_args()
 
 
-def lp_config_from_args(args: argparse.Namespace) -> LPSolverConfig:
-    return LPSolverConfig(
-        top_k=args.lp_top_k,
-        refinement_iterations=args.lp_refinement_iterations,
-        probability_lambda=args.lp_probability_lambda,
-        minimum_weight=args.lp_minimum_weight,
-        match_tolerance=args.lp_match_tolerance,
-        rigid_components=args.lp_rigid_components,
-        buddy_check=args.lp_buddy_check,
-        loop_check=args.lp_loop_check,
-        greedy_stop_threshold=args.lp_greedy_stop_threshold,
-        highs_time_limit=args.lp_time_limit,
-    )
 
 
 def default_output_dir(checkpoint: Path, args: argparse.Namespace) -> Path:

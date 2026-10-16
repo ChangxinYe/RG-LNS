@@ -114,8 +114,18 @@ python -m evaluation.commands.evaluate_gap_rg_lns --checkpoint CHECKPOINT
 
 The same pattern covers three datasets (`gap`, `jpwleg`, `lsej`) and three
 initial solvers (`gallagher`, `pomeranz`, `linear-programming`). The `rg-lns`
-mode already reports both the baseline and the refined result. Standalone
-`initial` and `greedy-rg-lns` modes remain available for targeted comparisons.
+mode already reports both the baseline and the refined result. The nine modules
+under `evaluation/commands/` are exclusively these complete evaluations.
+Their shared arguments, checkpoint lookup, and utilities live under
+`evaluation/common/`, without importing runnable comparison scripts.
+
+Optional initial-only evaluations live under `evaluation/baselines/`; greedy
+comparison entry points live under `experiments/comparisons/`. See the
+[standalone-comparison instructions](../experiments/README.md#standalone-comparisons).
+Earlier `evaluate.py ... initial` and `evaluate.py ... greedy-rg-lns` commands
+still dispatch to the relocated modules for compatibility, but are not listed
+as normal evaluation choices. Direct module paths for these comparisons have
+changed; complete RG-LNS module paths and commands are unchanged.
 
 ## Evaluation outputs
 

@@ -12,6 +12,32 @@ weights can still be passed through the checkpoint arguments. Optional
 ImageNet-LSEJ erode8 and JPwLEG-3 sensitivity settings require separately
 trained weights; pass `--checkpoint BENCHMARK=PATH` for those settings.
 
+## Standalone comparisons
+
+Normal `evaluate.py ... rg-lns` runs already report both **Baseline** and
+**Baseline + RG-LNS**. No standalone comparison is needed to reproduce those
+two results. The nine complete evaluation entry points remain under
+`evaluation/commands/`.
+
+For a targeted baseline-only check, use the optional modules under
+`evaluation/baselines/`, for example:
+
+```bash
+python -m evaluation.baselines.evaluate_gap_gallagher --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+```
+
+Single-path greedy comparisons are isolated under `experiments/comparisons/`:
+
+```bash
+python -m experiments.comparisons gap gallagher --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+```
+
+The comparison dispatcher accepts the same three dataset families and three
+initial solvers as normal evaluation. Append `--help` after dataset and solver
+to inspect a comparison's options. These are experimental variants, not extra
+stages that users must run before or after RG-LNS. Ablation, sensitivity, and
+runtime entry points remain unchanged.
+
 ## Failure analysis
 
 `failure_analysis.ipynb` is a runnable companion for the LSEJ failure analysis.

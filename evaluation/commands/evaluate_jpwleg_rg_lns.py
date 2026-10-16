@@ -17,72 +17,43 @@ from pathlib import Path
 
 import numpy as np
 
-from evaluation.reporting import format_evaluation_summary, format_metric_summary, format_run_configuration
+from evaluation.reporting import (
+    format_evaluation_summary,
+    format_metric_summary,
+    format_run_configuration,
+)
 
-try:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.jpwleg import (
-        JPWLEG_CONFIGS,
-        SPLIT_ALIASES,
-        image_to_pieces,
-        label_to_target_positions,
-        load_jpwleg_arrays,
-    )
-    from evaluation.jpwleg import (
-        aggregate_ground_truth_metrics,
-        compose_puzzle,
-        is_complete_prediction,
-        sample_ground_truth_metrics,
-        solve_with_gallagher,
-    )
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_jpwleg_greedy_rg_lns import (
-        build_parser as build_greedy_parser,
-        validate_args as validate_greedy_args,
-    )
-    from evaluation.commands.evaluate_jpwleg_gallagher import parse_bool, resolve_checkpoint_arg
-except ImportError:
-    from rg_lns import (
-        iterative_component_reassembly,
-        profiled_large_neighborhood_reassembly,
-    )
-    from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-    from evaluation.runtime_info import collect_runtime_environment
-    from evaluation.timing import (
-        StageTimingCollector,
-        add_stage_timing_arguments,
-    )
-    from data_loaders.jpwleg import (
-        JPWLEG_CONFIGS,
-        SPLIT_ALIASES,
-        image_to_pieces,
-        label_to_target_positions,
-        load_jpwleg_arrays,
-    )
-    from evaluation.jpwleg import (
-        aggregate_ground_truth_metrics,
-        compose_puzzle,
-        is_complete_prediction,
-        sample_ground_truth_metrics,
-        solve_with_gallagher,
-    )
-    from compatibility.scorer import MetricCompatibilityScorer, resolve_device
-    from initial_solvers.partial_completion import complete_partial_layout
-    from evaluation.commands.evaluate_jpwleg_greedy_rg_lns import (
-        build_parser as build_greedy_parser,
-        validate_args as validate_greedy_args,
-    )
-    from evaluation.commands.evaluate_jpwleg_gallagher import parse_bool, resolve_checkpoint_arg
+from rg_lns import (
+    iterative_component_reassembly,
+    profiled_large_neighborhood_reassembly,
+)
+from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
+from evaluation.runtime_info import collect_runtime_environment
+from evaluation.timing import (
+    StageTimingCollector,
+    add_stage_timing_arguments,
+)
+from data_loaders.jpwleg import (
+    JPWLEG_CONFIGS,
+    SPLIT_ALIASES,
+    image_to_pieces,
+    label_to_target_positions,
+    load_jpwleg_arrays,
+)
+from evaluation.jpwleg import (
+    aggregate_ground_truth_metrics,
+    compose_puzzle,
+    is_complete_prediction,
+    sample_ground_truth_metrics,
+    solve_with_gallagher,
+)
+from compatibility.scorer import MetricCompatibilityScorer, resolve_device
+from initial_solvers.partial_completion import complete_partial_layout
+from evaluation.common.jpwleg_search import (
+    build_parser as build_search_parser,
+    validate_args as validate_search_args,
+)
+from evaluation.common.jpwleg_inputs import parse_bool, resolve_checkpoint_arg
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
@@ -123,7 +94,7 @@ METRIC_KEYS = ("PA", "AA", "HA", "VA", "SRA", "NA")
 def build_parser() -> argparse.ArgumentParser:
     """Add RG-LNS multi-path parameters to the shared greedy JPwLEG parameters."""
 
-    parser = build_greedy_parser()
+    parser = build_search_parser()
     parser.description = (
         "Evaluate RG-LNS on JPwLEG with frozen visual compatibility"
     )
@@ -179,7 +150,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
-    validate_greedy_args(args)
+    validate_search_args(args)
     if args.completion_beam_width <= 0:
         raise ValueError("completion-beam-width must be a positive integer")
     if args.partial_completion_beam_width <= 0:

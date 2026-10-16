@@ -6,8 +6,12 @@
 | GAP, JPwLEG, and ImageNet-LSEJ adapters | `data_loaders/` |
 | Gallagher, Pomeranz, LP, and partial-layout completion | `initial_solvers/` |
 | Reliable-region selection and layout search | `rg_lns/` |
-| Dataset metrics and evaluation commands | `evaluation/` |
+| Complete Baseline-to-RG-LNS evaluation commands | `evaluation/commands/` |
+| Shared evaluation arguments, checkpoint lookup, and utilities | `evaluation/common/` |
+| Optional standalone initial-solver baselines | `evaluation/baselines/` |
+| Dataset metrics and reporting | `evaluation/` |
 | Ablation, sensitivity, runtime, and failure analysis | `experiments/` |
+| Optional standalone greedy comparisons | `experiments/comparisons/` |
 | Compact reference results | `results/reference/` |
 
 The repository includes its own ViT implementation and Gallagher assembly
