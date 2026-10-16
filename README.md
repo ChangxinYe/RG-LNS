@@ -132,45 +132,29 @@ can be evaluated without retraining Stage I.
 
 ### RG-LNS evaluation
 
+Each run reports both the initial-solver baseline and the final RG-LNS metrics
+in `metrics.json` and `summary.txt`, so no separate baseline run is needed.
+
 ```bash
 # GAP-3 / GAP-5
 python evaluate.py gap gallagher rg-lns --dataset GAP-3 --checkpoint checkpoints/compatibility/gap3_best.pth
 python evaluate.py gap gallagher rg-lns --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
 
-# JPwLEG-5 (full test split)
-python evaluate.py jpwleg gallagher rg-lns --dataset jpwleg5 --max-samples 0 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
+# JPwLEG-5
+python evaluate.py jpwleg gallagher rg-lns --dataset jpwleg5 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
 
 # ImageNet-LSEJ: 2 px / 5 px erosion
 python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
 python evaluate.py lsej gallagher rg-lns --task grid10_erode5 --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
 ```
 
-### Initial solvers and evaluation options
-
-The command format is `python evaluate.py <dataset> <solver> <method> [options]`.
-For any dataset, select `gallagher`, `pomeranz`, or `linear-programming` as the
-solver. Use `initial` for the initial layout, `rg-lns` for the full method,
-or `greedy-rg-lns` for single-path component reassembly. For example:
-
-```bash
-# Initial layouts from each solver (GAP-5)
-python evaluate.py gap gallagher initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
-python evaluate.py gap pomeranz initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
-python evaluate.py gap linear-programming initial --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
-
-# Pomeranz initialization followed by RG-LNS (JPwLEG-5)
-python evaluate.py jpwleg pomeranz rg-lns --dataset jpwleg5 --max-samples 0 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
-
-# LP initialization followed by RG-LNS (ImageNet-LSEJ)
-python evaluate.py lsej linear-programming rg-lns --task grid10_erode2 --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
-
-# Show all options for a dataset/solver/method combination
-python evaluate.py gap gallagher rg-lns --help
-```
+Replace `gallagher` with `pomeranz` or `linear-programming` to select a different
+initial solver for any dataset.
 
 All examples use the test split. Add `--split val` for validation or
 `--max-samples 10` for a short run; `--max-samples 0` evaluates the full split.
-Use `--output-dir` to choose where results are saved.
+Use `--output-dir` to choose where results are saved, or append `--help` to a
+command to view all evaluation options.
 
 ### Custom data locations
 
