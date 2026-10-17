@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from data_loaders.lsej import normalize_lsej_task, official_lsej_task
 from evaluation.output import script_output_root
 from compatibility.scorer import load_torch_checkpoint, resolve_device
 from paths import COMPATIBILITY_ROOT
@@ -55,18 +56,20 @@ def resolve_default_checkpoint(
     loss_type: str,
     log_root: Path | None = None,
 ) -> Path:
+    task = normalize_lsej_task(task)
+    source_task = official_lsej_task(task)
     if log_root is None:
         log_root = DEFAULT_LOG_ROOTS[loss_type]
-    if (task in {"grid10_erode2", "grid10_erode5"} and loss_type == "hard_triplet"
+    if (task in {"lsej_grid10_erode2", "lsej_grid10_erode5"} and loss_type == "hard_triplet"
             and checkpoint_name == DEFAULT_CHECKPOINT_NAME
             and Path(log_root).resolve() == DEFAULT_LOG_ROOTS[loss_type].resolve()):
-        released = COMPATIBILITY_ROOT / f"lsej_{task}_best.pth"
+        released = COMPATIBILITY_ROOT / f"lsej_{source_task}_best.pth"
         if released.is_file():
             return released
     log_roots = [Path(log_root)]
     if Path(log_root) == DEFAULT_LOG_ROOTS[loss_type]:
         log_roots.append(LEGACY_LOG_ROOTS[loss_type])
-    search_roots = [root / task for root in log_roots]
+    search_roots = [root / task_id for root in log_roots for task_id in (task, source_task)]
     candidates = sorted(
         (path for root in search_roots for path in root.glob(f"*/checkpoints/{checkpoint_name}")),
         key=lambda path: path.stat().st_mtime,
@@ -87,6 +90,7 @@ def resolve_default_checkpoint(
 
 
 def resolve_checkpoint_arg(args: argparse.Namespace) -> Path:
+    args.task = normalize_lsej_task(args.task)
     if args.checkpoint is not None:
         return Path(args.checkpoint).resolve()
     if args.run_dir is not None:
@@ -95,8 +99,9 @@ def resolve_checkpoint_arg(args: argparse.Namespace) -> Path:
     log_root = DEFAULT_LOG_ROOTS[args.loss_type]
     if run_name:
         run_dirs = [
-            log_root / args.task / run_name,
-            LEGACY_LOG_ROOTS[args.loss_type] / args.task / run_name,
+            root / task_id / run_name
+            for root in (log_root, LEGACY_LOG_ROOTS[args.loss_type])
+            for task_id in (args.task, official_lsej_task(args.task))
         ]
         for run_dir in run_dirs:
             checkpoint = run_dir / "checkpoints" / args.checkpoint_name
@@ -125,7 +130,7 @@ def checkpoint_loss_type(checkpoint: dict) -> str:
 def validate_checkpoint(checkpoint_path: Path, task: str, loss_type: str) -> None:
     checkpoint = load_torch_checkpoint(checkpoint_path, resolve_device("cpu", 0))
     checkpoint_task = checkpoint.get("task") or checkpoint.get("args", {}).get("task")
-    if checkpoint_task is not None and str(checkpoint_task) != task:
+    if checkpoint_task is not None and normalize_lsej_task(str(checkpoint_task)) != normalize_lsej_task(task):
         raise ValueError(
             f"Checkpoint was trained for task {checkpoint_task}, but evaluation requested {task}. "
             "Cross-task checkpoint guessing is disabled."

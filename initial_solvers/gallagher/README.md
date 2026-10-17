@@ -7,7 +7,7 @@ scores to this solver to obtain a baseline layout.
 Run a baseline-to-final comparison from the repository root:
 
 ```bash
-python evaluate.py gap gallagher rg-lns --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py GAP-5 gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
 ```
 
 The run reports **Baseline (ViT-T + Gallagher)** and **Baseline + RG-LNS**.

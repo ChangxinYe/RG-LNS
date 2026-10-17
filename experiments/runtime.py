@@ -85,10 +85,10 @@ class SolverSpec:
 DATASETS = {
     "lsej": DatasetSpec(
         key="lsej",
-        display_name="ImageNet-LSEJ-10 (2 px)",
+        display_name="ImageNet-LSEJ-10x10-2px",
         module_token="lsej",
         selector_argument="--task",
-        selector_value="grid10_erode2",
+        selector_value="lsej_grid10_erode2",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
         checkpoint=DEFAULT_LSEJ_CHECKPOINT,
     ),

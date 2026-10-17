@@ -25,14 +25,38 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 OFFICIAL_LSEJ_DIR = LSEJ_DATA_ROOT
 DEFAULT_LSEJ_DATA_ROOT = OFFICIAL_LSEJ_DIR
-OFFICIAL_TASKS = (
-    "grid10_erode2",
-    "grid10_erode5",
-    "grid10_erode8",
-    "grid20_erode2",
-    "grid20_erode5",
-    "grid20_erode8",
-)
+LSEJ_TASK_NAMES = {
+    "lsej_grid10_erode2": "ImageNet-LSEJ-10x10-2px",
+    "lsej_grid10_erode5": "ImageNet-LSEJ-10x10-5px",
+}
+LSEJ_SOURCE_TASKS = {
+    "lsej_grid10_erode2": "grid10_erode2",
+    "lsej_grid10_erode5": "grid10_erode5",
+}
+LSEJ_TASKS = tuple(LSEJ_TASK_NAMES)
+
+
+def normalize_lsej_task(task: str) -> str:
+    """Resolve a public name, internal ID, or original data/weight task ID."""
+    for task_id in LSEJ_TASKS:
+        if task in (task_id, LSEJ_TASK_NAMES[task_id], LSEJ_SOURCE_TASKS[task_id]):
+            return task_id
+    raise ValueError(f"Unknown ImageNet-LSEJ task: {task}. Choices: {tuple(LSEJ_TASK_NAMES.values())}")
+
+
+def lsej_task_name(task: str) -> str:
+    """Return the public benchmark name."""
+    return LSEJ_TASK_NAMES[normalize_lsej_task(task)]
+
+
+def official_lsej_task(task: str) -> str:
+    """Return the unchanged task ID expected by the original dataset files."""
+    return LSEJ_SOURCE_TASKS[normalize_lsej_task(task)]
+
+
+def lsej_grid_size(task: str) -> int:
+    """Return the grid dimension without parsing task names in callers."""
+    return int(official_lsej_task(task).split("_", 1)[0].removeprefix("grid"))
 
 
 def load_official_dataset_class(data_root: str | Path = DEFAULT_LSEJ_DATA_ROOT):
@@ -115,7 +139,7 @@ class MetricLSEJTripletDataset(Dataset):
     def __init__(
         self,
         data_root: str | Path = DEFAULT_LSEJ_DATA_ROOT,
-        task: str = "grid10_erode2",
+        task: str = "lsej_grid10_erode2",
         split: str = "train",
         input_size: int = 224,
         normalization: str = "vit",
@@ -125,8 +149,7 @@ class MetricLSEJTripletDataset(Dataset):
         max_samples: int | None = None,
         seed: int = 42,
     ) -> None:
-        if task not in OFFICIAL_TASKS:
-            raise ValueError(f"Unknown LSEJ task: {task}. Choices: {OFFICIAL_TASKS}")
+        task = normalize_lsej_task(task)
         if split not in {"train", "val", "test"}:
             raise ValueError("split must be train, val, or test")
         if triplets_per_puzzle <= 0:
@@ -137,7 +160,7 @@ class MetricLSEJTripletDataset(Dataset):
             raise ValueError("max_samples must be non-negative")
 
         dataset_class = load_official_dataset_class(data_root)
-        self.dataset = dataset_class(data_root, split=split, task=task, normalize=False)
+        self.dataset = dataset_class(data_root, split=split, task=official_lsej_task(task), normalize=False)
         self.data_root = Path(data_root)
         self.task = task
         self.split = split
@@ -249,7 +272,7 @@ class MetricLSEJTripletDataset(Dataset):
 
     def __repr__(self) -> str:
         return (
-            f"MetricLSEJTripletDataset(task={self.task!r}, split={self.split!r}, "
+            f"MetricLSEJTripletDataset(task={lsej_task_name(self.task)!r}, split={self.split!r}, "
             f"samples={self.sample_count}, grid={self.grid}, triplets_per_puzzle={self.triplets_per_puzzle}, "
             f"negatives_per_anchor={self.negatives_per_anchor}, "
             f"requested_negatives_per_anchor={self.requested_negatives_per_anchor}, input_size={self.input_size})"
@@ -258,10 +281,15 @@ class MetricLSEJTripletDataset(Dataset):
 
 __all__ = [
     "DEFAULT_LSEJ_DATA_ROOT",
-    "OFFICIAL_TASKS",
+    "LSEJ_TASKS",
+    "LSEJ_TASK_NAMES",
     "MetricLSEJTripletDataset",
     "chw_uint8_to_hwc_numpy",
     "load_official_dataset_class",
+    "normalize_lsej_task",
+    "lsej_task_name",
+    "official_lsej_task",
+    "lsej_grid_size",
     "neighbor_position",
     "target_to_inverse",
 ]

@@ -65,7 +65,7 @@ def resolve_default_checkpoint(dataset: str, checkpoint_name: str, log_root: Pat
         "No default metric-learning checkpoint was found. "
         f"Searched under: {search_roots} for {checkpoint_name} and last.pth. "
         f"Download the matching weights to {COMPATIBILITY_ROOT}, pass --checkpoint, "
-        "or train with train_compatibility.py jpwleg."
+        "or train a matching model with train_compatibility.py."
     )
 
 

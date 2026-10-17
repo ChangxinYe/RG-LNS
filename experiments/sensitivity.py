@@ -6,7 +6,7 @@ both initialized by Gallagher.  The default configuration K=3, M=4, B=4 is
 executed once and reused as the default point of all three sensitivity series,
 so each benchmark/solver/split setting requires 11 unique evaluator runs.
 
-The command-line interface can expand to all seven paper benchmark settings,
+The command-line interface can expand to all five paper benchmark settings,
 all three initial solvers, validation and test splits, arbitrary value lists,
 or the full Cartesian product.  Each evaluator runs in a fresh subprocess.
 The driver writes machine-readable plans, per-run status files, logs,
@@ -76,19 +76,17 @@ DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "results" / "runs" / SCRIPT_PATH.stem
 
 # Dataset settings to evaluate; any number may be specified and duplicates are removed automatically.
 # Exact names:
-#   "lsej10_e2"  = ImageNet-LSEJ-10，2-pixel erosion
-#   "lsej10_e5"  = ImageNet-LSEJ-10，5-pixel erosion
-#   "lsej10_e8"  = ImageNet-LSEJ-10，8-pixel erosion
+#   "lsej_grid10_erode2" = ImageNet-LSEJ-10x10-2px
+#   "lsej_grid10_erode5" = ImageNet-LSEJ-10x10-5px
 #   "gap3"       = GAP-3
 #   "gap5"       = GAP-5
-#   "jpwleg3"     = JPwLEG-3
 #   "jpwleg5"     = JPwLEG-5
 # Available aliases (expanded automatically):
-#   "lsej10" or "lsej" -> lsej10_e2, lsej10_e5, lsej10_e8
+#   "lsej10" or "lsej" -> lsej_grid10_erode2, lsej_grid10_erode5
 #   "gap"              -> gap3, gap5
-#   "jpwleg"            -> jpwleg3, jpwleg5
-#   "all"              -> all seven exact settings above
-DEFAULT_BENCHMARKS = ("lsej10_e5", "gap5")
+#   "jpwleg"           -> jpwleg5
+#   "all"              -> all five exact settings above
+DEFAULT_BENCHMARKS = ("lsej_grid10_erode5", "gap5")
 
 # Initial solver; valid values: "gallagher", "lp", "pomeranz", or "all".
 # "all" expands to the first three solvers.
@@ -212,39 +210,27 @@ class ExperimentUnit:
 
 
 BENCHMARKS: dict[str, BenchmarkSpec] = {
-    "lsej10_e2": BenchmarkSpec(
-        key="lsej10_e2",
-        display_name="ImageNet-LSEJ-10 (2 px)",
+    "lsej_grid10_erode2": BenchmarkSpec(
+        key="lsej_grid10_erode2",
+        display_name="ImageNet-LSEJ-10x10-2px",
         family="lsej",
         module_token="lsej",
         selector_argument="--task",
-        selector_value="grid10_erode2",
+        selector_value="lsej_grid10_erode2",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
         checkpoint=_checkpoint("lsej_grid10_erode2_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="configs",
     ),
-    "lsej10_e5": BenchmarkSpec(
-        key="lsej10_e5",
-        display_name="ImageNet-LSEJ-10 (5 px)",
+    "lsej_grid10_erode5": BenchmarkSpec(
+        key="lsej_grid10_erode5",
+        display_name="ImageNet-LSEJ-10x10-5px",
         family="lsej",
         module_token="lsej",
         selector_argument="--task",
-        selector_value="grid10_erode5",
+        selector_value="lsej_grid10_erode5",
         data_root=DEFAULT_LSEJ_DATA_ROOT,
         checkpoint=_checkpoint("lsej_grid10_erode5_best.pth"),
-        split_sizes={"val": 1000, "test": 2000},
-        expected_data_entry="configs",
-    ),
-    "lsej10_e8": BenchmarkSpec(
-        key="lsej10_e8",
-        display_name="ImageNet-LSEJ-10 (8 px)",
-        family="lsej",
-        module_token="lsej",
-        selector_argument="--task",
-        selector_value="grid10_erode8",
-        data_root=DEFAULT_LSEJ_DATA_ROOT,
-        checkpoint=_checkpoint("lsej_grid10_erode8_best.pth"),
         split_sizes={"val": 1000, "test": 2000},
         expected_data_entry="configs",
     ),
@@ -272,18 +258,6 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         split_sizes={"val": 3000, "test": 3000},
         expected_data_entry="GAP-5",
     ),
-    "jpwleg3": BenchmarkSpec(
-        key="jpwleg3",
-        display_name="JPwLEG-3",
-        family="jpwleg",
-        module_token="jpwleg",
-        selector_argument="--dataset",
-        selector_value="jpwleg3",
-        data_root=DEFAULT_JPWLEG_DATA_ROOT,
-        checkpoint=_checkpoint("jpwleg3_best.pth"),
-        split_sizes={"val": 1000, "test": 2000},
-        expected_data_entry="JPwLEG-3",
-    ),
     "jpwleg5": BenchmarkSpec(
         key="jpwleg5",
         display_name="JPwLEG-5",
@@ -299,10 +273,12 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
 }
 
 BENCHMARK_ALIASES: dict[str, tuple[str, ...]] = {
-    "lsej10": ("lsej10_e2", "lsej10_e5", "lsej10_e8"),
-    "lsej": ("lsej10_e2", "lsej10_e5", "lsej10_e8"),
+    "lsej10": ("lsej_grid10_erode2", "lsej_grid10_erode5"),
+    "lsej": ("lsej_grid10_erode2", "lsej_grid10_erode5"),
+    "imagenet-lsej-10x10-2px": ("lsej_grid10_erode2",),
+    "imagenet-lsej-10x10-5px": ("lsej_grid10_erode5",),
     "gap": ("gap3", "gap5"),
-    "jpwleg": ("jpwleg3", "jpwleg5"),
+    "jpwleg": ("jpwleg5",),
     "all": tuple(BENCHMARKS),
 }
 
@@ -451,7 +427,7 @@ def build_parser(
         nargs="+",
         default=configured("benchmarks", list(DEFAULT_BENCHMARKS)),
         help=(
-            "Exact settings or aliases: lsej10_e2/e5/e8, gap3/5, jpwleg3/5, "
+            "Exact settings or aliases: lsej_grid10_erode2/5, gap3/5, jpwleg5, "
             "lsej10, gap, jpwleg, all"
         ),
     )
@@ -557,7 +533,7 @@ def build_parser(
         action="append",
         default=configured("checkpoint", []),
         metavar="BENCHMARK=PATH",
-        help="Override one exact benchmark checkpoint, e.g. lsej10_e5=/path/best.pth",
+        help="Override one exact benchmark checkpoint, e.g. lsej_grid10_erode5=/path/best.pth",
     )
     parser.add_argument(
         "--output-root",

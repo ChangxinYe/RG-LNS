@@ -28,7 +28,7 @@ import argparse
 from pathlib import Path
 
 from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
+from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, LSEJ_TASKS, normalize_lsej_task
 from evaluation.lsej import evaluate_lsej_split
 from compatibility.scorer import MetricCompatibilityScorer, load_torch_checkpoint, resolve_device
 
@@ -36,16 +36,14 @@ from compatibility.scorer import MetricCompatibilityScorer, load_torch_checkpoin
 DEFAULT_LOSS_TYPE = "hard_triplet"
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET_NAME = "ImageNet_LSEJ"
-DEFAULT_TASK = "grid10_erode2"
+DEFAULT_TASK = "lsej_grid10_erode2"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 0
 if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "grid10_erode2":
+    if DEFAULT_TASK == "lsej_grid10_erode2":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "grid10_erode5":
+    elif DEFAULT_TASK == "lsej_grid10_erode5":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
-    elif DEFAULT_TASK == "grid10_erode8":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-17-06"
 elif DEFAULT_LOSS_TYPE == "semi_hard_triplet":
     # Empty selects the latest semi-hard experiment for the current task; set an exact run name after training.
     DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_semi_hard_triplet_d128_s224_kall_2026-07-18-15-51-36"
@@ -64,7 +62,7 @@ def parse_args() -> argparse.Namespace:
         "Evaluate compatibility scores on ImageNet-LSEJ with Gallagher",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
+    parser.add_argument("--task", default=DEFAULT_TASK, type=normalize_lsej_task, choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting")
     parser.add_argument("--loss-type", default=DEFAULT_LOSS_TYPE, choices=LOSS_TYPES, help="training objective for the default checkpoint and result directory")
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=["train", "val", "test"], help="data split to evaluate")
     parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")

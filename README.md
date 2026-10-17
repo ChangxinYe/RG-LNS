@@ -52,7 +52,6 @@ RG-LNS/
 │   │   └── GAP-5/
 │   ├── ImageNet_LSEJ/
 │   └── MET_Dataset/
-│       ├── JPwLEG-3/
 │       └── JPwLEG-5/
 ├── checkpoints/             Local weights; ignored by Git
 │   ├── pretrained/
@@ -121,8 +120,8 @@ Download the files you need and place them in the matching subdirectory under
 | [GAP-3 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/gap3_best.pth) | GAP-3 evaluation |
 | [GAP-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/gap5_best.pth) | GAP-5 evaluation |
 | [JPwLEG-5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/jpwleg5_best.pth) | JPwLEG-5 evaluation |
-| [ImageNet-LSEJ erode2 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode2_best.pth) | `grid10_erode2` evaluation |
-| [ImageNet-LSEJ erode5 checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode5_best.pth) | `grid10_erode5` evaluation |
+| [ImageNet-LSEJ 2px checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode2_best.pth) | `ImageNet-LSEJ-10x10-2px` evaluation |
+| [ImageNet-LSEJ 5px checkpoint](https://github.com/ChangxinYe/RG-LNS/releases/download/v1.0.0/lsej_grid10_erode5_best.pth) | `ImageNet-LSEJ-10x10-5px` evaluation |
 
 For evaluation, only the checkpoint matching the dataset or task is needed;
 pass its local path with `--checkpoint` as in the commands below. The
@@ -145,15 +144,15 @@ records are optional; see the [output guide](docs/reproducibility.md#evaluation-
 
 ```bash
 # GAP-3 / GAP-5
-python evaluate.py gap gallagher rg-lns --dataset GAP-3 --checkpoint checkpoints/compatibility/gap3_best.pth
-python evaluate.py gap gallagher rg-lns --dataset GAP-5 --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py GAP-3 gallagher rg-lns --checkpoint checkpoints/compatibility/gap3_best.pth
+python evaluate.py GAP-5 gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
 
 # JPwLEG-5
-python evaluate.py jpwleg gallagher rg-lns --dataset jpwleg5 --checkpoint checkpoints/compatibility/jpwleg5_best.pth
+python evaluate.py JPwLEG-5 gallagher rg-lns --checkpoint checkpoints/compatibility/jpwleg5_best.pth
 
 # ImageNet-LSEJ: 2 px / 5 px erosion
-python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
-python evaluate.py lsej gallagher rg-lns --task grid10_erode5 --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-2px gallagher rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-5px gallagher rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
 ```
 
 Replace `gallagher` with `pomeranz` or `linear-programming` to select a different
@@ -176,13 +175,13 @@ Set `--data-root` to the family root: the directory containing `GAP-3/` and
 subdirectories for ImageNet-LSEJ. For example, with code on `D:` and data on `E:`:
 
 ```bash
-python evaluate.py gap gallagher rg-lns --dataset GAP-5 --data-root "E:/datasets/GAP_fast" --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py GAP-5 gallagher rg-lns --data-root "E:/datasets/GAP_fast" --checkpoint checkpoints/compatibility/gap5_best.pth
 ```
 
 The same option is available for training:
 
 ```bash
-python train_compatibility.py gap --dataset GAP-5 --data-root "E:/datasets/GAP_fast"
+python train_compatibility.py GAP-5 --data-root "E:/datasets/GAP_fast"
 ```
 
 ## Training and Experiments
@@ -192,15 +191,15 @@ from the repository root:
 
 ```bash
 # GAP-3 / GAP-5
-python train_compatibility.py gap --dataset GAP-3
-python train_compatibility.py gap --dataset GAP-5
+python train_compatibility.py GAP-3
+python train_compatibility.py GAP-5
 
 # JPwLEG-5
-python train_compatibility.py jpwleg --dataset jpwleg5
+python train_compatibility.py JPwLEG-5
 
 # ImageNet-LSEJ: 2 px / 5 px erosion
-python train_compatibility.py lsej --task grid10_erode2
-python train_compatibility.py lsej --task grid10_erode5
+python train_compatibility.py ImageNet-LSEJ-10x10-2px
+python train_compatibility.py ImageNet-LSEJ-10x10-5px
 
 # Paper-level experiments
 python reproduce.py ablation
@@ -351,6 +350,21 @@ records for our reported runs are inventoried in
 On the ImageNet-LSEJ failures used for our analysis, RG-LNS repairs
 19.3–42.1% of failures attributed to region shift and 13.9–26.8% of those
 attributed to local ambiguity across the three baselines.
+
+## Qualitative Results
+
+Selected examples from GAP-3, GAP-5, JPwLEG-5, and ImageNet-LSEJ, respectively.
+Each row shows **Input**, **Baseline (ViT-T + Gallagher)**,
+**Baseline + RG-LNS**, and **Ground truth** from left to right.
+Green/red boxes mark correct/incorrect absolute piece positions.
+
+![GAP-3: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-3-sample_000043.png)
+
+![GAP-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-5-sample_000231.png)
+
+![JPwLEG-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/JPwLEG-5-sample_000137.png)
+
+![ImageNet-LSEJ-10x10-2px: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/ImageNet-LSEJ-sample_000285_LSEJ_001772.png)
 
 ## Citation
 

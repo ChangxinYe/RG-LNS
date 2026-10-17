@@ -106,7 +106,7 @@ def resolve_checkpoint(args: argparse.Namespace) -> Path:
         raise FileNotFoundError(
             f"No {args.checkpoint_name} found under {dataset_root}. "
             f"Download the matching weights to {COMPATIBILITY_ROOT}, pass --checkpoint, "
-            f"or train with train_compatibility.py gap. Available runs: {available}"
+            f"or train with train_compatibility.py {args.dataset}. Available runs: {available}"
         )
     print(f"Using latest training checkpoint: {candidates[0]}")
     return candidates[0].resolve()

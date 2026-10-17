@@ -29,11 +29,16 @@ evaluation, point `--data-root` to the appropriate family root:
 | Dataset family | Point `--data-root` to the directory containing |
 | :-- | :-- |
 | GAP | `GAP-3/` and/or `GAP-5/` |
-| JPwLEG | `JPwLEG-5/` (or `JPwLEG-3/` for optional experiments) |
+| JPwLEG-5 | `JPwLEG-5/` |
 | ImageNet-LSEJ | `lsej_dataloader.py`, `configs/`, `images/`, `permutations/`, and `splits/` |
 
 The ImageNet-LSEJ adapter is imported from `lsej_dataloader.py` in the selected
 root. Use `--checkpoint PATH` to select weights stored anywhere locally.
+
+ImageNet-LSEJ commands use `ImageNet-LSEJ-10x10-2px` and
+`ImageNet-LSEJ-10x10-5px`; their internal task IDs are `lsej_grid10_erode2`
+and `lsej_grid10_erode5`. Original dataset configuration IDs and released
+checkpoint filenames remain unchanged.
 
 For paper-level experiments, ablation and runtime accept `--gap-data-root`,
 `--jpwleg-data-root`, and `--lsej-data-root`. Sensitivity accepts repeatable

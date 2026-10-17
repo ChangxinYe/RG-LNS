@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+from data_loaders.lsej import lsej_grid_size
+
 from dataclasses import asdict
 from functools import partial
 
@@ -31,7 +33,7 @@ def parse_args():
 def main() -> None:
     args = parse_args()
     config = lp_config_from_args(args)
-    grid = int(str(args.task).split("_", 1)[0].removeprefix("grid"))
+    grid = lsej_grid_size(args.task)
     config.validate(grid * grid)
     solver = partial(solve_with_lp, config=config)
     print(f"LP configuration: {asdict(config)}")

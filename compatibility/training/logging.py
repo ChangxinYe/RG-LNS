@@ -751,7 +751,9 @@ def write_summary(args, history: list[dict], total_time: float, path: Path) -> N
         "",
     ]
     if hasattr(args, "task"):
-        lines.insert(3, f"task: {args.task}")
+        from data_loaders.lsej import lsej_task_name
+
+        lines.insert(3, f"task: {lsej_task_name(args.task)}")
     add_best_block(
         lines,
         f"Best valid {selection_metric}",

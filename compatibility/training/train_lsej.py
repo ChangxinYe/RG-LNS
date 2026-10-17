@@ -33,8 +33,9 @@ try:
     )
     from data_loaders.lsej import (
         DEFAULT_LSEJ_DATA_ROOT,
-        OFFICIAL_TASKS,
+        LSEJ_TASKS,
         MetricLSEJTripletDataset,
+        normalize_lsej_task,
     )
     from compatibility.scorer import load_torch_checkpoint, resolve_device
     from compatibility.encoder import ViTMetricEncoder, model_config_dict
@@ -48,7 +49,12 @@ except ImportError:
         puzzle_level_random_triplet_loss,
         puzzle_level_semi_hard_triplet_loss,
     )
-    from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS, MetricLSEJTripletDataset
+    from data_loaders.lsej import (
+        DEFAULT_LSEJ_DATA_ROOT,
+        LSEJ_TASKS,
+        MetricLSEJTripletDataset,
+        normalize_lsej_task,
+    )
     from compatibility.scorer import load_torch_checkpoint, resolve_device
     from compatibility.encoder import ViTMetricEncoder, model_config_dict
 
@@ -164,7 +170,10 @@ def parse_args() -> argparse.Namespace:
         "Train directional visual compatibility on ImageNet-LSEJ",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default="grid10_erode2", choices=OFFICIAL_TASKS, help="official LSEJ task name")
+    parser.add_argument(
+        "--task", default="lsej_grid10_erode2", type=normalize_lsej_task,
+        choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting",
+    )
     parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")
     parser.add_argument(
         "--output-dir",
@@ -736,7 +745,7 @@ def load_resume(
         return 1, [], float("inf"), -float("inf")
     checkpoint = load_torch_checkpoint(resume_path, device)
     checkpoint_task = checkpoint.get("task") or checkpoint.get("args", {}).get("task")
-    if str(checkpoint_task) != args.task:
+    if normalize_lsej_task(str(checkpoint_task)) != normalize_lsej_task(args.task):
         raise ValueError(f"Cannot resume task {checkpoint_task} as {args.task}")
     config = checkpoint.get("model_config", {})
     if config.get("geometry_mode") != "right_edge_role_independent":

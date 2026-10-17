@@ -27,7 +27,11 @@ def main() -> None:
         description="Compare a ViT-T baseline with Baseline + RG-LNS.",
         epilog="Each rg-lns run reports both Baseline and Baseline + RG-LNS.",
     )
-    parser.add_argument("dataset", nargs="?", default="gap", choices=("gap", "jpwleg", "lsej"))
+    parser.add_argument(
+        "dataset", nargs="?", default="GAP-5",
+        choices=("GAP-3", "GAP-5", "JPwLEG-5",
+                 "ImageNet-LSEJ-10x10-2px", "ImageNet-LSEJ-10x10-5px"),
+    )
     parser.add_argument("solver", nargs="?", default="gallagher", choices=("gallagher", "pomeranz", "linear-programming"))
     # Preserve earlier dispatcher commands without presenting comparison variants
     # as choices required for normal evaluation.
@@ -43,6 +47,22 @@ def main() -> None:
     option_start = next((i for i, value in enumerate(arguments) if value.startswith("-")), len(arguments))
     args, remaining = parser.parse_known_args(arguments[:option_start])
     remaining.extend(arguments[option_start:])
+    if any(arg.split("=", 1)[0] in ("--dataset", "--task") for arg in remaining):
+        parser.error("Choose the concrete dataset/task as the first argument; omit --dataset and --task.")
+    dataset = args.dataset
+    if dataset.startswith("GAP-"):
+        args.dataset = "gap"
+        remaining = ["--dataset", dataset, *remaining]
+    elif dataset.startswith("JPwLEG-"):
+        args.dataset = "jpwleg"
+        remaining = ["--dataset", dataset.lower().replace("-", ""), *remaining]
+    elif dataset.startswith("ImageNet-LSEJ-"):
+        args.dataset = "lsej"
+        task = {
+            "ImageNet-LSEJ-10x10-2px": "lsej_grid10_erode2",
+            "ImageNet-LSEJ-10x10-5px": "lsej_grid10_erode5",
+        }[dataset]
+        remaining = ["--task", task, *remaining]
     sys.argv = [sys.argv[0], *remaining]
     runpy.run_module(
         evaluator_module(args.dataset, args.solver, args.method),

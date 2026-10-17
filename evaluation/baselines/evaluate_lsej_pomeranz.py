@@ -23,7 +23,7 @@ from pathlib import Path
 
 from initial_solvers.pomeranz import PomeranzSolverConfig, solve_with_pomeranz
 from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, script_output_root
-from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, OFFICIAL_TASKS
+from data_loaders.lsej import DEFAULT_LSEJ_DATA_ROOT, LSEJ_TASKS, normalize_lsej_task, lsej_grid_size
 from evaluation.lsej import evaluate_lsej_split
 from compatibility.scorer import MetricCompatibilityScorer, resolve_device
 from evaluation.common.lsej_inputs import (
@@ -38,18 +38,16 @@ from evaluation.common.lsej_inputs import (
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET_NAME = "ImageNet_LSEJ"
-DEFAULT_TASK = "grid10_erode2"
+DEFAULT_TASK = "lsej_grid10_erode2"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 0
 DEFAULT_LOSS_TYPE = "hard_triplet"
 DEFAULT_RUN_NAME = None
 if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "grid10_erode2":
+    if DEFAULT_TASK == "lsej_grid10_erode2":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "grid10_erode5":
+    elif DEFAULT_TASK == "lsej_grid10_erode5":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
-    elif DEFAULT_TASK == "grid10_erode8":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-17-06"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -57,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
         "Evaluate ImageNet-LSEJ with the learned compatibility distance and Pomeranz CVPR 2011 solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
+    parser.add_argument("--task", default=DEFAULT_TASK, type=normalize_lsej_task, choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting")
     parser.add_argument("--loss-type", default=DEFAULT_LOSS_TYPE, choices=LOSS_TYPES, help="training loss for the checkpoint")
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=["train", "val", "test"], help="data split to evaluate")
     parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")
@@ -100,7 +98,7 @@ def validate_args(args: argparse.Namespace, config: PomeranzSolverConfig) -> Non
         raise ValueError("score-batch-size must be a positive integer")
     if args.visual_limit < 0 or args.progress_interval < 0:
         raise ValueError("visual-limit and progress-interval must be non-negative")
-    grid = int(str(args.task).split("_", 1)[0].removeprefix("grid"))
+    grid = lsej_grid_size(args.task)
     config.validate(grid * grid)
 
 

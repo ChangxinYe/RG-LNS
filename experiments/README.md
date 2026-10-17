@@ -9,9 +9,7 @@ The Python modules in this directory are the runnable experiment entry points:
 These drivers share the dataset and input-weight locations in
 [`paths.py`](../paths.py), which defaults to released weights under
 `checkpoints/compatibility/`, using the layout in the root README. Custom
-weights can still be passed through the checkpoint arguments. Optional
-ImageNet-LSEJ erode8 and JPwLEG-3 sensitivity settings require separately
-trained weights; pass `--checkpoint BENCHMARK=PATH` for those settings.
+weights can still be passed through the checkpoint arguments.
 
 ## Standalone comparisons
 
@@ -53,9 +51,9 @@ After preparing ImageNet-LSEJ and its released erode2 checkpoint, generate
 paired results for all three initial solvers from the repository root:
 
 ```bash
-python evaluate.py lsej gallagher rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/gallagher/grid10_erode2
-python evaluate.py lsej pomeranz rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/pomeranz/grid10_erode2
-python evaluate.py lsej linear-programming rg-lns --task grid10_erode2 --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/lp/grid10_erode2
+python evaluate.py ImageNet-LSEJ-10x10-2px gallagher rg-lns --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/gallagher/lsej_grid10_erode2
+python evaluate.py ImageNet-LSEJ-10x10-2px pomeranz rg-lns --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/pomeranz/lsej_grid10_erode2
+python evaluate.py ImageNet-LSEJ-10x10-2px linear-programming rg-lns --split test --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth --save-predictions true --save-diagnostics true --output-dir results/runs/failure_analysis/lp/lsej_grid10_erode2
 python -m jupyterlab experiments/failure_analysis.ipynb
 ```
 

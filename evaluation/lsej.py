@@ -18,7 +18,10 @@ from pathlib import Path
 import numpy as np
 
 from compatibility.geometry import BOTTOM, DIRECTIONS, LEFT, RIGHT, TOP
-from data_loaders.lsej import chw_uint8_to_hwc_numpy, load_official_dataset_class
+from data_loaders.lsej import (
+    chw_uint8_to_hwc_numpy, load_official_dataset_class,
+    normalize_lsej_task, official_lsej_task, lsej_task_name,
+)
 from evaluation.runtime_info import collect_runtime_environment, format_runtime_environment
 from initial_solvers.gallagher.mgc import do_all_assembly_of_puzzle
 
@@ -481,7 +484,7 @@ def write_evaluation_summary(
         "=" * 80,
         f"checkpoint: {checkpoint if checkpoint is not None else 'in-memory model'}",
         f"data_root: {data_root}",
-        f"task: {metrics.task}",
+        f"dataset: {lsej_task_name(metrics.task)}",
         f"split: {metrics.split}",
         f"start_index: {metrics.start_index}",
         f"max_samples: {max_samples}",
@@ -561,6 +564,7 @@ def evaluate_lsej_split(
     dataset_override=None,
     progress_callback=None,
 ) -> LSEJMetrics:
+    task = normalize_lsej_task(task)
     if max_samples < 0:
         raise ValueError("max_samples must be non-negative")
     if visual_limit < 0:
@@ -570,7 +574,7 @@ def evaluate_lsej_split(
 
     if dataset_override is None:
         dataset_class = load_official_dataset_class(data_root)
-        dataset = dataset_class(data_root, split=split, task=task, normalize=False)
+        dataset = dataset_class(data_root, split=split, task=official_lsej_task(task), normalize=False)
     else:
         dataset = dataset_override
     grid = int(dataset.config["puzzle"]["grid_rows"])
@@ -597,7 +601,7 @@ def evaluate_lsej_split(
     vertical_neighbor_rank_histogram = np.zeros(max_neighbor_rank + 1, dtype=np.int64)
     visualized = 0
     started = time.perf_counter()
-    print(f"Evaluating {method_name} on {task} {split}: samples={sample_count}, grid={grid}x{grid}")
+    print(f"Evaluating {method_name} on {lsej_task_name(task)} {split}: samples={sample_count}, grid={grid}x{grid}")
 
     for done, index in enumerate(range(start_index, end_index), start=1):
         sample = dataset[index]
@@ -629,7 +633,7 @@ def evaluate_lsej_split(
                 prediction,
                 target,
                 grid,
-                f"{task} | {sample['lsej_id']}",
+                f"{lsej_task_name(task)} | {sample['lsej_id']}",
                 method_name=method_name,
             )
             visualized += 1

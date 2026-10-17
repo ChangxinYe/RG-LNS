@@ -31,9 +31,12 @@ from evaluation.output import checkpoint_run_name, prepare_unique_output_dir, sc
 from evaluation.runtime_info import append_runtime_environment
 from data_loaders.lsej import (
     DEFAULT_LSEJ_DATA_ROOT,
-    OFFICIAL_TASKS,
+    LSEJ_TASKS,
     chw_uint8_to_hwc_numpy,
     load_official_dataset_class,
+    normalize_lsej_task,
+    official_lsej_task,
+    lsej_task_name,
 )
 from evaluation.lsej import (
     compose_puzzle,
@@ -53,19 +56,17 @@ from evaluation.common.lsej_inputs import (
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET_NAME = "ImageNet_LSEJ"
-DEFAULT_TASK = "grid10_erode2"
+DEFAULT_TASK = "lsej_grid10_erode2"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 0
 DEFAULT_LOSS_TYPE = "hard_triplet"
 DEFAULT_RUN_NAME = None
 if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "grid10_erode2":
+    if DEFAULT_TASK == "lsej_grid10_erode2":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "grid10_erode5":
+    elif DEFAULT_TASK == "lsej_grid10_erode5":
         DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-19-16-45-16"
-    elif DEFAULT_TASK == "grid10_erode8":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-19-16-46-17"
 DEFAULT_RUN_DIR = None
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 
@@ -88,7 +89,7 @@ def build_parser() -> argparse.ArgumentParser:
         "Run greedy high-confidence component-guided reassembly with frozen learned compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--task", default=DEFAULT_TASK, choices=OFFICIAL_TASKS, help="official LSEJ task to evaluate")
+    parser.add_argument("--task", default=DEFAULT_TASK, type=normalize_lsej_task, choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting")
     parser.add_argument("--loss-type", default=DEFAULT_LOSS_TYPE, choices=LOSS_TYPES, help="training loss for the checkpoint")
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=["train", "val", "test"], help="data split to evaluate")
     parser.add_argument("--data-root", default=DEFAULT_LSEJ_DATA_ROOT, type=Path, help="ImageNet-LSEJ dataset root")
@@ -249,7 +250,7 @@ def run_evaluation(
     validate_checkpoint(args.checkpoint, args.task, args.loss_type)
 
     dataset_class = load_official_dataset_class(args.data_root)
-    dataset = dataset_class(args.data_root, split=args.split, task=args.task, normalize=False)
+    dataset = dataset_class(args.data_root, split=args.split, task=official_lsej_task(args.task), normalize=False)
     if args.start_index >= len(dataset):
         raise ValueError(f"start-index {args.start_index} is outside dataset length {len(dataset)}")
     end_index = len(dataset) if args.max_samples == 0 else min(len(dataset), args.start_index + args.max_samples)
@@ -427,7 +428,7 @@ def run_evaluation(
                 target,
                 display_component,
                 grid,
-                f"{args.task} | {lsej_id} | accepted {rounds_accepted}/{rounds_attempted} | {status}",
+                f"{lsej_task_name(args.task)} | {lsej_id} | accepted {rounds_accepted}/{rounds_attempted} | {status}",
                 initial_solver_name=initial_solver_name,
             )
 
@@ -525,7 +526,7 @@ def run_evaluation(
         f"ImageNet-LSEJ Greedy Component Reassembly ({initial_solver_name} initialization)",
         "=" * 80,
         f"checkpoint: {args.checkpoint}",
-        f"task/split: {args.task} / {args.split}",
+        f"dataset/split: {lsej_task_name(args.task)} / {args.split}",
         f"samples: [{args.start_index}, {end_index}) = {len(sample_indices)}",
         f"configuration: k={args.mutual_top_k}, component={args.component_index}, "
         f"min_size={args.min_component_size}, rounds={args.refinement_rounds}",

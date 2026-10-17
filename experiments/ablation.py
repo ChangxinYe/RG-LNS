@@ -139,10 +139,10 @@ class TableRowSpec:
 DATASETS: dict[str, DatasetSpec] = {
     "lsej": DatasetSpec(
         key="lsej",
-        display_name="ImageNet-LSEJ-10 (2 px)",
+        display_name="ImageNet-LSEJ-10x10-2px",
         module="evaluation.commands.evaluate_lsej_gallagher_rg_lns",
         selector_argument="--task",
-        selector_value="grid10_erode2",
+        selector_value="lsej_grid10_erode2",
         full_sample_count=2000,
         expected_data_entry="configs",
     ),

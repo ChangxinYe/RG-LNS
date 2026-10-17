@@ -35,9 +35,12 @@ from evaluation.timing import (
 )
 from data_loaders.lsej import (
     DEFAULT_LSEJ_DATA_ROOT,
-    OFFICIAL_TASKS,
+    LSEJ_TASKS,
     chw_uint8_to_hwc_numpy,
     load_official_dataset_class,
+    normalize_lsej_task,
+    official_lsej_task,
+    lsej_task_name,
 )
 from evaluation.lsej import compose_puzzle, is_complete_prediction, solve_with_gallagher
 from compatibility.scorer import MetricCompatibilityScorer, resolve_device
@@ -58,8 +61,8 @@ from evaluation.common.lsej_inputs import (
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET_NAME = "ImageNet_LSEJ"
-SUPPORTED_TASKS = tuple(task for task in OFFICIAL_TASKS if task.startswith("grid10_"))
-DEFAULT_TASK = "grid10_erode2"
+SUPPORTED_TASKS = LSEJ_TASKS
+DEFAULT_TASK = "lsej_grid10_erode2"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 0
@@ -95,8 +98,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--task",
         default=DEFAULT_TASK,
+        type=normalize_lsej_task,
         choices=SUPPORTED_TASKS,
-        help="official grid10 LSEJ task supported by RG-LNS",
+        help="ImageNet-LSEJ benchmark setting",
     )
     parser.add_argument(
         "--loss-type",
@@ -371,7 +375,7 @@ def run_evaluation(
     dataset = dataset_class(
         args.data_root,
         split=args.split,
-        task=args.task,
+        task=official_lsej_task(args.task),
         normalize=False,
     )
     if args.start_index >= len(dataset):
@@ -434,8 +438,7 @@ def run_evaluation(
 
     print(
         "\n".join(format_run_configuration(
-            dataset="ImageNet-LSEJ",
-            task=args.task,
+            dataset=lsej_task_name(args.task),
             split=args.split,
             samples=len(sample_indices),
             initial_solver_name=initial_solver_name,
@@ -882,7 +885,7 @@ def run_evaluation(
             _save_visual(
                 visual_dir / f"sample_{sample_index:06d}_{lsej_id}.png",
                 pieces, baseline, selected, target, grid,
-                f"ImageNet-LSEJ | {args.task} | {args.split} | {lsej_id}",
+                f"{lsej_task_name(args.task)} | {args.split} | {lsej_id}",
                 initial_solver_name,
             )
 
@@ -1026,6 +1029,7 @@ def run_evaluation(
             "reuses the formal greedy reassembly solver"
         ),
         "task": args.task,
+        "dataset": lsej_task_name(args.task),
         "split": args.split,
         "start_index": args.start_index,
         "end_index_exclusive": end_index,
@@ -1125,10 +1129,9 @@ def run_evaluation(
         ("PA", "AA", "horizontal_SRA", "vertical_SRA", "SRA"),
     )
     summary_lines = format_run_configuration(
-        dataset="ImageNet-LSEJ", split=args.split, samples=len(sample_indices),
+        dataset=lsej_task_name(args.task), split=args.split, samples=len(sample_indices),
         initial_solver_name=initial_solver_name, device=str(device),
         data_root=args.data_root, checkpoint=args.checkpoint,
-        task=args.task,
     )
     summary_lines = format_evaluation_summary(
         summary_lines, metric_summary, payload, args.output_dir, loss_type=args.loss_type,
