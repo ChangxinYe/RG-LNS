@@ -33,3 +33,4 @@ datasets/
 checkpoints/
 results/runs/
 research_code
+/my_paths.py

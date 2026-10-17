@@ -15,13 +15,11 @@ TRAINERS = {
 
 
 def main() -> None:
-    help_parser = argparse.ArgumentParser(description="Train directional compatibility.")
-    help_parser.add_argument("dataset", nargs="?", default="gap", choices=TRAINERS)
-    if len(sys.argv) > 1 and sys.argv[1] in {"-h", "--help"}:
-        help_parser.print_help()
-        return
-    parser = argparse.ArgumentParser(add_help=False)
+    parser = argparse.ArgumentParser(description="Train directional compatibility.")
     parser.add_argument("dataset", nargs="?", default="gap", choices=TRAINERS)
+    if len(sys.argv) > 1 and sys.argv[1] in {"-h", "--help"}:
+        parser.print_help()
+        return
     # Keep downstream options and their values out of the optional positional.
     arguments = sys.argv[1:]
     option_start = next((i for i, value in enumerate(arguments) if value.startswith("-")), len(arguments))
