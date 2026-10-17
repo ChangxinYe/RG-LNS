@@ -9,13 +9,12 @@ import sys
 
 def evaluator_module(dataset: str, solver: str, method: str) -> str:
     solver_token = {
-        "gallagher": "",
+        "gallagher": "_gallagher",
         "pomeranz": "_pomeranz",
         "linear-programming": "_linear_programming",
     }[solver]
     if method == "initial":
-        initial_token = "_gallagher" if solver == "gallagher" else solver_token
-        return f"evaluation.baselines.evaluate_{dataset}{initial_token}"
+        return f"evaluation.baselines.evaluate_{dataset}{solver_token}"
     if method == "greedy-rg-lns":
         return f"experiments.comparisons.evaluate_{dataset}{solver_token}_greedy_rg_lns"
     if method != "rg-lns":

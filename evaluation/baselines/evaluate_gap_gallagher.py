@@ -49,7 +49,7 @@ def run_evaluation(
     *,
     solver=solve_with_gallagher,
     solver_name: str = "Gallagher",
-    method_name: str = "Baseline (ViT-T)",
+    method_name: str = "Baseline (ViT-T + Gallagher)",
     solver_configuration: dict | None = None,
     output_root: Path = DEFAULT_OUTPUT_ROOT,
     output_suffix: str = "",

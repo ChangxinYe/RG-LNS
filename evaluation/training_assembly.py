@@ -75,7 +75,7 @@ def gi_to_predicted_positions(gi: np.ndarray, grid: int) -> np.ndarray:
     return pred
 
 
-def solve_with_edge2vec(
+def solve_with_gallagher(
     image: np.ndarray,
     grid: int,
     scorer: MetricCompatibilityScorer,
@@ -104,7 +104,7 @@ def evaluate_assembly_sample(
     scorer: MetricCompatibilityScorer,
     verbose_solver: bool = False,
 ) -> tuple[int, bool]:
-    gi = solve_with_edge2vec(image, grid, scorer=scorer, verbose_solver=verbose_solver)
+    gi = solve_with_gallagher(image, grid, scorer=scorer, verbose_solver=verbose_solver)
     pred = gi_to_predicted_positions(gi, grid)
     target = label_to_target_positions(label, grid).astype(np.int32)
     correct = pred == target
@@ -146,7 +146,7 @@ def evaluate_assembly_split(
             pa_now = perfect_puzzles / done
             aa_now = correct_pieces / (done * config.num_pieces)
             print(
-                f"    assembly {dataset} {split} [{done:>{len(str(sample_count))}}/{sample_count}] "
+                f"    Gallagher assembly {dataset} {split} [{done:>{len(str(sample_count))}}/{sample_count}] "
                 f"PA={pa_now:.2%}, AA={aa_now:.2%}"
             )
 

@@ -113,8 +113,8 @@ DATASETS = {
 }
 
 SOLVERS = {
-    "gallagher": SolverSpec("gallagher", "Gallagher", ""),
-    "lp": SolverSpec("lp", "LP", "_lp"),
+    "gallagher": SolverSpec("gallagher", "Gallagher", "_gallagher"),
+    "lp": SolverSpec("lp", "LP", "_linear_programming"),
     "pomeranz": SolverSpec("pomeranz", "Pomeranz", "_pomeranz"),
 }
 
@@ -269,11 +269,7 @@ def _preflight(args: argparse.Namespace) -> None:
 
 def _module_name(dataset: str, solver: str) -> str:
     dataset_token = DATASETS[dataset].module_token
-    solver_token = {
-        "": "",
-        "_lp": "_linear_programming",
-        "_pomeranz": "_pomeranz",
-    }[SOLVERS[solver].module_token]
+    solver_token = SOLVERS[solver].module_token
     return f"evaluation.commands.evaluate_{dataset_token}{solver_token}_rg_lns"
 
 

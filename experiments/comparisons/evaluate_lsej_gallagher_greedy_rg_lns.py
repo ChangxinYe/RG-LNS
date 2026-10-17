@@ -1,5 +1,5 @@
 """
-@file: evaluate_lsej_greedy_rg_lns.py
+@file: evaluate_lsej_gallagher_greedy_rg_lns.py
 @description: Reuse the trained learned compatibility embedding and matrix, obtain an initial
               solution with Gallagher, and iteratively extract high-confidence connected components using mutual
               compatibility Top-K relations and local four-edge cycle constraints. Enumerate legal component translations,
@@ -223,7 +223,7 @@ def _default_output_dir(
         if args.start_index == 0 and end_index == dataset_length
         else f"start{args.start_index}_n{end_index - args.start_index}"
     )
-    solver_part = "" if initial_solver_tag == "gallagher" else f"init{initial_solver_tag}_"
+    solver_part = f"init{initial_solver_tag}_"
     folder = (
         f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}_{args.task}_{args.split}_{range_tag}_"
         f"{solver_part}"

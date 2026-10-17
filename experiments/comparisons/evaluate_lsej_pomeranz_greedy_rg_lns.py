@@ -13,7 +13,7 @@ from functools import partial
 
 from initial_solvers.pomeranz import solve_with_pomeranz
 from evaluation.output import script_output_root
-from experiments.comparisons.evaluate_lsej_greedy_rg_lns import build_parser, run_evaluation
+from experiments.comparisons.evaluate_lsej_gallagher_greedy_rg_lns import build_parser, run_evaluation
 from evaluation.common.solver_options import add_pomeranz_arguments, pomeranz_config_from_args
 
 

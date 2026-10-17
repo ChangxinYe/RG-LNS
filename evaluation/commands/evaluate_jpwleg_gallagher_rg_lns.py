@@ -1,5 +1,5 @@
 """
-@file: evaluate_jpwleg_rg_lns.py
+@file: evaluate_jpwleg_gallagher_rg_lns.py
 @description: Compare a ViT-T compatibility baseline with the complete RG-LNS method.
               Complete partial initial layouts without labels, then search reliable-component
               translations and beam completions using a fixed compatibility objective.
@@ -87,7 +87,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser = build_search_parser()
     parser.description = (
-        "Evaluate RG-LNS on JPwLEG with frozen visual compatibility"
+        "Evaluate RG-LNS on JPwLEG with Gallagher initialization and frozen visual compatibility"
     )
     parser.prog = "Evaluate RG-LNS on JPwLEG"
     parser.add_argument(

@@ -1,5 +1,5 @@
 """
-@file: evaluate_jpwleg_greedy_rg_lns.py
+@file: evaluate_jpwleg_gallagher_greedy_rg_lns.py
 @description: Run the single-path component-reassembly comparison on a Gallagher initial layout for JPwLEG and compare metrics before and after reassembly.
 @author: Changxin Ye
 @created: 2026-07-26
@@ -178,7 +178,7 @@ def _default_output_dir(
     initial_solver_tag: str,
 ) -> Path:
     range_tag = "all" if args.start_index == 0 and end_index == dataset_length else f"start{args.start_index}_n{end_index - args.start_index}"
-    solver_part = "" if initial_solver_tag == "gallagher" else f"init{initial_solver_tag}_"
+    solver_part = f"init{initial_solver_tag}_"
     folder = (
         f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}_{split}_{range_tag}_"
         f"{solver_part}k{args.mutual_top_k}_c{args.component_index}_"

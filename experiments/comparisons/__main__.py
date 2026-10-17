@@ -21,7 +21,7 @@ def main() -> None:
     selector.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
     selector.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
     args, remaining = selector.parse_known_args()
-    suffix = {"gallagher": "", "pomeranz": "_pomeranz", "linear-programming": "_linear_programming"}[args.solver]
+    suffix = {"gallagher": "_gallagher", "pomeranz": "_pomeranz", "linear-programming": "_linear_programming"}[args.solver]
     module = f"experiments.comparisons.evaluate_{args.dataset}{suffix}_greedy_rg_lns"
     sys.argv = [sys.argv[0], *remaining]
     runpy.run_module(module, run_name="__main__")

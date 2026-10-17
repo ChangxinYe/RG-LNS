@@ -307,8 +307,8 @@ BENCHMARK_ALIASES: dict[str, tuple[str, ...]] = {
 }
 
 SOLVERS: dict[str, SolverSpec] = {
-    "gallagher": SolverSpec("gallagher", "Gallagher", ""),
-    "lp": SolverSpec("lp", "LP", "_lp"),
+    "gallagher": SolverSpec("gallagher", "Gallagher", "_gallagher"),
+    "lp": SolverSpec("lp", "LP", "_linear_programming"),
     "pomeranz": SolverSpec("pomeranz", "Pomeranz", "_pomeranz"),
 }
 
@@ -748,11 +748,7 @@ def _checkpoint_for(args: argparse.Namespace, spec: BenchmarkSpec) -> Path:
 
 
 def _evaluator_module(spec: BenchmarkSpec, solver: SolverSpec) -> str:
-    solver_token = {
-        "": "",
-        "_lp": "_linear_programming",
-        "_pomeranz": "_pomeranz",
-    }[solver.module_suffix]
+    solver_token = solver.module_suffix
     return f"evaluation.commands.evaluate_{spec.module_token}{solver_token}_rg_lns"
 
 

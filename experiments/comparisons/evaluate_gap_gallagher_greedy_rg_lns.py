@@ -1,5 +1,5 @@
 """
-@file: evaluate_gap_greedy_rg_lns.py
+@file: evaluate_gap_gallagher_greedy_rg_lns.py
 @description: Load the corresponding compatibility model on GAP-3/GAP-5, use Gallagher Solver
               to produce an initial layout, then run greedy single-path component reassembly.
               Report PA, AA, HA, VA, SRA, and NA before and after reassembly, together with solver-independent

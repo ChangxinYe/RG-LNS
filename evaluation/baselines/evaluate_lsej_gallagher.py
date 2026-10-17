@@ -132,6 +132,7 @@ def main() -> None:
         save_visuals=args.save_visuals,
         visual_limit=args.visual_limit,
         save_predictions=args.save_predictions,
+        method_name="Baseline (ViT-T + Gallagher)",
     )
     print(
         f"Result: PA={metrics.pa:.2%}, AA={metrics.aa:.2%}, "

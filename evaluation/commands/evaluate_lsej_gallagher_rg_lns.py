@@ -1,5 +1,5 @@
 """
-@file: evaluate_lsej_rg_lns.py
+@file: evaluate_lsej_gallagher_rg_lns.py
 @description: Compare a ViT-T compatibility baseline with the complete RG-LNS method.
               Complete partial initial layouts without labels, then search reliable-component
               translations and beam completions using a fixed compatibility objective.
@@ -89,6 +89,7 @@ DEFAULT_PROGRESS_INTERVAL = 1
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         "Evaluate RG-LNS on ImageNet-LSEJ with frozen visual compatibility",
+        description="Evaluate RG-LNS on ImageNet-LSEJ with Gallagher initialization and frozen visual compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(

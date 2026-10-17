@@ -1,5 +1,5 @@
 """
-@file: evaluate_gap_rg_lns.py
+@file: evaluate_gap_gallagher_rg_lns.py
 @description: Compare a ViT-T compatibility baseline with the complete RG-LNS method.
               Complete partial initial layouts without labels, then search reliable-component
               translations and beam completions using a fixed compatibility objective.
@@ -81,7 +81,7 @@ DEFAULT_PROGRESS_INTERVAL = 25
 
 def build_parser() -> argparse.ArgumentParser:
     parser = build_search_parser()
-    parser.description = "Evaluate RG-LNS on GAP-3/GAP-5"
+    parser.description = "Evaluate RG-LNS on GAP-3/GAP-5 with Gallagher initialization"
     parser.prog = "Evaluate RG-LNS on GAP-3/GAP-5"
     parser.add_argument(
         "--completion-beam-width",

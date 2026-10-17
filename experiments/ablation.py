@@ -140,7 +140,7 @@ DATASETS: dict[str, DatasetSpec] = {
     "lsej": DatasetSpec(
         key="lsej",
         display_name="ImageNet-LSEJ-10 (2 px)",
-        module="evaluation.commands.evaluate_lsej_rg_lns",
+        module="evaluation.commands.evaluate_lsej_gallagher_rg_lns",
         selector_argument="--task",
         selector_value="grid10_erode2",
         full_sample_count=2000,
@@ -149,7 +149,7 @@ DATASETS: dict[str, DatasetSpec] = {
     "gap": DatasetSpec(
         key="gap",
         display_name="GAP-5",
-        module="evaluation.commands.evaluate_gap_rg_lns",
+        module="evaluation.commands.evaluate_gap_gallagher_rg_lns",
         selector_argument="--dataset",
         selector_value="GAP-5",
         full_sample_count=3000,
@@ -158,7 +158,7 @@ DATASETS: dict[str, DatasetSpec] = {
     "jpwleg": DatasetSpec(
         key="jpwleg",
         display_name="JPwLEG-5",
-        module="evaluation.commands.evaluate_jpwleg_rg_lns",
+        module="evaluation.commands.evaluate_jpwleg_gallagher_rg_lns",
         selector_argument="--dataset",
         selector_value="jpwleg5",
         full_sample_count=2000,

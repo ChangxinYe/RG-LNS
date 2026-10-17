@@ -350,7 +350,7 @@ def save_visual_comparison(
     plt.close(fig)
 
 
-def solve_with_metric(image: np.ndarray, grid: int, scorer: MetricCompatibilityScorer, verbose_solver: bool = False) -> np.ndarray:
+def solve_with_gallagher(image: np.ndarray, grid: int, scorer: MetricCompatibilityScorer, verbose_solver: bool = False) -> np.ndarray:
     pieces_array = image_to_pieces(image, grid)
     pieces = [pieces_array[idx] for idx in range(pieces_array.shape[0])]
     position_key = np.arange(1, grid * grid + 1, dtype=np.int32)
@@ -368,7 +368,7 @@ def solve_with_metric(image: np.ndarray, grid: int, scorer: MetricCompatibilityS
 
 
 def evaluate_sample(image: np.ndarray, label: np.ndarray, grid: int, scorer: MetricCompatibilityScorer, verbose_solver: bool = False):
-    gi = solve_with_metric(image, grid, scorer=scorer, verbose_solver=verbose_solver)
+    gi = solve_with_gallagher(image, grid, scorer=scorer, verbose_solver=verbose_solver)
     pred = gi_to_predicted_positions(gi, grid)
     target = label_to_target_positions(label, grid).astype(np.int32)
     correct = pred == target
@@ -514,7 +514,7 @@ def summary_filename(dataset: str, split: str) -> str:
 def write_summary(path: Path, metrics_list: list[DatasetMetrics], args: argparse.Namespace, split: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "JPwLEG Puzzle-Level Hard Triplet Metric Evaluation Summary",
+        "JPwLEG Baseline (ViT-T + Gallagher) Evaluation Summary",
         f"checkpoint: {args.checkpoint}",
         f"data_root: {args.data_root}",
         f"split: {split}",

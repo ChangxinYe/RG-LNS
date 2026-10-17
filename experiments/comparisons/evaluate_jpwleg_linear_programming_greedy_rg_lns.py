@@ -15,7 +15,7 @@ from initial_solvers.linear_programming import solve_with_lp
 from evaluation.output import script_output_root
 from data_loaders.jpwleg import JPWLEG_CONFIGS
 from evaluation.common.jpwleg_search import build_parser
-from experiments.comparisons.evaluate_jpwleg_greedy_rg_lns import run_evaluation
+from experiments.comparisons.evaluate_jpwleg_gallagher_greedy_rg_lns import run_evaluation
 from evaluation.common.solver_options import add_lp_arguments, lp_config_from_args
 
 
