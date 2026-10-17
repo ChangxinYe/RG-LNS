@@ -54,17 +54,12 @@ from initial_solvers.gallagher.mgc import do_all_assembly_of_puzzle  # noqa: E40
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
-DEFAULT_DATASET = "jpwleg3"
+DEFAULT_DATASET = "jpwleg5"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 2000
 DEFAULT_SAVE_VISUALS = True
 DEFAULT_VISUAL_LIMIT = 10
-DEFAULT_RUN_NAMES = {
-    "jpwleg3": "hard_triplet_d128_s224_2026-07-27-08-14-53",
-    "jpwleg5": "hard_triplet_d128_s224_2026-07-28-23-27-31",
-    "all": "",
-}
-DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
+DEFAULT_RUN_NAME = None
 
 
 @dataclass
@@ -156,11 +151,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--run-name",
         default=DEFAULT_RUN_NAME,
-        help="Run folder under checkpoints/train_jpwleg/<dataset>. Empty means auto-pick latest.",
+        help="Run folder under checkpoints/train_jpwleg/<dataset>; omit to use released weights or the latest run.",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="Exact run directory containing checkpoints/.")
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="Checkpoint file inside checkpoints/.")
-    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=["all", *JPWLEG_CONFIGS.keys()])
+    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=("jpwleg5",))
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys())
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path)
     parser.add_argument("--output-dir", default=None, type=Path, help="evaluation-result directory; leave empty to classify automatically by script, dataset, and experiment")
@@ -557,7 +552,7 @@ def main() -> None:
         batch_size=args.score_batch_size,
         postprocess=args.postprocess,
     )
-    datasets = list(JPWLEG_CONFIGS) if args.dataset == "all" else [args.dataset]
+    datasets = [args.dataset]
     metrics_list = []
     max_samples = args.max_samples or None
     for dataset in datasets:

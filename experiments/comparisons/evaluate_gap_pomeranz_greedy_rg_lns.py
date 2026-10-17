@@ -18,7 +18,7 @@ from evaluation.output import script_output_root
 from data_loaders.gap import GAP_CONFIGS
 from evaluation.common.gap_search import build_parser
 from experiments.comparisons.evaluate_gap_gallagher_greedy_rg_lns import run_evaluation
-from evaluation.common.gap_inputs import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_NAMES
+from evaluation.common.gap_inputs import DEFAULT_CHECKPOINT_NAME
 from evaluation.common.solver_options import add_pomeranz_arguments, pomeranz_config_from_args
 
 
@@ -26,7 +26,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 DEFAULT_DATASET = "GAP-5"  # "GAP-3" or "GAP-5"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 0
-DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
+DEFAULT_RUN_NAME = None
 
 
 def parse_args():
@@ -38,14 +38,11 @@ def parse_args():
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,
         max_samples=DEFAULT_MAX_SAMPLES,
-        run_name=None,
+        run_name=DEFAULT_RUN_NAME,
         checkpoint_name=DEFAULT_CHECKPOINT_NAME,
     )
     add_pomeranz_arguments(parser)
-    args = parser.parse_args()
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
-    return args
+    return parser.parse_args()
 
 
 def main() -> None:

@@ -28,14 +28,10 @@ from evaluation.common.solver_options import add_pomeranz_arguments, pomeranz_co
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
-DEFAULT_DATASET = "jpwleg3"
+DEFAULT_DATASET = "jpwleg5"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 2000
-DEFAULT_RUN_NAMES = {
-    "jpwleg3": "hard_triplet_d128_s224_2026-07-27-08-14-53",
-    "jpwleg5": "hard_triplet_d128_s224_2026-07-28-23-27-31",
-}
-DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
+DEFAULT_RUN_NAME = None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -43,7 +39,7 @@ def build_parser() -> argparse.ArgumentParser:
         "Evaluate JPwLEG with the learned compatibility distance and Pomeranz CVPR 2011 solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPWLEG_CONFIGS.keys(), help="JPwLEG dataset to evaluate")
+    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=("jpwleg5",), help="JPwLEG-5 dataset to evaluate")
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="data split to evaluate")
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset root")
     parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")

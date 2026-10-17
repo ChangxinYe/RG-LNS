@@ -39,7 +39,7 @@ class JPWLEGPuzzleHardTripletDataset(Dataset):
     def __init__(
         self,
         data_root: str | Path = DEFAULT_DATA_ROOT,
-        dataset: str = "jpwleg3",
+        dataset: str = "jpwleg5",
         split: str = "train",
         input_size: int = 224,
         normalization: str = "vit",

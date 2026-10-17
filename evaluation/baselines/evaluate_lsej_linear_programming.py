@@ -37,11 +37,6 @@ DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 0
 DEFAULT_LOSS_TYPE = "hard_triplet"
 DEFAULT_RUN_NAME = None
-if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "lsej_grid10_erode2":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "lsej_grid10_erode5":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
 
 # Type-1 defaults from PuzzleParametersSet.m.
 DEFAULT_LP_TOP_K = 1

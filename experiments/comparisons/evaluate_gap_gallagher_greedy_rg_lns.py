@@ -69,10 +69,6 @@ from evaluation.common.gap_inputs import DEFAULT_LOG_ROOT, parse_bool, resolve_c
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
-DEFAULT_RUN_NAMES = {
-    "GAP-3": "hard_triplet_d128_s224_kall_2026-07-31-20-21-04",
-    "GAP-5": "hard_triplet_d128_s224_k15_2026-07-31-20-43-26",
-}
 
 # Keep consistent with the formal greedy-reassembly settings for LSEJ/JPwLEG.
 
@@ -190,8 +186,6 @@ def run_evaluation(
     output_root: Path = DEFAULT_OUTPUT_ROOT,
 ) -> dict:
     validate_args(args)
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
     checkpoint = resolve_checkpoint(args)
     scorer, device, model_config = _build_scorer(args, checkpoint)
 

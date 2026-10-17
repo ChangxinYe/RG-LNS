@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, SPLIT_ALIASES
+from data_loaders.jpwleg import DEFAULT_DATA_ROOT, SPLIT_ALIASES
 from evaluation.common.jpwleg_inputs import DEFAULT_CHECKPOINT_NAME, DEFAULT_RUN_DIR, parse_bool
 
 
-DEFAULT_DATASET = "jpwleg3"
+DEFAULT_DATASET = "jpwleg5"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 2000
@@ -29,7 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
         "Run greedy high-confidence component reassembly on JPwLEG with frozen learned compatibility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=JPWLEG_CONFIGS.keys(), help="JPwLEG dataset to evaluate; each dataset uses its own checkpoint")
+    parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=("jpwleg5",), help="JPwLEG-5 dataset to evaluate")
     parser.add_argument("--split", default=DEFAULT_SPLIT, choices=SPLIT_ALIASES.keys(), help="data split to evaluate")
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path, help="MET_Dataset root")
     parser.add_argument("--checkpoint", default=None, type=Path, help="exact checkpoint path; highest priority")

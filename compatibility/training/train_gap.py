@@ -42,14 +42,10 @@ except ImportError:
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_DATASET = "GAP-3"  # "GAP-3" or "GAP-5"
-if DEFAULT_DATASET == "GAP-3":
-    DEFAULT_NEGATIVES_PER_ANCHOR = 0  # 0 means all 7 legal negatives
-    DEFAULT_BATCH_SIZE = 16
-elif DEFAULT_DATASET == "GAP-5":
-    DEFAULT_NEGATIVES_PER_ANCHOR = 15
-    DEFAULT_BATCH_SIZE = 8
-else:
-    raise ValueError(f"Unsupported DEFAULT_DATASET: {DEFAULT_DATASET}")
+DEFAULT_TRAINING_SETTINGS = {
+    "GAP-3": {"batch_size": 16, "negatives_per_anchor": 0},  # All 7 legal negatives.
+    "GAP-5": {"batch_size": 8, "negatives_per_anchor": 15},
+}
 
 DEFAULT_LOG_ROOT = script_output_root(__file__, "logs")
 DEFAULT_LOSS_TYPE = "hard_triplet"
@@ -98,14 +94,20 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--triplets-per-puzzle", default=4, type=int)
     parser.add_argument("--val-triplets-per-puzzle", default=2, type=int)
-    parser.add_argument("--negatives-per-anchor", default=DEFAULT_NEGATIVES_PER_ANCHOR, type=int)
+    parser.add_argument(
+        "--negatives-per-anchor", default=None, type=int,
+        help="0 uses all legal negatives; omitted selects the dataset default",
+    )
     parser.add_argument("--permute-pieces", default=True, type=parse_bool)
     parser.add_argument("--margin", default=0.2, type=float)
     parser.add_argument("--loss-distance", default="euclidean", choices=["euclidean", "cosine"])
 
     parser.add_argument("--epochs", default=150, type=int)
     parser.add_argument("--steps-per-epoch", default=0, type=int, help="0 means full train loader")
-    parser.add_argument("--batch-size", default=DEFAULT_BATCH_SIZE, type=int)
+    parser.add_argument(
+        "--batch-size", default=None, type=int,
+        help="omitted selects the dataset default: GAP-3=16, GAP-5=8",
+    )
     parser.add_argument("--backbone-lr", default=1e-5, type=float)
     parser.add_argument("--head-lr", default=1e-4, type=float, help="projection head and RGBA adapter learning rate")
     parser.add_argument("--warmup-epochs", default=5, type=int)
@@ -121,6 +123,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--resume", default="")
     parser.add_argument("--print-freq", default=25, type=int)
     args = parser.parse_args()
+    # Select the profile after parsing --dataset; explicit CLI values always win.
+    defaults = DEFAULT_TRAINING_SETTINGS[args.dataset]
+    if args.batch_size is None:
+        args.batch_size = defaults["batch_size"]
+    if args.negatives_per_anchor is None:
+        args.negatives_per_anchor = defaults["negatives_per_anchor"]
     args.loss_type = DEFAULT_LOSS_TYPE
     return args
 

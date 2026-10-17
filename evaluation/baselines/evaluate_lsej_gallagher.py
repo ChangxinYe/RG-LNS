@@ -39,21 +39,8 @@ DEFAULT_DATASET_NAME = "ImageNet_LSEJ"
 DEFAULT_TASK = "lsej_grid10_erode2"
 DEFAULT_SPLIT = "test"
 DEFAULT_MAX_SAMPLES = 0
-if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "lsej_grid10_erode2":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "lsej_grid10_erode5":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
-elif DEFAULT_LOSS_TYPE == "semi_hard_triplet":
-    # Empty selects the latest semi-hard experiment for the current task; set an exact run name after training.
-    DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_semi_hard_triplet_d128_s224_kall_2026-07-18-15-51-36"
-elif DEFAULT_LOSS_TYPE == "random_triplet":
-    DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_random_triplet_d128_s224_kall_2026-07-18-22-33-41"
-elif DEFAULT_LOSS_TYPE == "distance_weighted_triplet":
-    DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_distance_weighted_triplet_c0.5_n1.4_d128_s224_kall_2026-07-18-22-34-25"
-elif DEFAULT_LOSS_TYPE == "infonce":
-    DEFAULT_RUN_NAME = "grid10_erode2_vit_tiny_patch16_224_pretrained_puzzle_infonce_tau0.1_d128_s224_kall_2026-07-18-11-34-05"
-else:
+DEFAULT_RUN_NAME = None
+if DEFAULT_LOSS_TYPE not in LOSS_TYPES:
     raise ValueError(f"DEFAULT_LOSS_TYPE must be one of {LOSS_TYPES}, got {DEFAULT_LOSS_TYPE!r}")
 
 
@@ -70,7 +57,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--run-name",
         default=DEFAULT_RUN_NAME,
-        help="experiment directory under the task log root; empty selects the latest run for the current task",
+        help="experiment directory under the task log root; omit to use released weights or the latest run",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path, help="experiment directory containing the checkpoints subdirectory")
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME, help="filename loaded from the experiment checkpoints directory")

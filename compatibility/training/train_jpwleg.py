@@ -23,14 +23,14 @@ from tqdm import tqdm
 
 try:
     from evaluation.output import build_run_name, script_output_root
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, JPWLEGPuzzleHardTripletDataset
+    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEGPuzzleHardTripletDataset
     from compatibility.training.logging import append_epoch_log, write_metric_outputs, write_summary, write_training_args
     from compatibility.training.losses import puzzle_level_hard_triplet_loss
     from compatibility.scorer import MetricCompatibilityScorer, load_torch_checkpoint, resolve_device
     from compatibility.encoder import ViTMetricEncoder, model_config_dict
 except ImportError:
     from evaluation.output import build_run_name, script_output_root
-    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEG_CONFIGS, JPWLEGPuzzleHardTripletDataset
+    from data_loaders.jpwleg import DEFAULT_DATA_ROOT, JPWLEGPuzzleHardTripletDataset
     from compatibility.training.logging import append_epoch_log, write_metric_outputs, write_summary, write_training_args
     from compatibility.training.losses import puzzle_level_hard_triplet_loss
     from compatibility.scorer import MetricCompatibilityScorer, load_torch_checkpoint, resolve_device
@@ -57,7 +57,7 @@ def parse_args() -> argparse.Namespace:
         "Train directional visual compatibility on JPwLEG",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--dataset", default="jpwleg3", choices=JPWLEG_CONFIGS.keys())
+    parser.add_argument("--dataset", default="jpwleg5", choices=("jpwleg5",))
     parser.add_argument("--data-root", default=DEFAULT_DATA_ROOT, type=Path)
     parser.add_argument("--output-dir", default=DEFAULT_LOG_ROOT, type=Path)
     parser.add_argument("--run-name", default="")
@@ -75,9 +75,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--margin", default=0.2, type=float)
     parser.add_argument("--loss-distance", default="euclidean", choices=["euclidean", "cosine"])
 
-    parser.add_argument("--epochs", default=30, type=int)
+    parser.add_argument("--epochs", default=150, type=int)
     parser.add_argument("--steps-per-epoch", default=0, type=int, help="0 means use the full DataLoader")
-    parser.add_argument("--batch-size", default=256, type=int)
+    parser.add_argument("--batch-size", default=24, type=int)
     parser.add_argument(
         "--lr",
         default=None,

@@ -191,7 +191,7 @@ class Edge2VecJPWLEGTripletDataset(Dataset):
     def __init__(
         self,
         data_root: str | Path = DEFAULT_DATA_ROOT,
-        dataset: str = "jpwleg3",
+        dataset: str = "jpwleg5",
         split: str = "train",
         input_size: int = 96,
         normalization: str = "zero_one",

@@ -63,11 +63,6 @@ from evaluation.common.jpwleg_inputs import (
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
-DEFAULT_RUN_NAMES = {
-    "jpwleg3": "hard_triplet_d128_s224_2026-07-27-08-14-53",
-    "jpwleg5": "jpwleg5_vit_tiny_patch16_224_pretrained_puzzle_hard_triplet_d128_s224_2026-07-17-09-52-33",
-}
-DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 
 # First keep the same parameters as LSEJ greedy reassembly; freeze formal values after selecting them on JPwLEG validation.
 
@@ -197,8 +192,6 @@ def run_evaluation(
     output_root: Path = DEFAULT_OUTPUT_ROOT,
 ) -> dict:
     validate_args(args)
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
     args.checkpoint = resolve_checkpoint_arg(args)
     if not args.checkpoint.is_file():
         raise FileNotFoundError(args.checkpoint)

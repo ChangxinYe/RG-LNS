@@ -15,7 +15,6 @@ from evaluation.common.gap_inputs import (
     DEFAULT_LOG_ROOT,
     DEFAULT_MAX_SAMPLES,
     DEFAULT_RUN_DIR,
-    DEFAULT_RUN_NAMES,
     DEFAULT_SAVE_VISUALS,
     DEFAULT_SPLIT,
     DEFAULT_VISUAL_LIMIT,
@@ -37,7 +36,6 @@ from compatibility.scorer import MetricCompatibilityScorer, load_metric_checkpoi
 
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
-DEFAULT_RUN_NAME = DEFAULT_RUN_NAMES[DEFAULT_DATASET]
 
 
 def parse_args() -> argparse.Namespace:
@@ -57,8 +55,6 @@ def run_evaluation(
     """Run a standalone GAP baseline through the same scorer/solver path as RG-LNS."""
 
     validate_args(args)
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
     device = resolve_device(args.device, args.gpu_id)
     checkpoint = resolve_checkpoint(args)
     model, model_config, checkpoint_payload = load_metric_checkpoint(checkpoint, device)
