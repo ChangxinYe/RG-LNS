@@ -321,7 +321,11 @@ if __name__ == "__main__":
     print(f"inputs.shape = {inputs.shape}")
     print(f"inputs[0][0][0]={inputs[0][0][0]}")
 
-    pretrained_dir = Path(__file__).resolve().parent / "vit_handwritten_pretrained_weights"
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from paths import PRETRAINED_ROOT
+
+    pretrained_dir = PRETRAINED_ROOT
     model_names = {
         "vit_tiny": "vit_tiny_patch16_224",
         "vit_small": "vit_small_patch16_224",

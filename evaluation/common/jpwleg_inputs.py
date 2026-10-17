@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 from evaluation.output import script_output_root
+from paths import COMPATIBILITY_ROOT
 
 
 SCRIPT_DIR = Path(__file__).resolve().parents[1] / "commands"
@@ -38,6 +39,11 @@ def checkpoint_from_run_dir(run_dir: Path, checkpoint_name: str) -> Path:
 
 
 def resolve_default_checkpoint(dataset: str, checkpoint_name: str, log_root: Path = DEFAULT_LOG_ROOT) -> Path:
+    if (dataset == "jpwleg5" and checkpoint_name == DEFAULT_CHECKPOINT_NAME
+            and Path(log_root).resolve() == DEFAULT_LOG_ROOT.resolve()):
+        released = COMPATIBILITY_ROOT / "jpwleg5_best.pth"
+        if released.is_file():
+            return released
     log_roots = [log_root]
     if log_root == DEFAULT_LOG_ROOT and LEGACY_LOG_ROOT != DEFAULT_LOG_ROOT:
         log_roots.append(LEGACY_LOG_ROOT)
@@ -58,7 +64,8 @@ def resolve_default_checkpoint(dataset: str, checkpoint_name: str, log_root: Pat
     raise FileNotFoundError(
         "No default metric-learning checkpoint was found. "
         f"Searched under: {search_roots} for {checkpoint_name} and last.pth. "
-        "Train first with train_compatibility.py jpwleg, or pass --checkpoint explicitly."
+        f"Download the matching weights to {COMPATIBILITY_ROOT}, pass --checkpoint, "
+        "or train with train_compatibility.py jpwleg."
     )
 
 
@@ -88,5 +95,5 @@ def resolve_checkpoint_arg(args: argparse.Namespace) -> Path:
         print(f"Using checkpoint from run name: {checkpoint}")
         return checkpoint.resolve()
     checkpoint = resolve_default_checkpoint(args.dataset, args.checkpoint_name)
-    print(f"Using latest default checkpoint: {checkpoint}")
+    print(f"Using default checkpoint: {checkpoint}")
     return checkpoint.resolve()

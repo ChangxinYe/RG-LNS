@@ -21,11 +21,12 @@ from torch.utils.data import Dataset
 
 from compatibility.geometry import DIRECTIONS, canonical_piece, relation_candidate_edge
 from compatibility.transforms import piece_to_tensor
+from paths import GAP_DATA_ROOT
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-FAST_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
+FAST_GAP_DATA_ROOT = GAP_DATA_ROOT
 # GAP experiments read only the repacked contiguous, uncompressed HDF5 data.
 # Do not fall back to the original compressed data, so a missing GAP_fast extraction cannot silently use the slower data.
 DEFAULT_GAP_DATA_ROOT = FAST_GAP_DATA_ROOT
@@ -109,7 +110,7 @@ class GAPPuzzleDataset(Dataset):
             if not path.is_file():
                 raise FileNotFoundError(
                     f"Required GAP_fast file not found: {path}. "
-                    "Extract or generate datasets/GAP_fast before running GAP experiments; "
+                    "Extract or generate GAP_fast at GAP_DATA_ROOT in paths.py, or pass --data-root; "
                     "no fallback dataset is enabled."
                 )
 
@@ -122,7 +123,7 @@ class GAPPuzzleDataset(Dataset):
                 raise ValueError(
                     f"GAP requires contiguous, uncompressed GAP_fast puzzles, but {self.puzzles_path} "
                     f"uses chunks={puzzle_dataset.chunks}, compression={puzzle_dataset.compression!r}. "
-                    "Run datasets/GAP_fast/repack_gap_hdf5.py and use its output directory."
+                    "Run scripts/repack_gap_hdf5.py and use its output directory."
                 )
             shape = tuple(int(value) for value in puzzle_dataset.shape)
         with h5py.File(self.labels_path, "r") as label_file:

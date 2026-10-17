@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 from evaluation.output import script_output_root
 from data_loaders.gap import DEFAULT_GAP_DATA_ROOT, GAP_CONFIGS, GAP_SPLITS
+from paths import COMPATIBILITY_ROOT
 
 
 SCRIPT_DIR = Path(__file__).resolve().parents[1] / "commands"
@@ -46,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--run-name",
         default=None,
-        help="experiment name under checkpoints/train_gap/<dataset>; leave empty to use DEFAULT_RUN_NAMES by dataset",
+        help="experiment name under checkpoints/train_gap/<dataset>; leave empty to use released weights or the latest training run",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path)
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME)
@@ -85,8 +86,15 @@ def resolve_checkpoint(args: argparse.Namespace) -> Path:
     if args.run_dir is not None:
         return checkpoint_from_run_dir(Path(args.run_dir).expanduser().resolve(), args.checkpoint_name)
     dataset_root = Path(args.log_root).expanduser().resolve() / args.dataset
-    if args.run_name.strip():
-        return checkpoint_from_run_dir(dataset_root / args.run_name.strip(), args.checkpoint_name)
+    run_name = (args.run_name or "").strip()
+    if run_name:
+        return checkpoint_from_run_dir(dataset_root / run_name, args.checkpoint_name)
+    if (args.checkpoint_name == DEFAULT_CHECKPOINT_NAME
+            and Path(args.log_root).resolve() == DEFAULT_LOG_ROOT.resolve()):
+        released_name = {"GAP-3": "gap3_best.pth", "GAP-5": "gap5_best.pth"}[args.dataset]
+        released = COMPATIBILITY_ROOT / released_name
+        if released.is_file():
+            return released
     candidates = sorted(
         dataset_root.glob(f"*/checkpoints/{args.checkpoint_name}"),
         key=lambda path: path.stat().st_mtime,
@@ -97,9 +105,10 @@ def resolve_checkpoint(args: argparse.Namespace) -> Path:
             if dataset_root.is_dir() else []
         raise FileNotFoundError(
             f"No {args.checkpoint_name} found under {dataset_root}. "
-            f"Train with train_compatibility.py gap or set DEFAULT_RUN_NAMES. Available runs: {available}"
+            f"Download the matching weights to {COMPATIBILITY_ROOT}, pass --checkpoint, "
+            f"or train with train_compatibility.py gap. Available runs: {available}"
         )
-    print(f"DEFAULT_RUN_NAME is empty; using latest checkpoint: {candidates[0]}")
+    print(f"Using latest training checkpoint: {candidates[0]}")
     return candidates[0].resolve()
 
 

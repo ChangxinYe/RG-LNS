@@ -7,6 +7,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
+from paths import JPWLEG_DATA_ROOT
 
 from compatibility.geometry import (
     DIRECTIONS,
@@ -17,7 +18,7 @@ from compatibility.geometry import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
+DEFAULT_DATA_ROOT = JPWLEG_DATA_ROOT
 PIECE_SIZE = 96
 
 

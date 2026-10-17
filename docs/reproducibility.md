@@ -8,8 +8,23 @@ and released weights.
 
 ## Custom data and checkpoint paths
 
-Training and evaluation accept `--data-root` for data stored outside the
-repository or on another drive:
+Set machine-wide defaults in [`paths.py`](../paths.py). Its three dataset
+roots and two input-weight directories are shared by training, evaluation,
+the experiment drivers, and the failure-analysis notebook. For example:
+
+```python
+GAP_DATA_ROOT = Path("E:/datasets/GAP_fast")
+COMPATIBILITY_ROOT = Path("E:/weights/rg_lns")
+```
+
+Use absolute paths for external storage or `PROJECT_ROOT / "..."` for paths
+relative to the repository. Keep the released weight filenames unchanged.
+These settings select inputs; training outputs and evaluation results retain
+their existing locations unless `--output-dir` is supplied.
+Restart the notebook kernel after changing `paths.py`.
+
+Command-line path arguments override the shared defaults. For training and
+evaluation, point `--data-root` to the appropriate family root:
 
 | Dataset family | Point `--data-root` to the directory containing |
 | :-- | :-- |

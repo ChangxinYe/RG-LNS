@@ -18,11 +18,12 @@ from torch.utils.data import Dataset
 
 from compatibility.geometry import DIRECTIONS, canonical_piece, relation_candidate_edge
 from compatibility.transforms import piece_to_tensor
+from paths import LSEJ_DATA_ROOT
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-OFFICIAL_LSEJ_DIR = PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
+OFFICIAL_LSEJ_DIR = LSEJ_DATA_ROOT
 DEFAULT_LSEJ_DATA_ROOT = OFFICIAL_LSEJ_DIR
 OFFICIAL_TASKS = (
     "grid10_erode2",

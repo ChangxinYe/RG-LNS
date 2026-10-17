@@ -67,7 +67,9 @@ RG-LNS/
 │   ├── reference/            Compact records from submitted experiments
 │   └── runs/                 Newly generated runs; ignored by Git
 ├── evaluate.py               Unified evaluation entry point
+├── train_compatibility.py    Stage-I training entry point
 ├── reproduce.py              Paper-level experiment dispatcher
+├── paths.py                  Shared dataset and input-weight locations
 ├── requirements.txt
 └── README.md
 ```
@@ -163,6 +165,11 @@ Use `--output-dir` to choose where results are saved, or append `--help` to a
 command to view all evaluation options.
 
 ### Custom data locations
+
+Edit [`paths.py`](paths.py) once to set the three dataset roots and the
+compatibility/pretrained weight directories for this machine. Training,
+evaluation, and experiments share these defaults. Command-line path arguments
+override them for an individual run.
 
 Set `--data-root` to the family root: the directory containing `GAP-3/` and
 `GAP-5/` for GAP, `JPwLEG-5/` for JPwLEG, or `lsej_dataloader.py` and the data

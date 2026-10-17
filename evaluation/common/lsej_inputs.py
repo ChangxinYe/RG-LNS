@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 from evaluation.output import script_output_root
 from compatibility.scorer import load_torch_checkpoint, resolve_device
+from paths import COMPATIBILITY_ROOT
 
 
 SCRIPT_DIR = Path(__file__).resolve().parents[1] / "commands"
@@ -56,6 +57,12 @@ def resolve_default_checkpoint(
 ) -> Path:
     if log_root is None:
         log_root = DEFAULT_LOG_ROOTS[loss_type]
+    if (task in {"grid10_erode2", "grid10_erode5"} and loss_type == "hard_triplet"
+            and checkpoint_name == DEFAULT_CHECKPOINT_NAME
+            and Path(log_root).resolve() == DEFAULT_LOG_ROOTS[loss_type].resolve()):
+        released = COMPATIBILITY_ROOT / f"lsej_{task}_best.pth"
+        if released.is_file():
+            return released
     log_roots = [Path(log_root)]
     if Path(log_root) == DEFAULT_LOG_ROOTS[loss_type]:
         log_roots.append(LEGACY_LOG_ROOTS[loss_type])
@@ -75,7 +82,7 @@ def resolve_default_checkpoint(
         return candidates[0]
     raise FileNotFoundError(
         f"No compatibility LSEJ {loss_type} checkpoint found for task {task}. Searched under {search_roots}. "
-        "Train this task first or pass --checkpoint explicitly."
+        f"Download the matching weights to {COMPATIBILITY_ROOT}, pass --checkpoint, or train this task first."
     )
 
 

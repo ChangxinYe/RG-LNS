@@ -13,9 +13,7 @@ from pathlib import Path
 import torch
 from torch import nn
 from torch.nn import functional as F
-
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+from paths import PRETRAINED_ROOT
 
 from compatibility.vit import (
     VIT_MODEL_CONFIGS,
@@ -27,9 +25,7 @@ from compatibility.vit import (
 def default_pretrained_weights_path(model_name: str) -> Path:
     resolved_name = resolve_vit_model_name(model_name)
     return (
-        PROJECT_ROOT
-        / "checkpoints"
-        / "pretrained"
+        PRETRAINED_ROOT
         / f"{resolved_name}_augreg_in21k_ft_in1k_handwritten.pth"
     )
 
@@ -95,7 +91,7 @@ class ViTMetricEncoder(nn.Module):
         if not checkpoint_path.exists():
             raise FileNotFoundError(
                 f"Pretrained handwritten ViT weights not found: {checkpoint_path}. "
-                "Place the converted backbone under checkpoints/pretrained, pass "
+                "Place the converted backbone under PRETRAINED_ROOT in paths.py, pass "
                 "--pretrained-weights-path, or disable pretrained initialization."
             )
         checkpoint = load_torch_file(checkpoint_path, map_location="cpu")

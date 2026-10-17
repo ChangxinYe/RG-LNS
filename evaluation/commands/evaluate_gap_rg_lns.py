@@ -62,10 +62,6 @@ DEFAULT_DATASET = "GAP-5"  # "GAP-3" or "GAP-5"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 0
-DEFAULT_RUN_NAMES = {
-    "GAP-3": "hard_triplet_d128_s224_kall_2026-07-31-20-21-04",
-    "GAP-5": "hard_triplet_d128_s224_k15_2026-07-31-20-43-26",
-}
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 DEFAULT_COMPLETION_BEAM_WIDTH = 4
 DEFAULT_PARTIAL_COMPLETION_BEAM_WIDTH = 2
@@ -341,8 +337,6 @@ def run_evaluation(
     output_root: Path = DEFAULT_OUTPUT_ROOT,
 ) -> dict:
     validate_args(args)
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
     checkpoint = resolve_checkpoint(args)
     scorer, device, model_config = _build_scorer(args, checkpoint)
 

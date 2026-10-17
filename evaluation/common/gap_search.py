@@ -45,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--run-name",
         default=None,
-        help="experiment name under logs/train_gap/<dataset>; leave empty to use DEFAULT_RUN_NAMES by dataset",
+        help="experiment name under checkpoints/train_gap/<dataset>; leave empty to use released weights or the latest training run",
     )
     parser.add_argument("--run-dir", default=DEFAULT_RUN_DIR, type=Path)
     parser.add_argument("--checkpoint-name", default=DEFAULT_CHECKPOINT_NAME)

@@ -28,19 +28,23 @@ def main() -> None:
         description="Compare a ViT-T baseline with Baseline + RG-LNS.",
         epilog="Each rg-lns run reports both Baseline and Baseline + RG-LNS.",
     )
-    help_parser.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
-    help_parser.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
-    help_parser.add_argument("method", choices=("rg-lns",))
-    if len(sys.argv) == 1 or sys.argv[1] in {"-h", "--help"}:
+    help_parser.add_argument("dataset", nargs="?", default="gap", choices=("gap", "jpwleg", "lsej"))
+    help_parser.add_argument("solver", nargs="?", default="gallagher", choices=("gallagher", "pomeranz", "linear-programming"))
+    help_parser.add_argument("method", nargs="?", default="rg-lns", choices=("rg-lns",))
+    if len(sys.argv) > 1 and sys.argv[1] in {"-h", "--help"}:
         help_parser.print_help()
         return
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("dataset", choices=("gap", "jpwleg", "lsej"))
-    parser.add_argument("solver", choices=("gallagher", "pomeranz", "linear-programming"))
+    parser.add_argument("dataset", nargs="?", default="gap", choices=("gap", "jpwleg", "lsej"))
+    parser.add_argument("solver", nargs="?", default="gallagher", choices=("gallagher", "pomeranz", "linear-programming"))
     # Preserve earlier dispatcher commands without presenting comparison variants
     # as choices required for normal evaluation.
-    parser.add_argument("method", choices=("initial", "greedy-rg-lns", "rg-lns"))
-    args, remaining = parser.parse_known_args()
+    parser.add_argument("method", nargs="?", default="rg-lns", choices=("initial", "greedy-rg-lns", "rg-lns"))
+    # Keep downstream options and their values out of optional positionals.
+    arguments = sys.argv[1:]
+    option_start = next((i for i, value in enumerate(arguments) if value.startswith("-")), len(arguments))
+    args, remaining = parser.parse_known_args(arguments[:option_start])
+    remaining.extend(arguments[option_start:])
     sys.argv = [sys.argv[0], *remaining]
     runpy.run_module(
         evaluator_module(args.dataset, args.solver, args.method),

@@ -6,7 +6,8 @@ The Python modules in this directory are the runnable experiment entry points:
 - `sensitivity.py`: hyperparameter sensitivity;
 - `runtime.py`: runtime summaries.
 
-These drivers default to the released weights under
+These drivers share the dataset and input-weight locations in
+[`paths.py`](../paths.py), which defaults to released weights under
 `checkpoints/compatibility/`, using the layout in the root README. Custom
 weights can still be passed through the checkpoint arguments. Optional
 ImageNet-LSEJ erode8 and JPwLEG-3 sensitivity settings require separately

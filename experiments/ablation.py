@@ -43,15 +43,21 @@ from typing import Any
 SCRIPT_PATH = Path(__file__).resolve()
 MODULE_DIR = SCRIPT_PATH.parent
 PROJECT_ROOT = MODULE_DIR.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from paths import (
+    COMPATIBILITY_ROOT,
+    GAP_DATA_ROOT as DEFAULT_GAP_DATA_ROOT,
+    JPWLEG_DATA_ROOT as DEFAULT_JPWLEG_DATA_ROOT,
+    LSEJ_DATA_ROOT as DEFAULT_LSEJ_DATA_ROOT,
+)
+
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "results" / "runs" / SCRIPT_PATH.stem
 
-DEFAULT_LSEJ_DATA_ROOT = PROJECT_ROOT / "datasets" / "ImageNet_LSEJ"
-DEFAULT_GAP_DATA_ROOT = PROJECT_ROOT / "datasets" / "GAP_fast"
-DEFAULT_JPWLEG_DATA_ROOT = PROJECT_ROOT / "datasets" / "MET_Dataset"
-
-DEFAULT_LSEJ_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "lsej_grid10_erode2_best.pth"
-DEFAULT_GAP_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "gap5_best.pth"
-DEFAULT_JPWLEG_CHECKPOINT = PROJECT_ROOT / "checkpoints" / "compatibility" / "jpwleg5_best.pth"
+DEFAULT_LSEJ_CHECKPOINT = COMPATIBILITY_ROOT / "lsej_grid10_erode2_best.pth"
+DEFAULT_GAP_CHECKPOINT = COMPATIBILITY_ROOT / "gap5_best.pth"
+DEFAULT_JPWLEG_CHECKPOINT = COMPATIBILITY_ROOT / "jpwleg5_best.pth"
 
 # One-click defaults.  Edit these values when launching directly from an IDE.
 DEFAULT_DATASETS = ("lsej", "gap", "jpwleg")

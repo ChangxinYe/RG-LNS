@@ -58,20 +58,11 @@ from evaluation.common.jpwleg_inputs import parse_bool, resolve_checkpoint_arg
 
 DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
-# When running directly in PyCharm, edit only this section. With an empty run-name, the checkpoint is selected
-# from the mapping below by dataset, avoiding the wrong weights when switching between jpwleg3 and jpwleg5.
-DEFAULT_DATASET = "jpwleg3"
+# Defaults for direct runs; checkpoints are selected for the requested dataset.
+DEFAULT_DATASET = "jpwleg5"
 DEFAULT_SPLIT = "test"
 DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 2000
-DEFAULT_RUN_NAMES = {
-    "jpwleg3": (
-        "hard_triplet_d128_s224_2026-07-27-08-14-53"
-    ),
-    "jpwleg5": (
-        "hard_triplet_d128_s224_2026-07-28-23-27-31"
-    ),
-}
 DEFAULT_RUN_NAME = None
 
 DEFAULT_COMPLETION_BEAM_WIDTH = 4
@@ -399,8 +390,6 @@ def run_evaluation(
     output_root: Path = DEFAULT_OUTPUT_ROOT,
 ) -> dict:
     validate_args(args)
-    if args.run_name is None:
-        args.run_name = DEFAULT_RUN_NAMES[args.dataset]
     args.checkpoint = resolve_checkpoint_arg(args)
     if not args.checkpoint.is_file():
         raise FileNotFoundError(args.checkpoint)

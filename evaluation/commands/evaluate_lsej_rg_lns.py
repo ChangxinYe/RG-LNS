@@ -65,13 +65,6 @@ DEFAULT_START_INDEX = 0
 DEFAULT_MAX_SAMPLES = 0
 DEFAULT_LOSS_TYPE = "hard_triplet"
 DEFAULT_RUN_NAME = None
-if DEFAULT_LOSS_TYPE == "hard_triplet":
-    if DEFAULT_TASK == "grid10_erode2":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-07-25-10-22-41"
-    elif DEFAULT_TASK == "grid10_erode5":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-16-37"
-    elif DEFAULT_TASK == "grid10_erode8":
-        DEFAULT_RUN_NAME = "hard_triplet_d128_s224_k15_2026-08-02-21-17-06"
 DEFAULT_RUN_DIR = None
 DEFAULT_CHECKPOINT_NAME = "best.pth"
 
