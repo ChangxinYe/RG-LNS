@@ -175,18 +175,53 @@ python evaluate.py gap gallagher rg-lns --dataset GAP-5 --data-root "E:/datasets
 The same option is available for training:
 
 ```bash
-python train_compatibility.py gap --dataset GAP-5 --data-root "E:/datasets/GAP_fast"
+python train_compatibility.py gap --dataset GAP-5 --data-root "E:/datasets/GAP_fast" --batch-size 8 --negatives-per-anchor 15
 ```
 
 ## Training and Experiments
 
+Run Stage-I compatibility training from the repository root after preparing
+the corresponding dataset and placing the pretrained ViT-Tiny weights in
+`checkpoints/pretrained/` as shown in [Code Layout](#code-layout). To use weights
+stored elsewhere, add `--pretrained-weights-path PATH`; use `--data-root PATH`
+to change the dataset location.
+
+### GAP
+
 ```bash
-# Stage-I compatibility training
-python train_compatibility.py gap --dataset GAP-5
+# GAP-3
+python train_compatibility.py gap --dataset GAP-3 --batch-size 16 --negatives-per-anchor 0
+
+# GAP-5
+python train_compatibility.py gap --dataset GAP-5 --batch-size 8 --negatives-per-anchor 15
+```
+
+For GAP-3, `--negatives-per-anchor 0` uses all seven legal negatives. The
+GAP-5 command explicitly selects its batch size and negative count; changing
+`--dataset` alone does not switch these settings automatically.
+
+### JPwLEG-5
+
+```bash
 python train_compatibility.py jpwleg --dataset jpwleg5
+```
+
+### ImageNet-LSEJ
+
+```bash
+# 2 px erosion
 python train_compatibility.py lsej --task grid10_erode2
 
-# Paper-level experiments
+# 5 px erosion
+python train_compatibility.py lsej --task grid10_erode5
+```
+
+Use `--epochs`, `--batch-size`, or `--output-dir` to customize a training run;
+append `--help` to any command to view all training options.
+
+### Paper-level experiments
+
+```bash
 python reproduce.py ablation
 python reproduce.py sensitivity
 python reproduce.py runtime
