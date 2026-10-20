@@ -143,20 +143,30 @@ Saved figures show the input, both results, and ground truth. Detailed search
 records are optional; see the [output guide](docs/reproducibility.md#evaluation-outputs).
 
 ```bash
-# GAP-3 / GAP-5
+# Gallagher
 python evaluate.py GAP-3 gallagher rg-lns --checkpoint checkpoints/compatibility/gap3_best.pth
 python evaluate.py GAP-5 gallagher rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
-
-# JPwLEG-5
 python evaluate.py JPwLEG-5 gallagher rg-lns --checkpoint checkpoints/compatibility/jpwleg5_best.pth
-
-# ImageNet-LSEJ: 2 px / 5 px erosion
 python evaluate.py ImageNet-LSEJ-10x10-2px gallagher rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
 python evaluate.py ImageNet-LSEJ-10x10-5px gallagher rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
+
+# Pomeranz
+python evaluate.py GAP-3 pomeranz rg-lns --checkpoint checkpoints/compatibility/gap3_best.pth
+python evaluate.py GAP-5 pomeranz rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py JPwLEG-5 pomeranz rg-lns --checkpoint checkpoints/compatibility/jpwleg5_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-2px pomeranz rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-5px pomeranz rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
+
+# Linear Programming
+python evaluate.py GAP-3 linear-programming rg-lns --checkpoint checkpoints/compatibility/gap3_best.pth
+python evaluate.py GAP-5 linear-programming rg-lns --checkpoint checkpoints/compatibility/gap5_best.pth
+python evaluate.py JPwLEG-5 linear-programming rg-lns --checkpoint checkpoints/compatibility/jpwleg5_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-2px linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode2_best.pth
+python evaluate.py ImageNet-LSEJ-10x10-5px linear-programming rg-lns --checkpoint checkpoints/compatibility/lsej_grid10_erode5_best.pth
 ```
 
-Replace `gallagher` with `pomeranz` or `linear-programming` to select a different
-initial solver for any dataset.
+Each dataset can be evaluated with `gallagher`, `pomeranz`, or
+`linear-programming` initialization.
 
 All examples use the test split. Add `--split val` for validation or
 `--max-samples 10` for a short run; `--max-samples 0` evaluates the full split.
