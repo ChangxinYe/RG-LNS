@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : JPwLEG-5
   Split      : test
   Samples    : 2000
-  Baseline   : ViT-T + Pomeranz CVPR 2011
+  Baseline   : ViT-T + Pomeranz
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/JPwLEG
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
@@ -13,7 +13,7 @@ Initial Solver Settings
   max_refinement_rounds : 0
   random_seed           : 0
 
-Baseline (ViT-T + Pomeranz CVPR 2011):
+Baseline (ViT-T + Pomeranz):
   PA  = 49.0500%
   AA  = 57.4440%
   HA  = 86.0050%

@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : ImageNet-LSEJ-10x10-2px
   Split      : test
   Samples    : 2000
-  Baseline   : ViT-T + faithful Python LP
+  Baseline   : ViT-T + LP
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth
@@ -20,7 +20,7 @@ Initial Solver Settings
   greedy_stop_threshold : 1.25
   highs_time_limit      : 0.0
 
-Baseline (ViT-T + faithful Python LP):
+Baseline (ViT-T + LP):
   PA             = 44.9000%
   AA             = 80.8950%
   Horizontal SRA = 89.0722%

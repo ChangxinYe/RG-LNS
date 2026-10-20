@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : ImageNet-LSEJ-10x10-2px
   Split      : test
   Samples    : 2000
-  Baseline   : ViT-T + Pomeranz CVPR 2011
+  Baseline   : ViT-T + Pomeranz
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth
@@ -13,7 +13,7 @@ Initial Solver Settings
   max_refinement_rounds : 0
   random_seed           : 0
 
-Baseline (ViT-T + Pomeranz CVPR 2011):
+Baseline (ViT-T + Pomeranz):
   PA             = 48.1500%
   AA             = 82.8320%
   Horizontal SRA = 90.9150%

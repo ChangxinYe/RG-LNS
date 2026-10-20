@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : GAP-5
   Split      : test
   Samples    : 3000
-  Baseline   : ViT-T + faithful Python LP
+  Baseline   : ViT-T + LP
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth
@@ -20,7 +20,7 @@ Initial Solver Settings
   greedy_stop_threshold : 1.25
   highs_time_limit      : 0.0
 
-Baseline (ViT-T + faithful Python LP):
+Baseline (ViT-T + LP):
   PA  = 21.0667%
   AA  = 38.0480%
   HA  = 63.7150%

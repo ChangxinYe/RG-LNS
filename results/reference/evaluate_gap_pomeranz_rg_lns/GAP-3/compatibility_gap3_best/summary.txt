@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : GAP-3
   Split      : test
   Samples    : 3000
-  Baseline   : ViT-T + Pomeranz CVPR 2011
+  Baseline   : ViT-T + Pomeranz
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap3_best.pth
@@ -13,7 +13,7 @@ Initial Solver Settings
   max_refinement_rounds : 0
   random_seed           : 0
 
-Baseline (ViT-T + Pomeranz CVPR 2011):
+Baseline (ViT-T + Pomeranz):
   PA  = 30.2333%
   AA  = 38.2333%
   HA  = 64.1167%

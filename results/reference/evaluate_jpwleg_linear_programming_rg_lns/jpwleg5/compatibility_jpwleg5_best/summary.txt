@@ -2,7 +2,7 @@ Run Configuration
   Dataset    : JPwLEG-5
   Split      : test
   Samples    : 2000
-  Baseline   : ViT-T + faithful Python LP
+  Baseline   : ViT-T + LP
   Device     : cuda:0
   Data root  : /data/yecx/datasets/Jigsaw_Puzzle/JPwLEG
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
@@ -20,7 +20,7 @@ Initial Solver Settings
   greedy_stop_threshold : 1.25
   highs_time_limit      : 0.0
 
-Baseline (ViT-T + faithful Python LP):
+Baseline (ViT-T + LP):
   PA  = 52.2000%
   AA  = 63.5840%
   HA  = 84.4575%

@@ -1,6 +1,6 @@
 {
   "method": "s1a4_profiled_large_neighborhood_reassembly_pomeranzr10m0s0_initialization",
-  "initial_solver": "Pomeranz CVPR 2011",
+  "initial_solver": "Pomeranz",
   "uses_training": false,
   "uses_ground_truth_for_selection": false,
   "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component placement, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across placements with the same E1 rule and accept only a strict improvement",
@@ -28,7 +28,7 @@
     "save_predictions": true,
     "save_completion_details": false,
     "initial_solver": {
-      "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+      "implementation": "pomeranz_python",
       "postprocess": true,
       "restarts": 10,
       "max_refinement_rounds": 0,
