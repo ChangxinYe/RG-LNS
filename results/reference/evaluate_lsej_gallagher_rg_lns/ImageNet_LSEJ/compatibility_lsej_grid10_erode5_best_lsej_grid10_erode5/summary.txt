@@ -1,0 +1,81 @@
+Run Configuration
+  Dataset    : ImageNet-LSEJ-10x10-5px
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + Gallagher
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth
+
+Baseline (ViT-T + Gallagher):
+  PA             = 5.9500%
+  AA             = 32.2685%
+  Horizontal SRA = 61.0778%
+  Vertical SRA   = 61.2044%
+  SRA            = 61.1411%
+
+Baseline + RG-LNS:
+  PA             = 19.6500%
+  AA             = 53.1460%
+  Horizontal SRA = 74.8400%
+  Vertical SRA   = 75.0350%
+  SRA            = 74.9375%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +13.7000 percentage points
+  AA gain                   : +20.8775 percentage points
+  SRA gain                  : +13.7964 percentage points
+  Puzzles with higher AA    : 1284
+  Puzzles with lower AA     : 329
+  Puzzles with unchanged AA : 387
+  Changed layouts           : 1833
+  Failed to perfect layouts : 274
+  Perfect to failed layouts : 0
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=1980
+  Compatibility scoring: mean=0.303301 | median=0.298828 | std=0.040773 | p95=0.342446 | total=600.535228
+  Initial solver       : mean=0.114297 | median=0.111145 | std=0.020825 | p95=0.146273 | total=226.308345
+  RG-LNS refinement    : mean=11.346752 | median=3.151806 | std=15.271539 | p95=46.130260 | total=22466.568239
+  Total inference      : mean=11.764349 | median=3.564172 | std=15.282569 | p95=46.580333 | total=23293.411812
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 23849.044607 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_lsej_gallagher_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode5_best_lsej_grid10_erode5
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (274 samples)
+  pa_broken_images.txt (0 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 2000) (zero-based, end exclusive)
+  Loss type                            : hard_triplet
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : True
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

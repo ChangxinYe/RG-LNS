@@ -1,0 +1,95 @@
+Run Configuration
+  Dataset    : JPwLEG-5
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + faithful Python LP
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/JPwLEG
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
+
+Initial Solver Settings
+  postprocess           : False
+  top_k                 : 1
+  refinement_iterations : 5
+  probability_lambda    : 5.0
+  minimum_weight        : 1e-15
+  match_tolerance       : 0.0001
+  rigid_components      : True
+  buddy_check           : True
+  loop_check            : True
+  greedy_stop_threshold : 1.25
+  highs_time_limit      : 0.0
+
+Baseline (ViT-T + faithful Python LP):
+  PA  = 52.2000%
+  AA  = 63.5840%
+  HA  = 84.4575%
+  VA  = 88.3175%
+  SRA = 86.3875%
+  NA  = 87.4062%
+
+Baseline + RG-LNS:
+  PA  = 60.7000%
+  AA  = 69.1080%
+  HA  = 88.9775%
+  VA  = 92.9000%
+  SRA = 90.9387%
+  NA  = 91.5487%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +8.5000 percentage points
+  AA gain                   : +5.5240 percentage points
+  SRA gain                  : +4.5513 percentage points
+  Puzzles with higher AA    : 301
+  Puzzles with lower AA     : 102
+  Puzzles with unchanged AA : 1597
+  Changed layouts           : 593
+  Failed to perfect layouts : 173
+  Perfect to failed layouts : 3
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=1980
+  Compatibility scoring: mean=0.157179 | median=0.113875 | std=0.141370 | p95=0.382716 | total=311.214349
+  Initial solver       : mean=0.027447 | median=0.022152 | std=0.012243 | p95=0.055044 | total=54.344843
+  RG-LNS refinement    : mean=0.060094 | median=0.005781 | std=0.146217 | p95=0.424243 | total=118.987047
+  Total inference      : mean=0.244720 | median=0.154211 | std=0.219243 | p95=0.723728 | total=484.546239
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 510.680280 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_jpwleg_linear_programming_rg_lns/jpwleg5/compatibility_jpwleg5_best
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (173 samples)
+  pa_broken_images.txt (3 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 2000) (zero-based, end exclusive)
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : False
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

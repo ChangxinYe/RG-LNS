@@ -1,0 +1,82 @@
+Run Configuration
+  Dataset    : JPwLEG-5
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + Gallagher
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/JPwLEG
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
+
+Baseline (ViT-T + Gallagher):
+  PA  = 39.6500%
+  AA  = 49.4120%
+  HA  = 80.5750%
+  VA  = 86.1475%
+  SRA = 83.3612%
+  NA  = 84.5213%
+
+Baseline + RG-LNS:
+  PA  = 50.8000%
+  AA  = 58.3300%
+  HA  = 86.4575%
+  VA  = 92.2000%
+  SRA = 89.3287%
+  NA  = 90.0075%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +11.1500 percentage points
+  AA gain                   : +8.9180 percentage points
+  SRA gain                  : +5.9675 percentage points
+  Puzzles with higher AA    : 371
+  Puzzles with lower AA     : 107
+  Puzzles with unchanged AA : 1522
+  Changed layouts           : 766
+  Failed to perfect layouts : 230
+  Perfect to failed layouts : 7
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=1980
+  Compatibility scoring: mean=0.079718 | median=0.079786 | std=0.003727 | p95=0.082777 | total=157.842184
+  Initial solver       : mean=0.013796 | median=0.013078 | std=0.002273 | p95=0.018281 | total=27.317036
+  RG-LNS refinement    : mean=0.031714 | median=0.003825 | std=0.078681 | p95=0.189994 | total=62.794041
+  Total inference      : mean=0.125229 | median=0.097634 | std=0.079825 | p95=0.285735 | total=247.953261
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 262.399984 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_jpwleg_gallagher_rg_lns/jpwleg5/compatibility_jpwleg5_best
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (230 samples)
+  pa_broken_images.txt (7 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 2000) (zero-based, end exclusive)
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : True
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

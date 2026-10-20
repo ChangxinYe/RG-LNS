@@ -1,0 +1,87 @@
+Run Configuration
+  Dataset    : ImageNet-LSEJ-10x10-5px
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + Pomeranz CVPR 2011
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth
+
+Initial Solver Settings
+  postprocess           : True
+  restarts              : 10
+  max_refinement_rounds : 0
+  random_seed           : 0
+
+Baseline (ViT-T + Pomeranz CVPR 2011):
+  PA             = 16.5500%
+  AA             = 53.0490%
+  Horizontal SRA = 72.8144%
+  Vertical SRA   = 72.6844%
+  SRA            = 72.7494%
+
+Baseline + RG-LNS:
+  PA             = 23.2500%
+  AA             = 59.8220%
+  Horizontal SRA = 77.6000%
+  Vertical SRA   = 77.6628%
+  SRA            = 77.6314%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +6.7000 percentage points
+  AA gain                   : +6.7730 percentage points
+  SRA gain                  : +4.8819 percentage points
+  Puzzles with higher AA    : 827
+  Puzzles with lower AA     : 309
+  Puzzles with unchanged AA : 864
+  Changed layouts           : 1328
+  Failed to perfect layouts : 138
+  Perfect to failed layouts : 4
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=1980
+  Compatibility scoring: mean=0.360137 | median=0.330143 | std=0.164197 | p95=0.463304 | total=713.070617
+  Initial solver       : mean=1.165580 | median=1.125605 | std=0.254710 | p95=1.657454 | total=2307.848309
+  RG-LNS refinement    : mean=7.063908 | median=0.454731 | std=12.638366 | p95=37.970761 | total=13986.538146
+  Total inference      : mean=8.589625 | median=2.141843 | std=12.647349 | p95=39.319998 | total=17007.457071
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 17564.537289 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_lsej_pomeranz_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode5_best_lsej_grid10_erode5
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (138 samples)
+  pa_broken_images.txt (4 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 2000) (zero-based, end exclusive)
+  Loss type                            : hard_triplet
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : True
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

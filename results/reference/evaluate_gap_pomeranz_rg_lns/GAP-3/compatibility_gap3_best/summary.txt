@@ -1,0 +1,95 @@
+Run Configuration
+  Dataset    : GAP-3
+  Split      : test
+  Samples    : 3000
+  Baseline   : ViT-T + Pomeranz CVPR 2011
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap3_best.pth
+
+Initial Solver Settings
+  postprocess           : True
+  restarts              : 10
+  max_refinement_rounds : 0
+  random_seed           : 0
+
+Baseline (ViT-T + Pomeranz CVPR 2011):
+  PA  = 30.2333%
+  AA  = 38.2333%
+  HA  = 64.1167%
+  VA  = 71.8556%
+  SRA = 67.9861%
+  NA  = 73.1306%
+
+Baseline + RG-LNS:
+  PA  = 33.7333%
+  AA  = 41.1333%
+  HA  = 66.1944%
+  VA  = 73.8944%
+  SRA = 70.0444%
+  NA  = 74.8000%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +3.5000 percentage points
+  AA gain                   : +2.9000 percentage points
+  SRA gain                  : +2.0583 percentage points
+  Puzzles with higher AA    : 227
+  Puzzles with lower AA     : 122
+  Puzzles with unchanged AA : 2651
+  Changed layouts           : 581
+  Failed to perfect layouts : 130
+  Perfect to failed layouts : 25
+
+Neighbor Retrieval (ViT-T compatibility)
+  True-Neighbor MRR       : 0.855643
+  Mean True-Neighbor Rank : 1.442
+  True-Neighbor Recall@1  : 75.5597%
+  True-Neighbor Recall@3  : 94.8653%
+  True-Neighbor Recall@5  : 98.6417%
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=2980
+  Compatibility scoring: mean=0.082839 | median=0.070322 | std=0.047966 | p95=0.154069 | total=246.861632
+  Initial solver       : mean=0.027125 | median=0.027257 | std=0.003894 | p95=0.033275 | total=80.831066
+  RG-LNS refinement    : mean=0.003278 | median=0.001725 | std=0.003459 | p95=0.013453 | total=9.768328
+  Total inference      : mean=0.113242 | median=0.101890 | std=0.048651 | p95=0.183405 | total=337.461026
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 367.313715 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_gap_pomeranz_rg_lns/GAP-3/compatibility_gap3_best
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (130 samples)
+  pa_broken_images.txt (25 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 3000) (zero-based, end exclusive)
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : True
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

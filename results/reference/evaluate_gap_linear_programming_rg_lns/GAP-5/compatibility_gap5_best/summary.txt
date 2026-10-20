@@ -1,0 +1,104 @@
+Run Configuration
+  Dataset    : GAP-5
+  Split      : test
+  Samples    : 3000
+  Baseline   : ViT-T + faithful Python LP
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth
+
+Initial Solver Settings
+  postprocess           : False
+  top_k                 : 1
+  refinement_iterations : 5
+  probability_lambda    : 5.0
+  minimum_weight        : 1e-15
+  match_tolerance       : 0.0001
+  rigid_components      : True
+  buddy_check           : True
+  loop_check            : True
+  greedy_stop_threshold : 1.25
+  highs_time_limit      : 0.0
+
+Baseline (ViT-T + faithful Python LP):
+  PA  = 21.0667%
+  AA  = 38.0480%
+  HA  = 63.7150%
+  VA  = 66.6200%
+  SRA = 65.1675%
+  NA  = 68.5708%
+
+Baseline + RG-LNS:
+  PA  = 33.6667%
+  AA  = 49.4720%
+  HA  = 72.9333%
+  VA  = 75.8317%
+  SRA = 74.3825%
+  NA  = 76.9325%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +12.6000 percentage points
+  AA gain                   : +11.4240 percentage points
+  SRA gain                  : +9.2150 percentage points
+  Puzzles with higher AA    : 960
+  Puzzles with lower AA     : 349
+  Puzzles with unchanged AA : 1691
+  Changed layouts           : 1810
+  Failed to perfect layouts : 396
+  Perfect to failed layouts : 18
+
+Neighbor Retrieval (ViT-T compatibility)
+  True-Neighbor MRR       : 0.778622
+  Mean True-Neighbor Rank : 2.163
+  True-Neighbor Recall@1  : 66.9142%
+  True-Neighbor Recall@3  : 86.3962%
+  True-Neighbor Recall@5  : 92.0296%
+  True-Neighbor Recall@10 : 97.2408%
+  True-Neighbor Recall@15 : 99.0829%
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=2980
+  Compatibility scoring: mean=0.144286 | median=0.105987 | std=0.146686 | p95=0.334770 | total=429.973051
+  Initial solver       : mean=0.036240 | median=0.035194 | std=0.014570 | p95=0.062926 | total=107.995688
+  RG-LNS refinement    : mean=0.161127 | median=0.048222 | std=0.213066 | p95=0.585211 | total=480.157302
+  Total inference      : mean=0.341653 | median=0.229127 | std=0.270964 | p95=0.856551 | total=1018.126041
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 1090.579889 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_gap_linear_programming_rg_lns/GAP-5/compatibility_gap5_best
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (396 samples)
+  pa_broken_images.txt (18 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 3000) (zero-based, end exclusive)
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : False
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

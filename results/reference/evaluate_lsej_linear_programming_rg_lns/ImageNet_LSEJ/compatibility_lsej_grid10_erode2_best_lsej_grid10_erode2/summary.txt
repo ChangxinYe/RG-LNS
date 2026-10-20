@@ -1,0 +1,94 @@
+Run Configuration
+  Dataset    : ImageNet-LSEJ-10x10-2px
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + faithful Python LP
+  Device     : cuda:0
+  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth
+
+Initial Solver Settings
+  postprocess           : False
+  top_k                 : 1
+  refinement_iterations : 5
+  probability_lambda    : 5.0
+  minimum_weight        : 1e-15
+  match_tolerance       : 0.0001
+  rigid_components      : True
+  buddy_check           : True
+  loop_check            : True
+  greedy_stop_threshold : 1.25
+  highs_time_limit      : 0.0
+
+Baseline (ViT-T + faithful Python LP):
+  PA             = 44.9000%
+  AA             = 80.8950%
+  Horizontal SRA = 89.0722%
+  Vertical SRA   = 88.0239%
+  SRA            = 88.5481%
+
+Baseline + RG-LNS:
+  PA             = 55.9000%
+  AA             = 85.7425%
+  Horizontal SRA = 91.5889%
+  Vertical SRA   = 90.7428%
+  SRA            = 91.1658%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +11.0000 percentage points
+  AA gain                   : +4.8475 percentage points
+  SRA gain                  : +2.6178 percentage points
+  Puzzles with higher AA    : 653
+  Puzzles with lower AA     : 124
+  Puzzles with unchanged AA : 1223
+  Changed layouts           : 842
+  Failed to perfect layouts : 224
+  Perfect to failed layouts : 4
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=1980
+  Compatibility scoring: mean=0.334812 | median=0.313262 | std=0.061289 | p95=0.421681 | total=662.927714
+  Initial solver       : mean=0.108020 | median=0.093008 | std=0.051351 | p95=0.210783 | total=213.879813
+  RG-LNS refinement    : mean=2.522295 | median=0.032708 | std=8.228297 | p95=17.274441 | total=4994.143936
+  Total inference      : mean=2.965127 | median=0.488150 | std=8.252087 | p95=17.786758 | total=5870.951463
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 6118.770039 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/evaluate_lsej_linear_programming_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode2_best_lsej_grid10_erode2
+  summary.txt
+  metrics.json
+  sample_results.csv
+  predictions.npz
+  visuals/
+  pa_repaired_images.txt (224 samples)
+  pa_broken_images.txt (4 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 2000) (zero-based, end exclusive)
+  Loss type                            : hard_triplet
+  Completion beam width                : 4
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : all
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : False
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : True
+  Visualization limit                  : 10
+  Save predictions                     : True
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set
