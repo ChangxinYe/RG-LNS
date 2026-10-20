@@ -30,7 +30,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Evaluate the learned compatibility baseline on GAP-3/GAP-5 with faithful BMVC 2016 Type-1 LP"
+    parser.description = "Evaluate the learned compatibility baseline on GAP-3/GAP-5 with LP"
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,
@@ -49,7 +49,7 @@ def main() -> None:
     config.validate(GAP_CONFIGS[args.dataset].num_pieces)
     solver = partial(solve_with_lp, config=config)
     solver_config = {
-        "implementation": "faithful_bmvc2016_type1_python_port",
+        "implementation": "bmvc2016_type1_python",
         "postprocess": args.postprocess,
         **asdict(config),
     }
@@ -57,11 +57,11 @@ def main() -> None:
     metrics, output_dir = run_evaluation(
         args,
         solver=solver,
-        solver_name="faithful Python LP",
+        solver_name="LP",
         method_name="Baseline (ViT-T + LP)",
         solver_configuration=solver_config,
         output_root=DEFAULT_OUTPUT_ROOT,
-        output_suffix=f"lpfaithful_k{config.top_k}_r{config.refinement_iterations}",
+        output_suffix=f"lp_k{config.top_k}_r{config.refinement_iterations}",
     )
     print_metrics(metrics, output_dir)
 

@@ -52,7 +52,7 @@ DEFAULT_RUN_NAME = None
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate JPwLEG learned compatibility with the pure-Python BMVC 2016 Type-1 LP solver",
+        "Evaluate JPwLEG learned compatibility with LP",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=("jpwleg5",), help="JPwLEG-5 dataset to evaluate")
@@ -84,7 +84,7 @@ def parse_args() -> argparse.Namespace:
 def default_output_dir(checkpoint: Path, args: argparse.Namespace, split: str) -> Path:
     folder = (
         f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}_{split}_"
-        f"lpfaithful_k{args.lp_top_k}_r{args.lp_refinement_iterations}"
+        f"lp_k{args.lp_top_k}_r{args.lp_refinement_iterations}"
     )
     return DEFAULT_OUTPUT_ROOT / args.dataset / folder
 
@@ -139,7 +139,7 @@ def main() -> None:
         save_predictions=args.save_predictions,
         method_name="Baseline (ViT-T + LP)",
         configuration={
-            "implementation": "faithful_bmvc2016_type1_python_port",
+            "implementation": "bmvc2016_type1_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

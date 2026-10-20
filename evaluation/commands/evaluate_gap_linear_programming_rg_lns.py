@@ -30,7 +30,7 @@ DEFAULT_MAX_SAMPLES = 0
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate RG-LNS on GAP-3/GAP-5 with BMVC 2016 Type-1 LP initialization"
+        "Evaluate RG-LNS on GAP-3/GAP-5 with LP initialization"
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
@@ -52,10 +52,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="faithful Python LP",
-        initial_solver_tag="lpfaithful",
+        initial_solver_name="LP",
+        initial_solver_tag="lp",
         initial_solver_config={
-            "implementation": "faithful_bmvc2016_type1_python_port",
+            "implementation": "bmvc2016_type1_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

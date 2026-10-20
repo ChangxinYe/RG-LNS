@@ -1,6 +1,6 @@
 """
 @file: evaluate_jpwleg_pomeranz_rg_lns.py
-@description: Generate an initial JPwLEG layout with learned compatibility and Pomeranz CVPR 2011,
+@description: Generate an initial JPwLEG layout with learned compatibility and Pomeranz,
               then run RG-LNS with multi-path completion.
 @author: Changxin Ye
 @created: 2026-08-01
@@ -25,7 +25,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate RG-LNS on JPwLEG with Pomeranz CVPR 2011 initialization"
+        "Evaluate RG-LNS on JPwLEG with Pomeranz initialization"
     )
     add_pomeranz_arguments(parser)
     return parser.parse_args()
@@ -43,10 +43,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="Pomeranz CVPR 2011",
+        initial_solver_name="Pomeranz",
         initial_solver_tag=solver_tag,
         initial_solver_config={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

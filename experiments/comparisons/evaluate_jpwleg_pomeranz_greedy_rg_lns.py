@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Use the complete learned compatibility + Pomeranz CVPR 2011 solution as the greedy initial layout on JPwLEG"
+    parser.description = "Use the complete learned compatibility + Pomeranz solution as the greedy initial layout on JPwLEG"
     add_pomeranz_arguments(parser)
     return parser.parse_args()
 
@@ -42,10 +42,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="Pomeranz CVPR 2011",
+        initial_solver_name="Pomeranz",
         initial_solver_tag=solver_tag,
         initial_solver_config={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

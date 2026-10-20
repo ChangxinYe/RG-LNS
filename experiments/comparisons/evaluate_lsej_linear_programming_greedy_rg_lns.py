@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_linear_programming_greedy_rg_lns.py
-@description: Generate an initial layout with the faithful pure-Python BMVC 2016 Type-1 port, then run greedy high-confidence component reassembly.
+@description: Generate an initial layout with the LP solver, then run greedy high-confidence component reassembly.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Use the faithful pure-Python BMVC 2016 Type-1 LP port as the greedy initial solver"
+    parser.description = "Use LP as the greedy initial solver"
     parser.set_defaults(postprocess=False)
     add_lp_arguments(parser)
     return parser.parse_args()
@@ -40,10 +40,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="faithful Python LP",
-        initial_solver_tag="lpfaithful",
+        initial_solver_name="LP",
+        initial_solver_tag="lp",
         initial_solver_config={
-            "implementation": "faithful_bmvc2016_type1_python_port",
+            "implementation": "bmvc2016_type1_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

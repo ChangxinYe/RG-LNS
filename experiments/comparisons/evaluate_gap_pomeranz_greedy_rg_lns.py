@@ -1,6 +1,6 @@
 """
 @file: evaluate_gap_pomeranz_greedy_rg_lns.py
-@description: Generate initial GAP-3/GAP-5 layouts with the learned compatibility distance and Pomeranz CVPR 2011 solver,
+@description: Generate initial GAP-3/GAP-5 layouts with the learned compatibility distance and Pomeranz solver,
               then run greedy single-path component reassembly. Output complete metrics, search diagnostics,
               predictions, PA repair/degradation lists, and visualizations with correctness boxes.
 @author: Changxin Ye
@@ -32,7 +32,7 @@ DEFAULT_RUN_NAME = None
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate greedy component reassembly on GAP-3/GAP-5 with Pomeranz CVPR 2011 initialization"
+        "Evaluate greedy component reassembly on GAP-3/GAP-5 with Pomeranz initialization"
     )
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
@@ -58,10 +58,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="Pomeranz CVPR 2011",
+        initial_solver_name="Pomeranz",
         initial_solver_tag=solver_tag,
         initial_solver_config={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

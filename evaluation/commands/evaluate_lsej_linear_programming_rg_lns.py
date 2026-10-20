@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_linear_programming_rg_lns.py
-@description: Generate an ImageNet-LSEJ initial layout with the faithful pure-Python BMVC 2016 Type-1 port,
+@description: Generate an ImageNet-LSEJ initial layout with the LP solver,
               then run RG-LNS with multi-path completion.
               Retain multiple remaining-piece fill paths at every reliable-component pose and select a representative
               using the full-layout compatibility objective; beam=1 strictly reduces to the matching greedy single-path reassembly.
@@ -28,7 +28,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate RG-LNS on ImageNet-LSEJ with BMVC 2016 Type-1 LP initialization"
+        "Evaluate RG-LNS on ImageNet-LSEJ with LP initialization"
     )
     # Keep the same convention as the existing compatibility/greedy LP entry points: LP uses raw compatibility scores by default
     # and does not apply the compatibility post-processing enabled by the Gallagher version.
@@ -46,10 +46,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="faithful Python LP",
-        initial_solver_tag="lpfaithful",
+        initial_solver_name="LP",
+        initial_solver_tag="lp",
         initial_solver_config={
-            "implementation": "faithful_bmvc2016_type1_python_port",
+            "implementation": "bmvc2016_type1_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

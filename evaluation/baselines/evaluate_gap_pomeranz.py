@@ -1,6 +1,6 @@
 """
 @file: evaluate_gap_pomeranz.py
-@description: Evaluate GAP with the unified learned compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
+@description: Evaluate GAP with the unified learned compatibility distance and the pure-Python Pomeranz solver.
 @author: Changxin Ye
 @created: 2026-08-21
 @version: 1.0
@@ -30,7 +30,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 
 def parse_args():
     parser = build_parser()
-    parser.description = "Evaluate the learned compatibility baseline on GAP-3/GAP-5 with Pomeranz CVPR 2011"
+    parser.description = "Evaluate the learned compatibility baseline on GAP-3/GAP-5 with Pomeranz"
     parser.set_defaults(
         dataset=DEFAULT_DATASET,
         split=DEFAULT_SPLIT,
@@ -53,7 +53,7 @@ def main() -> None:
         f"s{config.random_seed}"
     )
     solver_config = {
-        "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+        "implementation": "pomeranz_python",
         "postprocess": args.postprocess,
         **asdict(config),
     }
@@ -61,7 +61,7 @@ def main() -> None:
     metrics, output_dir = run_evaluation(
         args,
         solver=solver,
-        solver_name="Pomeranz CVPR 2011",
+        solver_name="Pomeranz",
         method_name="Baseline (ViT-T + Pomeranz)",
         solver_configuration=solver_config,
         output_root=DEFAULT_OUTPUT_ROOT,

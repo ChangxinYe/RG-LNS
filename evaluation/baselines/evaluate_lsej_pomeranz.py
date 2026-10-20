@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_pomeranz.py
-@description: Evaluate ImageNet-LSEJ with the unified learned compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
+@description: Evaluate ImageNet-LSEJ with the unified learned compatibility distance and the pure-Python Pomeranz solver.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -47,7 +47,7 @@ DEFAULT_RUN_NAME = None
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate ImageNet-LSEJ with the learned compatibility distance and Pomeranz CVPR 2011 solver",
+        "Evaluate ImageNet-LSEJ with the learned compatibility distance and Pomeranz solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default=DEFAULT_TASK, type=normalize_lsej_task, choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting")
@@ -137,7 +137,7 @@ def main() -> None:
         method_name="Baseline (ViT-T + Pomeranz)",
         solver=solver,
         configuration={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

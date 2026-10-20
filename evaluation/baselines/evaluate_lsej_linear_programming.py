@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_linear_programming.py
-@description: Load the compatibility checkpoint and evaluate ImageNet-LSEJ with the faithful pure-Python BMVC 2016 Type-1 port.
+@description: Load the compatibility checkpoint and evaluate ImageNet-LSEJ with the LP solver.
 @author: Changxin Ye
 @created: 2026-07-25
 @version: 2.0
@@ -55,7 +55,7 @@ DEFAULT_LP_TIME_LIMIT = 0.0
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        "Evaluate learned compatibility with the faithful pure-Python BMVC 2016 Type-1 LP solver",
+        "Evaluate ImageNet-LSEJ learned compatibility with LP",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--task", default=DEFAULT_TASK, type=normalize_lsej_task, choices=LSEJ_TASKS, help="ImageNet-LSEJ benchmark setting")
@@ -69,7 +69,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-samples", default=DEFAULT_MAX_SAMPLES, type=int, help="maximum puzzles; 0 uses the full split")
     parser.add_argument("--start-index", default=0, type=int, help="starting puzzle index in the split")
     parser.add_argument("--score-batch-size", default=128, type=int, help="forward batch size for edge embeddings")
-    parser.add_argument("--postprocess", default=False, type=parse_bool, help="whether to apply compatibility-score post-processing before LP; disabled by default for faithful reproduction")
+    parser.add_argument("--postprocess", default=False, type=parse_bool, help="whether to apply compatibility-score post-processing before LP; disabled by default")
     parser.add_argument("--device", default="auto", help="execution device, e.g. auto, cpu, or cuda:0")
     parser.add_argument("--gpu-id", default=0, type=int, help="GPU index used when device=auto")
     parser.add_argument("--progress-interval", default=1, type=int, help="print metrics every N puzzles; 0 disables output")
@@ -86,7 +86,7 @@ def parse_args() -> argparse.Namespace:
 def default_output_dir(checkpoint: Path, args: argparse.Namespace) -> Path:
     folder = (
         f"{checkpoint_run_name(checkpoint)}_{checkpoint.stem}_{args.task}_{args.split}_"
-        f"lpfaithful_k{args.lp_top_k}_r{args.lp_refinement_iterations}"
+        f"lp_k{args.lp_top_k}_r{args.lp_refinement_iterations}"
     )
     return DEFAULT_OUTPUT_ROOT / DEFAULT_DATASET_NAME / folder
 
@@ -142,7 +142,7 @@ def main() -> None:
         method_name="Baseline (ViT-T + LP)",
         solver=solver,
         configuration={
-            "implementation": "faithful_bmvc2016_type1_python_port",
+            "implementation": "bmvc2016_type1_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

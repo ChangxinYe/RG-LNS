@@ -161,7 +161,7 @@ def solve_with_lp(
     )
     prediction = _grid_to_prediction(final_block, grid)
     diagnostics = {
-        "implementation": "faithful_bmvc2016_type1_python_port",
+        "implementation": "bmvc2016_type1_python",
         "matlab_entry": "PuzzleMain_test.m",
         "config": asdict(config),
         "rounds": rounds,

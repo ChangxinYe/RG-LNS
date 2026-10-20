@@ -1,6 +1,6 @@
 """
 @file: evaluate_jpwleg_pomeranz.py
-@description: Evaluate JPwLEG with the unified learned compatibility distance and the pure-Python Pomeranz CVPR 2011 solver.
+@description: Evaluate JPwLEG with the unified learned compatibility distance and the pure-Python Pomeranz solver.
 @author: Changxin Ye
 @created: 2026-07-28
 @version: 1.0
@@ -36,7 +36,7 @@ DEFAULT_RUN_NAME = None
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        "Evaluate JPwLEG with the learned compatibility distance and Pomeranz CVPR 2011 solver",
+        "Evaluate JPwLEG with the learned compatibility distance and Pomeranz solver",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--dataset", default=DEFAULT_DATASET, choices=("jpwleg5",), help="JPwLEG-5 dataset to evaluate")
@@ -124,7 +124,7 @@ def main() -> None:
         save_predictions=args.save_predictions,
         method_name="Baseline (ViT-T + Pomeranz)",
         configuration={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },

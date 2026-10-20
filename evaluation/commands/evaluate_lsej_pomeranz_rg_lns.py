@@ -1,6 +1,6 @@
 """
 @file: evaluate_lsej_pomeranz_rg_lns.py
-@description: Generate an ImageNet-LSEJ initial layout with learned compatibility and the Pomeranz CVPR 2011 solver,
+@description: Generate an ImageNet-LSEJ initial layout with learned compatibility and the Pomeranz solver,
               then run RG-LNS with multi-path completion.
               Compare multiple complete fills at each reliable-component pose and accept a new layout only
               when the global compatibility objective strictly improves; beam=1 reduces to greedy reassembly.
@@ -28,7 +28,7 @@ DEFAULT_OUTPUT_ROOT = script_output_root(__file__, "eval_result")
 def parse_args():
     parser = build_parser()
     parser.description = (
-        "Evaluate RG-LNS on ImageNet-LSEJ with Pomeranz CVPR 2011 initialization"
+        "Evaluate RG-LNS on ImageNet-LSEJ with Pomeranz initialization"
     )
     add_pomeranz_arguments(parser)
     return parser.parse_args()
@@ -47,10 +47,10 @@ def main() -> None:
     run_evaluation(
         args,
         initial_solver=solver,
-        initial_solver_name="Pomeranz CVPR 2011",
+        initial_solver_name="Pomeranz",
         initial_solver_tag=solver_tag,
         initial_solver_config={
-            "implementation": "paper_guided_python_reimplementation_with_s1a_e1",
+            "implementation": "pomeranz_python",
             "postprocess": args.postprocess,
             **asdict(config),
         },
