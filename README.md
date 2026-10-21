@@ -191,7 +191,7 @@ python evaluate.py GAP-5 gallagher rg-lns --data-root "E:/datasets/GAP_fast" --c
 The same option is available for training:
 
 ```bash
-python train_compatibility.py GAP-5 --data-root "E:/datasets/GAP_fast"
+python train_compatibility.py GAP-5 --gpu-id 0 --data-root "E:/datasets/GAP_fast"
 ```
 
 ## Training and Experiments
@@ -201,15 +201,15 @@ from the repository root:
 
 ```bash
 # GAP-3 / GAP-5
-python train_compatibility.py GAP-3
-python train_compatibility.py GAP-5
+python train_compatibility.py GAP-3 --gpu-id 0
+python train_compatibility.py GAP-5 --gpu-id 0
 
 # JPwLEG-5
-python train_compatibility.py JPwLEG-5
+python train_compatibility.py JPwLEG-5 --gpu-id 0
 
 # ImageNet-LSEJ: 2 px / 5 px erosion
-python train_compatibility.py ImageNet-LSEJ-10x10-2px
-python train_compatibility.py ImageNet-LSEJ-10x10-5px
+python train_compatibility.py ImageNet-LSEJ-10x10-2px --gpu-id 0
+python train_compatibility.py ImageNet-LSEJ-10x10-5px --gpu-id 0
 
 # Paper-level experiments
 python reproduce.py ablation
