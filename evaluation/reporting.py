@@ -145,7 +145,7 @@ def format_evaluation_summary(
             (f"True-Neighbor Recall@{key.removeprefix(recall_prefix)}", f"{retrieval[key]:.4%}")
             for key in recall_keys
         )
-        lines.extend(_format_fields("Neighbor Retrieval (ViT-T compatibility)", fields))
+        lines.extend(_format_fields("Neighbor Retrieval (raw ViT-T compatibility)", fields))
 
     runtime = payload["runtime"]
     lines.extend([

@@ -37,7 +37,7 @@ DIRECTION_OFFSETS = {
 
 @dataclass
 class NeighborRetrievalMetrics:
-    """Aggregate true-neighbor ranks before Gallagher assembly.
+    """Aggregate true-neighbor ranks from raw model distances before assembly.
 
     Each query is an ordered ``(anchor piece, direction)`` relation with one
     ground-truth neighbor. Rank histograms use index 0 as an unused sentinel,
@@ -49,6 +49,25 @@ class NeighborRetrievalMetrics:
     rank_histogram: np.ndarray
     horizontal_rank_histogram: np.ndarray
     vertical_rank_histogram: np.ndarray
+
+    @classmethod
+    def empty(cls, num_pieces: int) -> "NeighborRetrievalMetrics":
+        return cls(
+            recall_ks=tuple(k for k in DEFAULT_NEIGHBOR_RECALL_KS if k <= num_pieces - 1),
+            rank_histogram=np.zeros(num_pieces, dtype=np.int64),
+            horizontal_rank_histogram=np.zeros(num_pieces, dtype=np.int64),
+            vertical_rank_histogram=np.zeros(num_pieces, dtype=np.int64),
+        )
+
+    def update(self, raw_scores: np.ndarray, target: np.ndarray, grid: int) -> None:
+        """Accumulate all valid directed-neighbor queries without changing the scores."""
+        ranks = compute_true_neighbor_ranks(raw_scores, target, grid)
+        for histogram, key in (
+            (self.rank_histogram, "all"),
+            (self.horizontal_rank_histogram, "horizontal"),
+            (self.vertical_rank_histogram, "vertical"),
+        ):
+            histogram += np.bincount(ranks[key], minlength=len(histogram))
 
     @staticmethod
     def _query_count(histogram: np.ndarray) -> int:
@@ -125,6 +144,7 @@ class NeighborRetrievalMetrics:
 
     def to_dict(self) -> dict:
         payload = {
+            "neighbor_score_source": "raw_model_distances",
             "neighbor_queries": self.queries,
             "horizontal_neighbor_queries": self.horizontal_queries,
             "vertical_neighbor_queries": self.vertical_queries,
@@ -506,6 +526,7 @@ def write_evaluation_summary(
         f"({metrics.correct_horizontal_relationships + metrics.correct_vertical_relationships}/"
         f"{metrics.total_horizontal_relationships + metrics.total_vertical_relationships})",
         "",
+        "Neighbor Retrieval (raw ViT-T compatibility)",
         f"True-Neighbor queries: {metrics.neighbor_retrieval.queries}",
         ]
     )
@@ -607,8 +628,8 @@ def evaluate_lsej_split(
         sample = dataset[index]
         pieces = list(chw_uint8_to_hwc_numpy(sample["pieces"]))
         target = sample["permutation"].numpy().astype(np.int32, copy=False)
-        scores = scorer.score_pieces(pieces, rot_flag=0)
-        neighbor_ranks = compute_true_neighbor_ranks(scores, target, grid)
+        scores, raw_scores = scorer.score_pieces_with_raw(pieces, rot_flag=0)
+        neighbor_ranks = compute_true_neighbor_ranks(raw_scores, target, grid)
         np.add.at(neighbor_rank_histogram, neighbor_ranks["all"], 1)
         np.add.at(horizontal_neighbor_rank_histogram, neighbor_ranks["horizontal"], 1)
         np.add.at(vertical_neighbor_rank_histogram, neighbor_ranks["vertical"], 1)
@@ -672,7 +693,7 @@ def evaluate_lsej_split(
             )
 
     neighbor_retrieval = NeighborRetrievalMetrics(
-        recall_ks=DEFAULT_NEIGHBOR_RECALL_KS,
+        recall_ks=tuple(k for k in DEFAULT_NEIGHBOR_RECALL_KS if k <= max_neighbor_rank),
         rank_histogram=neighbor_rank_histogram,
         horizontal_rank_histogram=horizontal_neighbor_rank_histogram,
         vertical_rank_histogram=vertical_neighbor_rank_histogram,

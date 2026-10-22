@@ -247,8 +247,8 @@ def evaluate_gap_split(
         sample = gap_data[done - 1]
         pieces = list(sample["pieces"])
         target = np.asarray(sample["target"], dtype=np.int32)
-        scores = scorer.score_pieces(pieces, rot_flag=0)
-        ranks = compute_true_neighbor_ranks(scores, target, grid)
+        scores, raw_scores = scorer.score_pieces_with_raw(pieces, rot_flag=0)
+        ranks = compute_true_neighbor_ranks(raw_scores, target, grid)
         rank_histogram += np.bincount(ranks["all"], minlength=num_pieces)[:num_pieces]
         horizontal_rank_histogram += np.bincount(ranks["horizontal"], minlength=num_pieces)[:num_pieces]
         vertical_rank_histogram += np.bincount(ranks["vertical"], minlength=num_pieces)[:num_pieces]
@@ -359,6 +359,7 @@ def evaluate_gap_split(
             f"VA: {metrics.va:.4%}",
             f"SRA: {metrics.sra:.4%}",
             f"NA / PuzzleFlow neighbor_accuracy: {metrics.na:.4%}",
+            "Neighbor Retrieval (raw ViT-T compatibility)",
             f"True-Neighbor MRR: {retrieval.mrr:.6f}",
             f"Mean True-Neighbor Rank: {retrieval.mean_rank:.3f}",
         ]

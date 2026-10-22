@@ -409,9 +409,9 @@ def run_evaluation(
         pieces = list(sample["pieces"])
         target = np.asarray(sample["target"], dtype=np.int32)
         with runtime_collector.measure(synchronize_cuda=True) as compatibility_timing:
-            scores = scorer.score_pieces(pieces, rot_flag=0)
+            scores, raw_scores = scorer.score_pieces_with_raw(pieces, rot_flag=0)
 
-        ranks = compute_true_neighbor_ranks(scores, target, grid)
+        ranks = compute_true_neighbor_ranks(raw_scores, target, grid)
         rank_histogram += np.bincount(ranks["all"], minlength=num_pieces)[:num_pieces]
         horizontal_rank_histogram += np.bincount(
             ranks["horizontal"], minlength=num_pieces

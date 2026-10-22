@@ -42,7 +42,9 @@ from data_loaders.lsej import (
     official_lsej_task,
     lsej_task_name,
 )
-from evaluation.lsej import compose_puzzle, is_complete_prediction, solve_with_gallagher
+from evaluation.lsej import (
+    NeighborRetrievalMetrics, compose_puzzle, is_complete_prediction, solve_with_gallagher,
+)
 from compatibility.scorer import MetricCompatibilityScorer, resolve_device
 from initial_solvers.partial_completion import complete_partial_layout
 from evaluation.common.lsej_metrics import (
@@ -389,6 +391,7 @@ def run_evaluation(
     grid = int(dataset.config["puzzle"]["grid_rows"])
     if grid != 10:
         raise ValueError("RG-LNS currently supports grid10")
+    retrieval = NeighborRetrievalMetrics.empty(grid * grid)
 
     device = resolve_device(args.device, args.gpu_id)
     scorer = MetricCompatibilityScorer.from_checkpoint(
@@ -454,7 +457,8 @@ def run_evaluation(
         pieces = list(chw_uint8_to_hwc_numpy(sample["pieces"]))
         target = sample["permutation"].detach().cpu().numpy().astype(np.int32, copy=False)
         with runtime_collector.measure(synchronize_cuda=True) as compatibility_timing:
-            e1_scores = scorer.score_pieces(pieces)
+            e1_scores, raw_scores = scorer.score_pieces_with_raw(pieces)
+        retrieval.update(raw_scores, target, grid)
         with runtime_collector.measure() as initial_solver_timing:
             baseline = initial_solver(pieces, e1_scores, grid, verbose=args.verbose_solver)
         complete_initial_baselines += int(is_complete_prediction(baseline, grid))
@@ -1061,6 +1065,7 @@ def run_evaluation(
         "partial_completion_diagnostics": partial_completion_diagnostics,
         "s1a3_single_path_reference": s1a3_reference_aggregate,
         "s1a4": selected_aggregate,
+        "neighbor_retrieval": retrieval.to_dict(),
         "comparison": comparison,
         "incremental_vs_s1a3": incremental_vs_s1a3,
         "search_diagnostics": search_diagnostics,

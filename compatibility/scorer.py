@@ -171,6 +171,14 @@ class MetricCompatibilityScorer:
 
     @torch.no_grad()
     def score_pieces(self, pieces: list[np.ndarray] | np.ndarray, rot_flag: int = 0) -> np.ndarray:
+        scores, _raw_scores = self.score_pieces_with_raw(pieces, rot_flag=rot_flag)
+        return scores
+
+    @torch.no_grad()
+    def score_pieces_with_raw(
+        self, pieces: list[np.ndarray] | np.ndarray, rot_flag: int = 0,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Return (solver scores, raw model distances) from a single embedding pass."""
         if rot_flag:
             raise NotImplementedError("Type-2 metric-learning scoring is reserved for a later implementation")
         pieces = list(pieces)
@@ -214,9 +222,10 @@ class MetricCompatibilityScorer:
         for direction in DIRECTIONS:
             np.fill_diagonal(scores[:, :, direction], np.inf)
 
+        raw_scores = scores
         if self.postprocess:
             scores = metric_postprocess_scores(scores)
-        return scores
+        return scores, raw_scores
 
 
 def metric_postprocess_scores(scores: np.ndarray, eps: float = 1e-8) -> np.ndarray:

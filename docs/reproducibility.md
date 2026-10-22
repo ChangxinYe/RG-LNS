@@ -84,7 +84,7 @@ so far, not the metrics of the most recent sample.
 
 | Output | Contents |
 | :-- | :-- |
-| `summary.txt` | Run inputs, both result groups, improvement/degradation counts, runtime statistics, output locations, evaluation settings, and Runtime Environment; GAP also includes neighbor MRR, mean rank, and Recall@K |
+| `summary.txt` | Run inputs, both result groups, improvement/degradation counts, neighbor MRR, mean rank, Recall@K, runtime statistics, output locations, evaluation settings, and Runtime Environment |
 | `metrics.json` | Machine-readable results, full configuration, diagnostic statistics, internal stage timings, and runtime environment |
 | `sample_results.csv` | Per-sample metrics and diagnostic fields |
 | `predictions.npz` | Saved layouts and targets; controlled by `--save-predictions` |
@@ -96,6 +96,18 @@ Use `--output-dir PATH` to choose a destination. New runs otherwise go under
 
 For programmatic access in `metrics.json`, `baseline` is the original baseline
 and `s1a4` is the final RG-LNS result; other stage sections are diagnostic records.
+
+### Neighbor retrieval
+
+GAP, JPwLEG, and ImageNet-LSEJ report R@1, R@3, R@5, R@10, R@15,
+MRR, and mean rank from raw model distances, before any solver-specific score
+postprocessing. Only K values within the candidate count are reported. Each query
+is a piece and a direction with a true neighbor; candidates are all other pieces
+in the same puzzle. Exact score ties receive the worst rank within the tie.
+These model metrics are independent of the layout solver and RG-LNS refinement.
+The `neighbor_retrieval.neighbor_score_source` field in `metrics.json` is
+`raw_model_distances`. Retrieval statistics do not change the scores used for
+layout solving and are excluded from inference-stage timings.
 
 ### Runtime
 

@@ -47,6 +47,7 @@ from evaluation.jpwleg import (
     sample_ground_truth_metrics,
     solve_with_gallagher,
 )
+from evaluation.lsej import NeighborRetrievalMetrics
 from compatibility.scorer import MetricCompatibilityScorer, resolve_device
 from initial_solvers.partial_completion import complete_partial_layout
 from evaluation.common.jpwleg_search import (
@@ -406,6 +407,7 @@ def run_evaluation(
     )
     sample_indices = list(range(args.start_index, end_index))
     grid = config.grid
+    retrieval = NeighborRetrievalMetrics.empty(grid * grid)
 
     device = resolve_device(args.device, args.gpu_id)
     scorer = MetricCompatibilityScorer.from_checkpoint(
@@ -476,7 +478,8 @@ def run_evaluation(
             grid,
         ).astype(np.int32)
         with runtime_collector.measure(synchronize_cuda=True) as compatibility_timing:
-            scores = scorer.score_pieces(pieces, rot_flag=0)
+            scores, raw_scores = scorer.score_pieces_with_raw(pieces, rot_flag=0)
+        retrieval.update(raw_scores, target, grid)
         with runtime_collector.measure() as initial_solver_timing:
             baseline = np.asarray(
                 initial_solver(pieces, scores, grid, verbose=args.verbose_solver),
@@ -864,6 +867,7 @@ def run_evaluation(
         "partial_completion_diagnostics": partial_completion_diagnostics,
         "s1a3_single_path_reference": s1a3_aggregate,
         "s1a4": selected_aggregate,
+        "neighbor_retrieval": retrieval.to_dict(),
         "comparison": comparison,
         "incremental_vs_s1a3": incremental,
         "search_diagnostics": search_diagnostics,
