@@ -4,8 +4,8 @@ Run Configuration
   Samples    : 3000
   Baseline   : ViT-T + LP
   Device     : cuda:0
-  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
-  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth
+  Data root  : /data/jaxon/svn_datasets/Jigsaw_Puzzle/GAP_fast
+  Checkpoint : /data/jaxon/RG-LNS/checkpoints/compatibility/gap5_best.pth
 
 Initial Solver Settings
   postprocess           : False
@@ -47,7 +47,7 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 396
   Perfect to failed layouts : 18
 
-Neighbor Retrieval (ViT-T compatibility)
+Neighbor Retrieval (raw ViT-T compatibility)
   True-Neighbor MRR       : 0.778622
   Mean True-Neighbor Rank : 2.163
   True-Neighbor Recall@1  : 66.9142%
@@ -58,15 +58,15 @@ Neighbor Retrieval (ViT-T compatibility)
 
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=2980
-  Compatibility scoring: mean=0.144286 | median=0.105987 | std=0.146686 | p95=0.334770 | total=429.973051
-  Initial solver       : mean=0.036240 | median=0.035194 | std=0.014570 | p95=0.062926 | total=107.995688
-  RG-LNS refinement    : mean=0.161127 | median=0.048222 | std=0.213066 | p95=0.585211 | total=480.157302
-  Total inference      : mean=0.341653 | median=0.229127 | std=0.270964 | p95=0.856551 | total=1018.126041
+  Compatibility scoring: mean=0.274154 | median=0.182869 | std=0.308720 | p95=0.798817 | total=816.979393
+  Initial solver       : mean=0.043520 | median=0.041144 | std=0.016582 | p95=0.072023 | total=129.689687
+  RG-LNS refinement    : mean=0.196322 | median=0.055417 | std=0.261710 | p95=0.856538 | total=585.040212
+  Total inference      : mean=0.513996 | median=0.367986 | std=0.425430 | p95=1.326930 | total=1531.709292
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 1090.579889 seconds (includes loop overhead).
+  Evaluation elapsed: 1617.136086 seconds (includes loop overhead).
 
 Output Files
-  Directory: /data/yecx/RG-LNS/results/runs/evaluate_gap_linear_programming_rg_lns/GAP-5/compatibility_gap5_best
+  Directory: /data/jaxon/RG-LNS/results/runs/evaluate_gap_linear_programming_rg_lns/GAP-5/compatibility_gap5_best
   summary.txt
   metrics.json
   sample_results.csv
@@ -96,9 +96,9 @@ Runtime Environment
 -------------------
 Host: user-Super-Server
 OS: Linux 6.8.0-138-generic (x86_64)
-CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 251.50 GiB
 Device: requested=auto | resolved=cuda:0
-GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.52 GiB
 Software: Python 3.10.13 | PyTorch 2.5.1
-CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 580.178.04
 CUDA_VISIBLE_DEVICES: not set

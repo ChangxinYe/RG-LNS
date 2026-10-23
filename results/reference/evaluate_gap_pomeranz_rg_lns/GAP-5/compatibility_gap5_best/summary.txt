@@ -4,8 +4,8 @@ Run Configuration
   Samples    : 3000
   Baseline   : ViT-T + Pomeranz
   Device     : cuda:0
-  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/GAP_fast
-  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth
+  Data root  : /data/jaxon/svn_datasets/Jigsaw_Puzzle/GAP_fast
+  Checkpoint : /data/jaxon/RG-LNS/checkpoints/compatibility/gap5_best.pth
 
 Initial Solver Settings
   postprocess           : True
@@ -40,26 +40,26 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 260
   Perfect to failed layouts : 15
 
-Neighbor Retrieval (ViT-T compatibility)
-  True-Neighbor MRR       : 0.801784
-  Mean True-Neighbor Rank : 2.018
-  True-Neighbor Recall@1  : 70.1400%
-  True-Neighbor Recall@3  : 88.1404%
-  True-Neighbor Recall@5  : 93.0504%
-  True-Neighbor Recall@10 : 97.6808%
-  True-Neighbor Recall@15 : 99.2392%
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.778622
+  Mean True-Neighbor Rank : 2.163
+  True-Neighbor Recall@1  : 66.9142%
+  True-Neighbor Recall@3  : 86.3962%
+  True-Neighbor Recall@5  : 92.0296%
+  True-Neighbor Recall@10 : 97.2408%
+  True-Neighbor Recall@15 : 99.0829%
 
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=2980
-  Compatibility scoring: mean=0.177543 | median=0.116136 | std=0.219276 | p95=0.537911 | total=529.079183
-  Initial solver       : mean=0.119478 | median=0.118727 | std=0.028987 | p95=0.166660 | total=356.044699
-  RG-LNS refinement    : mean=0.093717 | median=0.015797 | std=0.157551 | p95=0.462430 | total=279.276024
-  Total inference      : mean=0.390738 | median=0.288332 | std=0.288494 | p95=0.944017 | total=1164.399906
+  Compatibility scoring: mean=0.405970 | median=0.193610 | std=0.537189 | p95=1.622200 | total=1209.790954
+  Initial solver       : mean=0.149600 | median=0.151217 | std=0.032694 | p95=0.196594 | total=445.807394
+  RG-LNS refinement    : mean=0.126167 | median=0.020320 | std=0.218180 | p95=0.636193 | total=375.978471
+  Total inference      : mean=0.681737 | median=0.454194 | std=0.603849 | p95=2.009665 | total=2031.576819
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 1231.121565 seconds (includes loop overhead).
+  Evaluation elapsed: 2112.029726 seconds (includes loop overhead).
 
 Output Files
-  Directory: /data/yecx/RG-LNS/results/runs/evaluate_gap_pomeranz_rg_lns/GAP-5/compatibility_gap5_best
+  Directory: /data/jaxon/RG-LNS/results/runs/evaluate_gap_pomeranz_rg_lns/GAP-5/compatibility_gap5_best
   summary.txt
   metrics.json
   sample_results.csv
@@ -89,9 +89,9 @@ Runtime Environment
 -------------------
 Host: user-Super-Server
 OS: Linux 6.8.0-138-generic (x86_64)
-CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 251.50 GiB
 Device: requested=auto | resolved=cuda:0
-GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.52 GiB
 Software: Python 3.10.13 | PyTorch 2.5.1
-CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 580.178.04
 CUDA_VISIBLE_DEVICES: not set

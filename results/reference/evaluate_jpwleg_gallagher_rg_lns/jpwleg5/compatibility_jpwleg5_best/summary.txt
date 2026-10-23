@@ -34,14 +34,23 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 230
   Perfect to failed layouts : 7
 
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.893768
+  Mean True-Neighbor Rank : 1.455
+  True-Neighbor Recall@1  : 83.0281%
+  True-Neighbor Recall@3  : 94.9944%
+  True-Neighbor Recall@5  : 97.3862%
+  True-Neighbor Recall@10 : 99.1950%
+  True-Neighbor Recall@15 : 99.7563%
+
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=1980
-  Compatibility scoring: mean=0.079718 | median=0.079786 | std=0.003727 | p95=0.082777 | total=157.842184
-  Initial solver       : mean=0.013796 | median=0.013078 | std=0.002273 | p95=0.018281 | total=27.317036
-  RG-LNS refinement    : mean=0.031714 | median=0.003825 | std=0.078681 | p95=0.189994 | total=62.794041
-  Total inference      : mean=0.125229 | median=0.097634 | std=0.079825 | p95=0.285735 | total=247.953261
+  Compatibility scoring: mean=0.743888 | median=0.982528 | std=0.533664 | p95=1.384129 | total=1472.898384
+  Initial solver       : mean=0.019870 | median=0.018849 | std=0.003162 | p95=0.025908 | total=39.342497
+  RG-LNS refinement    : mean=0.052446 | median=0.005961 | std=0.135374 | p95=0.311839 | total=103.843805
+  Total inference      : mean=0.816204 | median=1.034213 | std=0.564406 | p95=1.567148 | total=1616.084685
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 262.399984 seconds (includes loop overhead).
+  Evaluation elapsed: 1662.349285 seconds (includes loop overhead).
 
 Output Files
   Directory: /data/yecx/RG-LNS/results/runs/evaluate_jpwleg_gallagher_rg_lns/jpwleg5/compatibility_jpwleg5_best

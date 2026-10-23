@@ -123,21 +123,22 @@
     "NA": 0.73425
   },
   "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
     "neighbor_queries": 72000,
     "horizontal_neighbor_queries": 36000,
     "vertical_neighbor_queries": 36000,
-    "neighbor_mrr": 0.8556428406084656,
-    "mean_true_neighbor_rank": 1.441625,
+    "neighbor_mrr": 0.8382521164021164,
+    "mean_true_neighbor_rank": 1.50125,
     "median_true_neighbor_rank": 1.0,
-    "neighbor_recall_at_1": 0.7555972222222223,
-    "horizontal_neighbor_recall_at_1": 0.7298888888888889,
-    "vertical_neighbor_recall_at_1": 0.7813055555555556,
-    "neighbor_recall_at_3": 0.9486527777777778,
-    "horizontal_neighbor_recall_at_3": 0.9443055555555555,
-    "vertical_neighbor_recall_at_3": 0.953,
-    "neighbor_recall_at_5": 0.9864166666666667,
-    "horizontal_neighbor_recall_at_5": 0.9844166666666667,
-    "vertical_neighbor_recall_at_5": 0.9884166666666667
+    "neighbor_recall_at_1": 0.7276388888888888,
+    "horizontal_neighbor_recall_at_1": 0.7006944444444444,
+    "vertical_neighbor_recall_at_1": 0.7545833333333334,
+    "neighbor_recall_at_3": 0.9401388888888889,
+    "horizontal_neighbor_recall_at_3": 0.9344444444444444,
+    "vertical_neighbor_recall_at_3": 0.9458333333333333,
+    "neighbor_recall_at_5": 0.9837083333333333,
+    "horizontal_neighbor_recall_at_5": 0.98175,
+    "vertical_neighbor_recall_at_5": 0.9856666666666667
   },
   "comparison": {
     "improved_puzzles": 380,
@@ -175,55 +176,55 @@
     "stages": {
       "compatibility": {
         "count": 2980,
-        "total": 174.97914872830734,
-        "mean": 0.0587178351437273,
-        "median": 0.05583385354839265,
-        "std": 0.018620216693515972,
-        "p95": 0.08661101700272404
+        "total": 2076.7384373834357,
+        "mean": 0.6968920930816899,
+        "median": 0.7821793381590396,
+        "std": 0.35681897974803584,
+        "p95": 1.160880583222024
       },
       "initial_solver": {
         "count": 2980,
-        "total": 19.66155516449362,
-        "mean": 0.006597837303521349,
-        "median": 0.006439680932089686,
-        "std": 0.0013478615014783568,
-        "p95": 0.008994852122850712
+        "total": 20.780061061959714,
+        "mean": 0.006973174853006615,
+        "median": 0.006694012554362416,
+        "std": 0.0015094942284283519,
+        "p95": 0.009323742333799597
       },
       "partial_completion": {
         "count": 2980,
-        "total": 0.33040111931040883,
-        "mean": 0.00011087285882899625,
+        "total": 0.3687319220043719,
+        "mean": 0.0001237355442967691,
         "median": 0.0,
-        "std": 0.0005026985399386367,
+        "std": 0.0005784031516141284,
         "p95": 0.0
       },
       "rgls": {
         "count": 2980,
-        "total": 10.658079024869949,
-        "mean": 0.0035765365855268284,
-        "median": 0.0018002560827881098,
-        "std": 0.0037043379788697737,
-        "p95": 0.013458060938864945
+        "total": 11.412295032758266,
+        "mean": 0.003829629205623579,
+        "median": 0.0017636190168559551,
+        "std": 0.004018782824254422,
+        "p95": 0.013618004810996351
       },
       "refinement_total": {
         "count": 2980,
-        "total": 10.988480144180357,
-        "mean": 0.0036874094443558247,
-        "median": 0.0018073630053550005,
-        "std": 0.003762081390757013,
-        "p95": 0.01348844531457871
+        "total": 11.781026954762638,
+        "mean": 0.003953364749920348,
+        "median": 0.0017712449189275503,
+        "std": 0.004085138088668665,
+        "p95": 0.013695202092640102
       },
       "inference_total": {
         "count": 2980,
-        "total": 205.62918403698131,
-        "mean": 0.06900308189160446,
-        "median": 0.0659383472520858,
-        "std": 0.019509734204552757,
-        "p95": 0.09702014799695452
+        "total": 2109.299525400158,
+        "mean": 0.7078186326846168,
+        "median": 0.7936470378190279,
+        "std": 0.3572621278939557,
+        "p95": 1.1723750650417057
       }
     }
   },
-  "elapsed_seconds": 235.7064374727197,
+  "elapsed_seconds": 2141.610748236999,
   "pa_case_lists": {
     "repaired_images": 239,
     "broken_images": 24,

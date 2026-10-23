@@ -34,21 +34,21 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 239
   Perfect to failed layouts : 24
 
-Neighbor Retrieval (ViT-T compatibility)
-  True-Neighbor MRR       : 0.855643
-  Mean True-Neighbor Rank : 1.442
-  True-Neighbor Recall@1  : 75.5597%
-  True-Neighbor Recall@3  : 94.8653%
-  True-Neighbor Recall@5  : 98.6417%
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.838252
+  Mean True-Neighbor Rank : 1.501
+  True-Neighbor Recall@1  : 72.7639%
+  True-Neighbor Recall@3  : 94.0139%
+  True-Neighbor Recall@5  : 98.3708%
 
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=2980
-  Compatibility scoring: mean=0.058718 | median=0.055834 | std=0.018620 | p95=0.086611 | total=174.979149
-  Initial solver       : mean=0.006598 | median=0.006440 | std=0.001348 | p95=0.008995 | total=19.661555
-  RG-LNS refinement    : mean=0.003687 | median=0.001807 | std=0.003762 | p95=0.013488 | total=10.988480
-  Total inference      : mean=0.069003 | median=0.065938 | std=0.019510 | p95=0.097020 | total=205.629184
+  Compatibility scoring: mean=0.696892 | median=0.782179 | std=0.356819 | p95=1.160881 | total=2076.738437
+  Initial solver       : mean=0.006973 | median=0.006694 | std=0.001509 | p95=0.009324 | total=20.780061
+  RG-LNS refinement    : mean=0.003953 | median=0.001771 | std=0.004085 | p95=0.013695 | total=11.781027
+  Total inference      : mean=0.707819 | median=0.793647 | std=0.357262 | p95=1.172375 | total=2109.299525
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 235.706437 seconds (includes loop overhead).
+  Evaluation elapsed: 2141.610748 seconds (includes loop overhead).
 
 Output Files
   Directory: /data/yecx/RG-LNS/results/runs/evaluate_gap_gallagher_rg_lns/GAP-3/compatibility_gap3_best

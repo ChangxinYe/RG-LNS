@@ -13,7 +13,7 @@
   "start_index": 0,
   "end_index_exclusive": 2000,
   "evaluated_samples": 2000,
-  "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth",
+  "checkpoint": "/data/jaxon/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth",
   "configuration": {
     "completion_beam_width": 4,
     "partial_completion_beam_width": 2,
@@ -98,6 +98,30 @@
     "vertical_SRA": 0.7766277777777778,
     "SRA": 0.7763138888888889
   },
+  "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
+    "neighbor_queries": 720000,
+    "horizontal_neighbor_queries": 360000,
+    "vertical_neighbor_queries": 360000,
+    "neighbor_mrr": 0.7495305659703974,
+    "mean_true_neighbor_rank": 3.433748611111111,
+    "median_true_neighbor_rank": 1.0,
+    "neighbor_recall_at_1": 0.6474930555555556,
+    "horizontal_neighbor_recall_at_1": 0.6505805555555556,
+    "vertical_neighbor_recall_at_1": 0.6444055555555556,
+    "neighbor_recall_at_3": 0.8221125,
+    "horizontal_neighbor_recall_at_3": 0.8272805555555556,
+    "vertical_neighbor_recall_at_3": 0.8169444444444445,
+    "neighbor_recall_at_5": 0.8787986111111111,
+    "horizontal_neighbor_recall_at_5": 0.8839388888888889,
+    "vertical_neighbor_recall_at_5": 0.8736583333333333,
+    "neighbor_recall_at_10": 0.9337041666666667,
+    "horizontal_neighbor_recall_at_10": 0.9375083333333334,
+    "vertical_neighbor_recall_at_10": 0.9299,
+    "neighbor_recall_at_15": 0.9555652777777778,
+    "horizontal_neighbor_recall_at_15": 0.9581472222222223,
+    "vertical_neighbor_recall_at_15": 0.9529833333333333
+  },
   "comparison": {
     "improved_puzzles": 827,
     "damaged_puzzles": 309,
@@ -134,19 +158,19 @@
     "stages": {
       "compatibility": {
         "count": 1980,
-        "total": 713.070616596844,
-        "mean": 0.3601366750489111,
-        "median": 0.3301432344596833,
-        "std": 0.16419723237041928,
-        "p95": 0.4633037355961277
+        "total": 888.4154812870547,
+        "mean": 0.4486946875187145,
+        "median": 0.32476183981634676,
+        "std": 0.66601059444111,
+        "p95": 0.5921623896108941
       },
       "initial_solver": {
         "count": 1980,
-        "total": 2307.848308537621,
-        "mean": 1.1655799538068794,
-        "median": 1.1256045973859727,
-        "std": 0.2547096535251681,
-        "p95": 1.6574542945250867
+        "total": 2469.82804913586,
+        "mean": 1.2473879036039697,
+        "median": 1.1984692034311593,
+        "std": 0.30296574928827924,
+        "p95": 1.7761493454920125
       },
       "partial_completion": {
         "count": 1980,
@@ -158,31 +182,31 @@
       },
       "rgls": {
         "count": 1980,
-        "total": 13986.538145523518,
-        "mean": 7.063908154304808,
-        "median": 0.4547313426155597,
-        "std": 12.6383657578253,
-        "p95": 37.97076132211368
+        "total": 14849.51883788919,
+        "mean": 7.4997569888329245,
+        "median": 0.4722879317123443,
+        "std": 13.624045170666875,
+        "p95": 40.344000608590434
       },
       "refinement_total": {
         "count": 1980,
-        "total": 13986.538145523518,
-        "mean": 7.063908154304808,
-        "median": 0.4547313426155597,
-        "std": 12.6383657578253,
-        "p95": 37.97076132211368
+        "total": 14849.51883788919,
+        "mean": 7.4997569888329245,
+        "median": 0.4722879317123443,
+        "std": 13.624045170666875,
+        "p95": 40.344000608590434
       },
       "inference_total": {
         "count": 1980,
-        "total": 17007.457070657983,
-        "mean": 8.589624783160598,
-        "median": 2.1418433787766844,
-        "std": 12.647348994142181,
-        "p95": 39.31999805928207
+        "total": 18207.762368312106,
+        "mean": 9.195839579955608,
+        "median": 2.2988855943549424,
+        "std": 13.690374036975667,
+        "p95": 41.99822309683077
       }
     }
   },
-  "elapsed_seconds": 17564.537288814783,
+  "elapsed_seconds": 18797.66234614188,
   "pa_case_lists": {
     "repaired": "pa_repaired_images.txt",
     "broken": "pa_broken_images.txt",
@@ -205,10 +229,10 @@
       "architecture": "x86_64"
     },
     "cpu": {
-      "model": "Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz",
-      "physical_cores": 32,
-      "logical_cores": 64,
-      "total_memory_bytes": 270036795392
+      "model": "Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",
+      "physical_cores": 24,
+      "logical_cores": 48,
+      "total_memory_bytes": 270041866240
     },
     "device": {
       "requested": "auto",
@@ -218,7 +242,7 @@
     "gpu": {
       "index": 0,
       "name": "NVIDIA GeForce RTX 4090",
-      "total_memory_bytes": 25386352640,
+      "total_memory_bytes": 25250627584,
       "compute_capability": "8.9"
     },
     "software": {
@@ -226,7 +250,7 @@
       "pytorch": "2.5.1",
       "cuda_runtime": "12.4",
       "cudnn": 90100,
-      "nvidia_driver": "550.144.03"
+      "nvidia_driver": "580.178.04"
     },
     "cuda_visible_devices": null,
     "python_executable": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python"

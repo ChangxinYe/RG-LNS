@@ -4,8 +4,8 @@ Run Configuration
   Samples    : 2000
   Baseline   : ViT-T + LP
   Device     : cuda:0
-  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
-  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth
+  Data root  : /data/jaxon/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Checkpoint : /data/jaxon/RG-LNS/checkpoints/compatibility/lsej_grid10_erode5_best.pth
 
 Initial Solver Settings
   postprocess           : False
@@ -45,17 +45,26 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 191
   Perfect to failed layouts : 1
 
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.749531
+  Mean True-Neighbor Rank : 3.434
+  True-Neighbor Recall@1  : 64.7493%
+  True-Neighbor Recall@3  : 82.2113%
+  True-Neighbor Recall@5  : 87.8799%
+  True-Neighbor Recall@10 : 93.3704%
+  True-Neighbor Recall@15 : 95.5565%
+
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=1980
-  Compatibility scoring: mean=0.313279 | median=0.302684 | std=0.039688 | p95=0.390034 | total=620.292473
-  Initial solver       : mean=0.153296 | median=0.157423 | std=0.043804 | p95=0.225397 | total=303.526943
-  RG-LNS refinement    : mean=13.614739 | median=5.575642 | std=16.571039 | p95=50.321727 | total=26957.183066
-  Total inference      : mean=14.081314 | median=6.040320 | std=16.596284 | p95=50.815389 | total=27881.002482
+  Compatibility scoring: mean=0.357084 | median=0.339065 | std=0.127915 | p95=0.428638 | total=707.026560
+  Initial solver       : mean=0.171618 | median=0.176938 | std=0.049433 | p95=0.248019 | total=339.803946
+  RG-LNS refinement    : mean=14.461219 | median=5.792660 | std=17.838042 | p95=53.216557 | total=28633.214086
+  Total inference      : mean=14.989922 | median=6.269905 | std=17.879162 | p95=53.731806 | total=29680.044592
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 28401.960417 seconds (includes loop overhead).
+  Evaluation elapsed: 30483.482542 seconds (includes loop overhead).
 
 Output Files
-  Directory: /data/yecx/RG-LNS/results/runs/evaluate_lsej_linear_programming_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode5_best_lsej_grid10_erode5
+  Directory: /data/jaxon/RG-LNS/results/runs/evaluate_lsej_linear_programming_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode5_best_lsej_grid10_erode5
   summary.txt
   metrics.json
   sample_results.csv
@@ -86,9 +95,9 @@ Runtime Environment
 -------------------
 Host: user-Super-Server
 OS: Linux 6.8.0-138-generic (x86_64)
-CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 251.50 GiB
 Device: requested=auto | resolved=cuda:0
-GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.52 GiB
 Software: Python 3.10.13 | PyTorch 2.5.1
-CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 580.178.04
 CUDA_VISIBLE_DEVICES: not set

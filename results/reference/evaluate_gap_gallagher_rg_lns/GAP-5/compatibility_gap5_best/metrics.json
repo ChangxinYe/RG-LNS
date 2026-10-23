@@ -123,27 +123,28 @@
     "NA": 0.7696583333333333
   },
   "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
     "neighbor_queries": 240000,
     "horizontal_neighbor_queries": 120000,
     "vertical_neighbor_queries": 120000,
-    "neighbor_mrr": 0.8017835352269547,
-    "mean_true_neighbor_rank": 2.0183458333333335,
+    "neighbor_mrr": 0.7786217446785338,
+    "mean_true_neighbor_rank": 2.1625833333333335,
     "median_true_neighbor_rank": 1.0,
-    "neighbor_recall_at_1": 0.7014,
-    "horizontal_neighbor_recall_at_1": 0.683425,
-    "vertical_neighbor_recall_at_1": 0.719375,
-    "neighbor_recall_at_3": 0.8814041666666667,
-    "horizontal_neighbor_recall_at_3": 0.874875,
-    "vertical_neighbor_recall_at_3": 0.8879333333333334,
-    "neighbor_recall_at_5": 0.9305041666666667,
-    "horizontal_neighbor_recall_at_5": 0.9264083333333333,
-    "vertical_neighbor_recall_at_5": 0.9346,
-    "neighbor_recall_at_10": 0.9768083333333333,
-    "horizontal_neighbor_recall_at_10": 0.9750333333333333,
-    "vertical_neighbor_recall_at_10": 0.9785833333333334,
-    "neighbor_recall_at_15": 0.9923916666666667,
-    "horizontal_neighbor_recall_at_15": 0.99175,
-    "vertical_neighbor_recall_at_15": 0.9930333333333333
+    "neighbor_recall_at_1": 0.6691416666666666,
+    "horizontal_neighbor_recall_at_1": 0.650325,
+    "vertical_neighbor_recall_at_1": 0.6879583333333333,
+    "neighbor_recall_at_3": 0.8639625,
+    "horizontal_neighbor_recall_at_3": 0.85665,
+    "vertical_neighbor_recall_at_3": 0.871275,
+    "neighbor_recall_at_5": 0.9202958333333333,
+    "horizontal_neighbor_recall_at_5": 0.915375,
+    "vertical_neighbor_recall_at_5": 0.9252166666666667,
+    "neighbor_recall_at_10": 0.9724083333333333,
+    "horizontal_neighbor_recall_at_10": 0.9706083333333333,
+    "vertical_neighbor_recall_at_10": 0.9742083333333333,
+    "neighbor_recall_at_15": 0.9908291666666666,
+    "horizontal_neighbor_recall_at_15": 0.9901083333333334,
+    "vertical_neighbor_recall_at_15": 0.99155
   },
   "comparison": {
     "improved_puzzles": 1051,
@@ -181,55 +182,55 @@
     "stages": {
       "compatibility": {
         "count": 2980,
-        "total": 338.90915934741497,
-        "mean": 0.11372790582128019,
-        "median": 0.10493189631961286,
-        "std": 0.07235639851010137,
-        "p95": 0.17691916557960205
+        "total": 2200.497410201002,
+        "mean": 0.7384219497318798,
+        "median": 0.11631144699640572,
+        "std": 1.273310678636046,
+        "p95": 3.574079928128049
       },
       "initial_solver": {
         "count": 2980,
-        "total": 61.25722966855392,
-        "mean": 0.020556117338440913,
-        "median": 0.01994710904546082,
-        "std": 0.005250946123510384,
-        "p95": 0.029926787293516097
+        "total": 69.95335663901642,
+        "mean": 0.023474280751347793,
+        "median": 0.022381599294021726,
+        "std": 0.005838704949217724,
+        "p95": 0.03329452029429376
       },
       "partial_completion": {
         "count": 2980,
-        "total": 1.6170629300177097,
-        "mean": 0.0005426385671200368,
+        "total": 1.91189299011603,
+        "mean": 0.0006415748288979967,
         "median": 0.0,
-        "std": 0.002591520523867356,
-        "p95": 0.004948129015974698
+        "std": 0.0032332566917255036,
+        "p95": 0.006607076292857525
       },
       "rgls": {
         "count": 2980,
-        "total": 407.11365888779983,
-        "mean": 0.13661532177442948,
-        "median": 0.03522966988384724,
-        "std": 0.184882852155806,
-        "p95": 0.5420410755323245
+        "total": 452.3433436383493,
+        "mean": 0.15179306833501655,
+        "median": 0.04454051051288843,
+        "std": 0.20228304648811085,
+        "p95": 0.5422742064809426
       },
       "refinement_total": {
         "count": 2980,
-        "total": 408.73072181781754,
-        "mean": 0.1371579603415495,
-        "median": 0.03544637747108936,
-        "std": 0.18518122786772076,
-        "p95": 0.5428112409543245
+        "total": 454.25523662846535,
+        "mean": 0.15243464316391456,
+        "median": 0.04480007104575634,
+        "std": 0.20263807270290832,
+        "p95": 0.5439418286085128
       },
       "inference_total": {
         "count": 2980,
-        "total": 808.8971108337864,
-        "mean": 0.27144198350127063,
-        "median": 0.17708593071438372,
-        "std": 0.20411362075728162,
-        "p95": 0.6939418905880301
+        "total": 2724.7060034684837,
+        "mean": 0.9143308736471422,
+        "median": 0.27777036488987505,
+        "std": 1.3166490902413652,
+        "p95": 3.8735455282265305
       }
     }
   },
-  "elapsed_seconds": 874.8875969406217,
+  "elapsed_seconds": 2819.376326899044,
   "pa_case_lists": {
     "repaired_images": 477,
     "broken_images": 8,

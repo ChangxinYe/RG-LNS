@@ -4,7 +4,7 @@ Run Configuration
   Samples    : 2000
   Baseline   : ViT-T + Gallagher
   Device     : cuda:0
-  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Data root  : /data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ
   Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth
 
 Baseline (ViT-T + Gallagher):
@@ -32,14 +32,23 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 299
   Perfect to failed layouts : 8
 
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.870510
+  Mean True-Neighbor Rank : 2.103
+  True-Neighbor Recall@1  : 81.2336%
+  True-Neighbor Recall@3  : 91.5029%
+  True-Neighbor Recall@5  : 94.4171%
+  True-Neighbor Recall@10 : 97.0374%
+  True-Neighbor Recall@15 : 98.0478%
+
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=1980
-  Compatibility scoring: mean=0.325385 | median=0.306651 | std=0.087043 | p95=0.401503 | total=644.262067
-  Initial solver       : mean=0.107861 | median=0.096383 | std=0.025727 | p95=0.152198 | total=213.564715
-  RG-LNS refinement    : mean=1.821277 | median=0.030345 | std=6.489064 | p95=10.347336 | total=3606.127909
-  Total inference      : mean=2.254523 | median=0.482299 | std=6.496293 | p95=10.739593 | total=4463.954692
+  Compatibility scoring: mean=0.423190 | median=0.334221 | std=0.273347 | p95=0.761244 | total=837.916023
+  Initial solver       : mean=0.117766 | median=0.121431 | std=0.027500 | p95=0.158855 | total=233.177141
+  RG-LNS refinement    : mean=1.854208 | median=0.031867 | std=6.605181 | p95=10.370793 | total=3671.330992
+  Total inference      : mean=2.395164 | median=0.630389 | std=6.604976 | p95=11.077874 | total=4742.424157
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 4705.171655 seconds (includes loop overhead).
+  Evaluation elapsed: 4964.294979 seconds (includes loop overhead).
 
 Output Files
   Directory: /data/yecx/RG-LNS/results/runs/evaluate_lsej_gallagher_rg_lns/ImageNet_LSEJ/compatibility_lsej_grid10_erode2_best_lsej_grid10_erode2

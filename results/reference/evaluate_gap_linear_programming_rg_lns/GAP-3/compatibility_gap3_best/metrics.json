@@ -9,8 +9,8 @@
   "split": "test",
   "start_index": 0,
   "evaluated_samples": 3000,
-  "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/gap3_best.pth",
-  "data_root": "/data/yecx/datasets/Jigsaw_Puzzle/GAP_fast",
+  "checkpoint": "/data/jaxon/RG-LNS/checkpoints/compatibility/gap3_best.pth",
+  "data_root": "/data/jaxon/svn_datasets/Jigsaw_Puzzle/GAP_fast",
   "configuration": {
     "completion_beam_width": 4,
     "partial_completion_beam_width": 2,
@@ -136,6 +136,7 @@
     "NA": 0.7541388888888889
   },
   "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
     "neighbor_queries": 72000,
     "horizontal_neighbor_queries": 36000,
     "vertical_neighbor_queries": 36000,
@@ -188,55 +189,55 @@
     "stages": {
       "compatibility": {
         "count": 2980,
-        "total": 217.09005194623023,
-        "mean": 0.0728490107202115,
-        "median": 0.06270011654123664,
-        "std": 0.040192405408752116,
-        "p95": 0.12961040167137974
+        "total": 573.1584510183893,
+        "mean": 0.19233505067731185,
+        "median": 0.10070349648594856,
+        "std": 0.21244961264210516,
+        "p95": 0.7493858564412218
       },
       "initial_solver": {
         "count": 2980,
-        "total": 38.66426592878997,
-        "mean": 0.012974585882144287,
-        "median": 0.011883505852892995,
-        "std": 0.004685520351548863,
-        "p95": 0.020771480700932442
+        "total": 43.96676919097081,
+        "mean": 0.014753949392943224,
+        "median": 0.01552193658426404,
+        "std": 0.005092164526172195,
+        "p95": 0.023132279841229317
       },
       "partial_completion": {
         "count": 2980,
-        "total": 0.39765277225524187,
-        "mean": 0.00013344052760243017,
+        "total": 0.45085944840684533,
+        "mean": 0.00015129511691504876,
         "median": 0.0,
-        "std": 0.000579956104820504,
-        "p95": 0.0017465999117121092
+        "std": 0.0006452308533513862,
+        "p95": 0.0024800087092444094
       },
       "rgls": {
         "count": 2980,
-        "total": 11.362538756337017,
-        "mean": 0.0038129324685694686,
-        "median": 0.00174182397313416,
-        "std": 0.003995238059558811,
-        "p95": 0.013765689916908741
+        "total": 13.08794081164524,
+        "mean": 0.004391926446860818,
+        "median": 0.001980700995773077,
+        "std": 0.004569978901914743,
+        "p95": 0.015434545138850805
       },
       "refinement_total": {
         "count": 2980,
-        "total": 11.760191528592259,
-        "mean": 0.0039463729961718985,
-        "median": 0.0017581135034561157,
-        "std": 0.004082328082337244,
-        "p95": 0.013836063793860376
+        "total": 13.538800260052085,
+        "mean": 0.004543221563775867,
+        "median": 0.0019941339269280434,
+        "std": 0.004660448434420789,
+        "p95": 0.01555979801341891
       },
       "inference_total": {
         "count": 2980,
-        "total": 267.51450940361246,
-        "mean": 0.08976996959852768,
-        "median": 0.08027295162901282,
-        "std": 0.041139370277341464,
-        "p95": 0.14681116414722042
+        "total": 630.6640204694122,
+        "mean": 0.21163222163403095,
+        "median": 0.12124301795847714,
+        "std": 0.21293774904231422,
+        "p95": 0.7683802053099498
       }
     }
   },
-  "elapsed_seconds": 298.211187731009,
+  "elapsed_seconds": 667.017097119242,
   "pa_case_lists": {
     "repaired_images": 230,
     "broken_images": 23,
@@ -252,10 +253,10 @@
       "architecture": "x86_64"
     },
     "cpu": {
-      "model": "Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz",
-      "physical_cores": 32,
-      "logical_cores": 64,
-      "total_memory_bytes": 270036795392
+      "model": "Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",
+      "physical_cores": 24,
+      "logical_cores": 48,
+      "total_memory_bytes": 270041866240
     },
     "device": {
       "requested": "auto",
@@ -265,7 +266,7 @@
     "gpu": {
       "index": 0,
       "name": "NVIDIA GeForce RTX 4090",
-      "total_memory_bytes": 25386352640,
+      "total_memory_bytes": 25250627584,
       "compute_capability": "8.9"
     },
     "software": {
@@ -273,7 +274,7 @@
       "pytorch": "2.5.1",
       "cuda_runtime": "12.4",
       "cudnn": 90100,
-      "nvidia_driver": "550.144.03"
+      "nvidia_driver": "580.178.04"
     },
     "cuda_visible_devices": null,
     "python_executable": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python"

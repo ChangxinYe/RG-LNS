@@ -4,8 +4,8 @@ Run Configuration
   Samples    : 2000
   Baseline   : ViT-T + Pomeranz
   Device     : cuda:0
-  Data root  : /data/yecx/datasets/Jigsaw_Puzzle/JPwLEG
-  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
+  Data root  : /data/jaxon/svn_datasets/Jigsaw_Puzzle/JPwLEG
+  Checkpoint : /data/jaxon/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth
 
 Initial Solver Settings
   postprocess           : True
@@ -40,17 +40,26 @@ Improvement Summary (relative to Baseline)
   Failed to perfect layouts : 111
   Perfect to failed layouts : 5
 
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.893768
+  Mean True-Neighbor Rank : 1.455
+  True-Neighbor Recall@1  : 83.0281%
+  True-Neighbor Recall@3  : 94.9944%
+  True-Neighbor Recall@5  : 97.3862%
+  True-Neighbor Recall@10 : 99.1950%
+  True-Neighbor Recall@15 : 99.7563%
+
 Runtime
   Unit: seconds per puzzle | warmup=20 | measured=1980
-  Compatibility scoring: mean=0.155195 | median=0.122486 | std=0.120558 | p95=0.313347 | total=307.286588
-  Initial solver       : mean=0.116141 | median=0.112286 | std=0.027998 | p95=0.165395 | total=229.958913
-  RG-LNS refinement    : mean=0.028209 | median=0.005212 | std=0.086598 | p95=0.137605 | total=55.853281
-  Total inference      : mean=0.299545 | median=0.255066 | std=0.165832 | p95=0.585942 | total=593.098782
+  Compatibility scoring: mean=0.200571 | median=0.134443 | std=0.180664 | p95=0.508998 | total=397.130194
+  Initial solver       : mean=0.124401 | median=0.120872 | std=0.030711 | p95=0.177896 | total=246.314006
+  RG-LNS refinement    : mean=0.030464 | median=0.005531 | std=0.092299 | p95=0.153071 | total=60.319039
+  Total inference      : mean=0.355436 | median=0.276929 | std=0.222179 | p95=0.830846 | total=703.763239
   RG-LNS refinement includes automatic partial-layout completion.
-  Evaluation elapsed: 615.690030 seconds (includes loop overhead).
+  Evaluation elapsed: 733.932452 seconds (includes loop overhead).
 
 Output Files
-  Directory: /data/yecx/RG-LNS/results/runs/evaluate_jpwleg_pomeranz_rg_lns/jpwleg5/compatibility_jpwleg5_best
+  Directory: /data/jaxon/RG-LNS/results/runs/evaluate_jpwleg_pomeranz_rg_lns/jpwleg5/compatibility_jpwleg5_best
   summary.txt
   metrics.json
   sample_results.csv
@@ -80,9 +89,9 @@ Runtime Environment
 -------------------
 Host: user-Super-Server
 OS: Linux 6.8.0-138-generic (x86_64)
-CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+CPU: Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz | 24 physical / 48 logical cores | RAM 251.50 GiB
 Device: requested=auto | resolved=cuda:0
-GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.52 GiB
 Software: Python 3.10.13 | PyTorch 2.5.1
-CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 580.178.04
 CUDA_VISIBLE_DEVICES: not set

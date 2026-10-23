@@ -93,6 +93,30 @@
     "vertical_SRA": 0.9129444444444444,
     "SRA": 0.9158888888888889
   },
+  "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
+    "neighbor_queries": 720000,
+    "horizontal_neighbor_queries": 360000,
+    "vertical_neighbor_queries": 360000,
+    "neighbor_mrr": 0.8705098737278955,
+    "mean_true_neighbor_rank": 2.1031208333333336,
+    "median_true_neighbor_rank": 1.0,
+    "neighbor_recall_at_1": 0.8123361111111111,
+    "horizontal_neighbor_recall_at_1": 0.8329361111111111,
+    "vertical_neighbor_recall_at_1": 0.7917361111111111,
+    "neighbor_recall_at_3": 0.9150291666666667,
+    "horizontal_neighbor_recall_at_3": 0.9279638888888889,
+    "vertical_neighbor_recall_at_3": 0.9020944444444444,
+    "neighbor_recall_at_5": 0.9441708333333333,
+    "horizontal_neighbor_recall_at_5": 0.9527777777777777,
+    "vertical_neighbor_recall_at_5": 0.9355638888888889,
+    "neighbor_recall_at_10": 0.9703736111111111,
+    "horizontal_neighbor_recall_at_10": 0.9747444444444444,
+    "vertical_neighbor_recall_at_10": 0.9660027777777778,
+    "neighbor_recall_at_15": 0.9804777777777778,
+    "horizontal_neighbor_recall_at_15": 0.9830333333333333,
+    "vertical_neighbor_recall_at_15": 0.9779222222222222
+  },
   "comparison": {
     "improved_puzzles": 843,
     "damaged_puzzles": 127,
@@ -129,55 +153,55 @@
     "stages": {
       "compatibility": {
         "count": 1980,
-        "total": 644.262067401316,
-        "mean": 0.3253848825259172,
-        "median": 0.3066512756049633,
-        "std": 0.08704329693246769,
-        "p95": 0.40150278063956646
+        "total": 837.9160234020092,
+        "mean": 0.4231899108090955,
+        "median": 0.3342214301228523,
+        "std": 0.27334659587315396,
+        "p95": 0.7612439138116314
       },
       "initial_solver": {
         "count": 1980,
-        "total": 213.5647152978927,
-        "mean": 0.10786096732216803,
-        "median": 0.09638316673226655,
-        "std": 0.02572669413361521,
-        "p95": 0.15219753214623777
+        "total": 233.17714131250978,
+        "mean": 0.11776623298611605,
+        "median": 0.1214307458139956,
+        "std": 0.027499911221938598,
+        "p95": 0.15885472572408615
       },
       "partial_completion": {
         "count": 1980,
-        "total": 14.855506252963096,
-        "mean": 0.007502780935839948,
+        "total": 15.498453904408962,
+        "mean": 0.007827501971923717,
         "median": 0.0,
-        "std": 0.08999387012593672,
-        "p95": 0.019277951586991544
+        "std": 0.09522176678354353,
+        "p95": 0.019091402506455777
       },
       "rgls": {
         "count": 1980,
-        "total": 3591.272402668372,
-        "mean": 1.8137739407416018,
-        "median": 0.02986523788422346,
-        "std": 6.467113601450011,
-        "p95": 10.320367927127517
+        "total": 3655.8325379141606,
+        "mean": 1.8463800696536166,
+        "median": 0.031504951417446136,
+        "std": 6.58242134736868,
+        "p95": 10.304280738253144
       },
       "refinement_total": {
         "count": 1980,
-        "total": 3606.127908921335,
-        "mean": 1.821276721677442,
-        "median": 0.030345377512276173,
-        "std": 6.489064405573935,
-        "p95": 10.347335585835387
+        "total": 3671.3309918185696,
+        "mean": 1.8542075716255402,
+        "median": 0.0318668803665787,
+        "std": 6.605180998700686,
+        "p95": 10.370793026266607
       },
       "inference_total": {
         "count": 1980,
-        "total": 4463.954691620544,
-        "mean": 2.254522571525527,
-        "median": 0.48229931807145476,
-        "std": 6.49629320389754,
-        "p95": 10.739592947973858
+        "total": 4742.4241565330885,
+        "mean": 2.3951637154207517,
+        "median": 0.6303892850410193,
+        "std": 6.604976090591458,
+        "p95": 11.07787407466676
       }
     }
   },
-  "elapsed_seconds": 4705.1716553741135,
+  "elapsed_seconds": 4964.294979304075,
   "pa_case_lists": {
     "repaired": "pa_repaired_images.txt",
     "broken": "pa_broken_images.txt",

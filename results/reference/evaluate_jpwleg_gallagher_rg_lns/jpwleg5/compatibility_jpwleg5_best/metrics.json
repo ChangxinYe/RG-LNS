@@ -120,6 +120,30 @@
     "neighbor_total": 80000,
     "NA": 0.900075
   },
+  "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
+    "neighbor_queries": 160000,
+    "horizontal_neighbor_queries": 80000,
+    "vertical_neighbor_queries": 80000,
+    "neighbor_mrr": 0.8937682833311015,
+    "mean_true_neighbor_rank": 1.45538125,
+    "median_true_neighbor_rank": 1.0,
+    "neighbor_recall_at_1": 0.83028125,
+    "horizontal_neighbor_recall_at_1": 0.8145125,
+    "vertical_neighbor_recall_at_1": 0.84605,
+    "neighbor_recall_at_3": 0.94994375,
+    "horizontal_neighbor_recall_at_3": 0.949,
+    "vertical_neighbor_recall_at_3": 0.9508875,
+    "neighbor_recall_at_5": 0.9738625,
+    "horizontal_neighbor_recall_at_5": 0.9738375,
+    "vertical_neighbor_recall_at_5": 0.9738875,
+    "neighbor_recall_at_10": 0.99195,
+    "horizontal_neighbor_recall_at_10": 0.9919875,
+    "vertical_neighbor_recall_at_10": 0.9919125,
+    "neighbor_recall_at_15": 0.9975625,
+    "horizontal_neighbor_recall_at_15": 0.997575,
+    "vertical_neighbor_recall_at_15": 0.99755
+  },
   "comparison": {
     "improved_puzzles": 371,
     "damaged_puzzles": 107,
@@ -156,55 +180,55 @@
     "stages": {
       "compatibility": {
         "count": 1980,
-        "total": 157.84218375291675,
-        "mean": 0.07971827462268523,
-        "median": 0.07978637446649373,
-        "std": 0.0037271585496965907,
-        "p95": 0.08277724904473871
+        "total": 1472.898383591324,
+        "mean": 0.7438880725208707,
+        "median": 0.9825279589276761,
+        "std": 0.5336638414785279,
+        "p95": 1.3841286148177459
       },
       "initial_solver": {
         "count": 1980,
-        "total": 27.317035986110568,
-        "mean": 0.013796482821267964,
-        "median": 0.013077700044959784,
-        "std": 0.0022731213080250763,
-        "p95": 0.018280959385447198
+        "total": 39.342496691737324,
+        "mean": 0.01986994782410976,
+        "median": 0.018849336775019765,
+        "std": 0.0031624815412711342,
+        "p95": 0.02590780770406127
       },
       "partial_completion": {
         "count": 1980,
-        "total": 0.6272833948023617,
-        "mean": 0.00031680979535472813,
+        "total": 0.9712714324705303,
+        "mean": 0.0004905411275103688,
         "median": 0.0,
-        "std": 0.003400148990597688,
+        "std": 0.005382228884472046,
         "p95": 0.0
       },
       "rgls": {
         "count": 1980,
-        "total": 62.1667573787272,
-        "mean": 0.03139735221147838,
-        "median": 0.003816176438704133,
-        "std": 0.0783395901995675,
-        "p95": 0.18997127569746222
+        "total": 102.87253353837878,
+        "mean": 0.05195582501938322,
+        "median": 0.005934979068115354,
+        "std": 0.13484096562748718,
+        "p95": 0.3118392931995913
       },
       "refinement_total": {
         "count": 1980,
-        "total": 62.79404077352956,
-        "mean": 0.03171416200683311,
-        "median": 0.0038248493801802397,
-        "std": 0.07868106146771522,
-        "p95": 0.18999398250598454
+        "total": 103.8438049708493,
+        "mean": 0.05244636614689359,
+        "median": 0.005960759939625859,
+        "std": 0.13537448793209983,
+        "p95": 0.3118392931995913
       },
       "inference_total": {
         "count": 1980,
-        "total": 247.95326051255688,
-        "mean": 0.1252289194507863,
-        "median": 0.09763404564000666,
-        "std": 0.0798250640157461,
-        "p95": 0.2857349419267848
+        "total": 1616.0846852539107,
+        "mean": 0.8162043864918741,
+        "median": 1.0342126730829477,
+        "std": 0.5644056091406381,
+        "p95": 1.5671481552999464
       }
     }
   },
-  "elapsed_seconds": 262.3999840063043,
+  "elapsed_seconds": 1662.349284866359,
   "pa_case_lists": {
     "repaired_images": 230,
     "broken_images": 7,
