@@ -1,0 +1,198 @@
+{
+  "dataset": "jpwleg",
+  "variant": "full_rg_lns_b4",
+  "state": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "state": "completed",
+      "signature": "adbfd1d854bbc695991d617ec602e2d3c0f393305b73322e30298034d03466a9",
+      "signature_payload": {
+        "dataset": "jpwleg",
+        "selector": "jpwleg5",
+        "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/JPwLEG",
+        "checkpoint": {
+          "path": "/data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth",
+          "size": 67554260,
+          "mtime_ns": 1792421573000000000
+        },
+        "variant": {
+          "translation_mode": "all",
+          "completion_beam_width": 4
+        },
+        "evaluation": {
+          "split": "test",
+          "start_index": 0,
+          "max_samples": 0,
+          "partial_completion_beam_width": 2,
+          "mutual_top_k": 3,
+          "component_index": 0,
+          "min_component_size": 4,
+          "refinement_rounds": 1,
+          "score_batch_size": 128,
+          "postprocess": true,
+          "device": "auto",
+          "gpu_id": 0,
+          "save_run_artifacts": false
+        },
+        "sources": [
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/commands/evaluate_jpwleg_gallagher_rg_lns.py",
+            "size": 41367,
+            "mtime_ns": 1792677899005627568,
+            "sha256": "9e56c1c7b4c283ccb487875b2017c195550480d4d34e8af2e9dc160139fe6c14"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/component_search.py",
+            "size": 18054,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "42b3f22188ace65ebe449db7ed895caeefeb0e55ad4e1fd9cb19ebd353efe68e"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/beam_search.py",
+            "size": 36130,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "5d615043ac7f21568134350f0fd29b72665a3852da82d2752fdc6ed750535d7c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/partial_completion.py",
+            "size": 7138,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "4d41e4c37d4865b81fe96ee61c501399e87a8af5b4f1371c389dcacce97fd5e9"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/geometry.py",
+            "size": 3481,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "7370e4e283ad597b5b5b46fe06b11665bd567392bf5f672464ee24f2aa7606a3"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/layout_analysis.py",
+            "size": 20031,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5090bd61c260d44102e89a3aad334c98b1f3404aa997f8280cc23379b4a55bc4"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/scorer.py",
+            "size": 10213,
+            "mtime_ns": 1792677898978627546,
+            "sha256": "cbb07ad547139815ac9a3d4103b50251988ac420eaddfbc7eac2ac07b7239b17"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/transforms.py",
+            "size": 3098,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "b25107b1a81216f27fda2806e5746ce57188c14448618ecf7df612004ed38fb2"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/encoder.py",
+            "size": 13367,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "1926d535a6ce8f2905d90c1d0c3b3f14718210805e75f9105609991740bc4c6c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/vit.py",
+            "size": 11345,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "07ac7e3ca49c77bab1c1bb542757d70e65380f6ed0afe4a5556014619f6c6cde"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/gallagher/mgc.py",
+            "size": 32427,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5ad22c08e844dcece5454d194052c8aca18f503260446b70ee8ff288a6e40492"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/data_loaders/jpwleg_common.py",
+            "size": 10825,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "d529004d4e78e6d637ccf0db8434cac65264de5da18cf062afdae43ab5dd9f18"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/data_loaders/jpwleg.py",
+            "size": 5204,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "eca8d7052bf6ca2e687288f78d1bea9e6d672787693fbcba09b92b9099dff7fb"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/jpwleg.py",
+            "size": 20757,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "a905404223cbac886aa45fd0f801e2159c0c57e8fee60ac9135d25024253610f"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/jpwleg_inputs.py",
+            "size": 4174,
+            "mtime_ns": 1792506771103304911,
+            "sha256": "372c816522c245d4cc8f02ec249e5cfe984bc063e41a8b36064b16eb899c254b"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/jpwleg_search.py",
+            "size": 4848,
+            "mtime_ns": 1792506771103304911,
+            "sha256": "fc9e102c962fd7f52def5ac05add29e19206b36707a09f60e8f904262d5097fc"
+          }
+        ]
+      },
+      "started_at": "2026-10-23T17:50:52+08:00",
+      "command": [
+        "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python",
+        "-m",
+        "evaluation.commands.evaluate_jpwleg_gallagher_rg_lns",
+        "--dataset",
+        "jpwleg5",
+        "--split",
+        "test",
+        "--data-root",
+        "/data/yecx/svn_datasets/Jigsaw_Puzzle/JPwLEG",
+        "--checkpoint",
+        "/data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth",
+        "--start-index",
+        "0",
+        "--max-samples",
+        "0",
+        "--translation-mode",
+        "all",
+        "--completion-beam-width",
+        "4",
+        "--partial-completion-beam-width",
+        "2",
+        "--mutual-top-k",
+        "3",
+        "--component-index",
+        "0",
+        "--min-component-size",
+        "4",
+        "--refinement-rounds",
+        "1",
+        "--score-batch-size",
+        "128",
+        "--postprocess",
+        "true",
+        "--device",
+        "auto",
+        "--gpu-id",
+        "0",
+        "--output-dir",
+        "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/jpwleg/full_rg_lns_b4",
+        "--save-visuals",
+        "false",
+        "--visual-limit",
+        "0",
+        "--save-predictions",
+        "false",
+        "--save-completion-details",
+        "false",
+        "--progress-interval",
+        "25"
+      ],
+      "command_text": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m evaluation.commands.evaluate_jpwleg_gallagher_rg_lns --dataset jpwleg5 --split test --data-root /data/yecx/svn_datasets/Jigsaw_Puzzle/JPwLEG --checkpoint /data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth --start-index 0 --max-samples 0 --translation-mode all --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/jpwleg/full_rg_lns_b4 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25",
+      "log_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/logs/jpwleg__full_rg_lns_b4__20261023_175052_319683.log",
+      "result_dir": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/jpwleg/full_rg_lns_b4",
+      "metrics_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/jpwleg/full_rg_lns_b4/metrics.json",
+      "return_code": 0,
+      "finished_at": "2026-10-23T17:55:06+08:00",
+      "elapsed_seconds": 254.07776118814945
+    }
+  ]
+}

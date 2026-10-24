@@ -1,0 +1,253 @@
+{
+  "method": "s1a4_profiled_large_neighborhood_reassembly_gallagher_initialization",
+  "initial_solver": "Gallagher",
+  "uses_training": false,
+  "uses_e2": false,
+  "uses_e5": false,
+  "uses_ground_truth_for_selection": false,
+  "selection_rule": "first complete an incomplete initial layout with label-free E1 profiled beam; then, for each component pose, select the retained completion minimizing full-layout E1 mean adjacency score (mutual-Top1 tie-break); then select across poses with the same E1 rule and accept only a strict E1 improvement",
+  "beam1_contract": "after the same partial-layout completion, completion_beam_width=1 directly reuses the formal greedy reassembly solver",
+  "task": "lsej_grid10_erode2",
+  "dataset": "ImageNet-LSEJ-10x10-2px",
+  "split": "test",
+  "start_index": 0,
+  "end_index_exclusive": 2000,
+  "evaluated_samples": 2000,
+  "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth",
+  "configuration": {
+    "completion_beam_width": 1,
+    "partial_completion_beam_width": 2,
+    "mutual_top_k": 3,
+    "translation_mode": "fixed",
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "postprocess": true,
+    "score_batch_size": 128,
+    "runtime_warmup_samples": 20,
+    "device": "cuda:0",
+    "save_visuals": false,
+    "visual_limit": 0,
+    "save_predictions": false,
+    "save_completion_details": false,
+    "initial_solver": {}
+  },
+  "status_counts": {
+    "no_strict_e1_improvement": 1153,
+    "max_rounds": 739,
+    "partial_completed__max_rounds": 74,
+    "partial_completed__no_strict_e1_improvement": 34
+  },
+  "complete_initial_solver_baselines": 1892,
+  "complete_after_partial_completion": 2000,
+  "baseline": {
+    "samples": 2000,
+    "perfect_puzzles": 784,
+    "correct_pieces": 144185,
+    "total_pieces": 200000,
+    "PA": 0.392,
+    "AA": 0.7209250000000015,
+    "horizontal_SRA": 0.8722722222222222,
+    "vertical_SRA": 0.8634666666666667,
+    "SRA": 0.8678694444444445
+  },
+  "partial_completion": {
+    "samples": 2000,
+    "perfect_puzzles": 787,
+    "correct_pieces": 145391,
+    "total_pieces": 200000,
+    "PA": 0.3935,
+    "AA": 0.7269550000000014,
+    "horizontal_SRA": 0.8759166666666667,
+    "vertical_SRA": 0.8666222222222222,
+    "SRA": 0.8712694444444444
+  },
+  "partial_completion_diagnostics": {
+    "beam_width": 2,
+    "applied_samples": 108,
+    "failed_samples": 0,
+    "complete_after_completion": 2000,
+    "repaired_to_perfect": 3,
+    "improved_puzzles": 57,
+    "damaged_puzzles": 9
+  },
+  "s1a3_single_path_reference": {
+    "samples": 2000,
+    "perfect_puzzles": 933,
+    "correct_pieces": 148063,
+    "total_pieces": 200000,
+    "PA": 0.4665,
+    "AA": 0.7403150000000017,
+    "horizontal_SRA": 0.8901388888888889,
+    "vertical_SRA": 0.8848944444444444,
+    "SRA": 0.8875166666666666
+  },
+  "s1a4": {
+    "samples": 2000,
+    "perfect_puzzles": 933,
+    "correct_pieces": 148063,
+    "total_pieces": 200000,
+    "PA": 0.4665,
+    "AA": 0.7403150000000017,
+    "horizontal_SRA": 0.8901388888888889,
+    "vertical_SRA": 0.8848944444444444,
+    "SRA": 0.8875166666666666
+  },
+  "neighbor_retrieval": {
+    "neighbor_score_source": "raw_model_distances",
+    "neighbor_queries": 720000,
+    "horizontal_neighbor_queries": 360000,
+    "vertical_neighbor_queries": 360000,
+    "neighbor_mrr": 0.8705098737278955,
+    "mean_true_neighbor_rank": 2.1031208333333336,
+    "median_true_neighbor_rank": 1.0,
+    "neighbor_recall_at_1": 0.8123361111111111,
+    "horizontal_neighbor_recall_at_1": 0.8329361111111111,
+    "vertical_neighbor_recall_at_1": 0.7917361111111111,
+    "neighbor_recall_at_3": 0.9150291666666667,
+    "horizontal_neighbor_recall_at_3": 0.9279638888888889,
+    "vertical_neighbor_recall_at_3": 0.9020944444444444,
+    "neighbor_recall_at_5": 0.9441708333333333,
+    "horizontal_neighbor_recall_at_5": 0.9527777777777777,
+    "vertical_neighbor_recall_at_5": 0.9355638888888889,
+    "neighbor_recall_at_10": 0.9703736111111111,
+    "horizontal_neighbor_recall_at_10": 0.9747444444444444,
+    "vertical_neighbor_recall_at_10": 0.9660027777777778,
+    "neighbor_recall_at_15": 0.9804777777777778,
+    "horizontal_neighbor_recall_at_15": 0.9830333333333333,
+    "vertical_neighbor_recall_at_15": 0.9779222222222222
+  },
+  "comparison": {
+    "improved_puzzles": 500,
+    "damaged_puzzles": 159,
+    "unchanged_puzzles": 1341,
+    "changed_predictions": 847,
+    "repaired_to_perfect": 154,
+    "broken_perfect": 5,
+    "accepted_rounds": 813,
+    "accepted_beam_rounds": 0
+  },
+  "incremental_vs_s1a3": {
+    "improved_puzzles": 0,
+    "damaged_puzzles": 0,
+    "unchanged_puzzles": 2000,
+    "changed_predictions": 0,
+    "repaired_to_perfect": 0,
+    "broken_perfect": 0
+  },
+  "search_diagnostics": {
+    "evaluated_poses": 2000,
+    "recorded_pose_rows": 1210,
+    "evaluated_completion_hypotheses": 2000,
+    "recorded_completion_rows": 0,
+    "pose_diagnostics_complete": false,
+    "poses_improved_over_s1a3_greedy": 0,
+    "selected_non_greedy_poses": 0
+  },
+  "runtime": {
+    "unit": "seconds_per_puzzle",
+    "configured_warmup_samples": 20,
+    "warmup_samples": 20,
+    "recorded_samples": 2000,
+    "measured_samples": 1980,
+    "stages": {
+      "compatibility": {
+        "count": 1980,
+        "total": 650.325615269132,
+        "mean": 0.32844728043895555,
+        "median": 0.3197059070225805,
+        "std": 0.04654051574864591,
+        "p95": 0.4193950646324083
+      },
+      "initial_solver": {
+        "count": 1980,
+        "total": 210.94655853696167,
+        "mean": 0.10653866592775842,
+        "median": 0.09384299512021244,
+        "std": 0.026303817814705588,
+        "p95": 0.15053036799654362
+      },
+      "partial_completion": {
+        "count": 1980,
+        "total": 14.896150215528905,
+        "mean": 0.007523308189661063,
+        "median": 0.0,
+        "std": 0.09253901755729368,
+        "p95": 0.01805444688070565
+      },
+      "rgls": {
+        "count": 1980,
+        "total": 58.88557208282873,
+        "mean": 0.02974018792062057,
+        "median": 0.015569040086120367,
+        "std": 0.031176473220301325,
+        "p95": 0.10157492675352837
+      },
+      "refinement_total": {
+        "count": 1980,
+        "total": 73.78172229835764,
+        "mean": 0.03726349611028163,
+        "median": 0.015609753550961614,
+        "std": 0.10288277564779337,
+        "p95": 0.11605957439169282
+      },
+      "inference_total": {
+        "count": 1980,
+        "total": 935.0538961044513,
+        "mean": 0.4722494424769956,
+        "median": 0.44160014437511563,
+        "std": 0.12342636491930867,
+        "p95": 0.6140079222619533
+      }
+    }
+  },
+  "elapsed_seconds": 1075.1181872300804,
+  "pa_case_lists": {
+    "repaired": "pa_repaired_images.txt",
+    "broken": "pa_broken_images.txt",
+    "repaired_images": 154,
+    "broken_images": 5
+  },
+  "incremental_pa_case_lists": {
+    "files_written": false,
+    "repaired": "pa_repaired_vs_s1a3_images.txt",
+    "broken": "pa_broken_vs_s1a3_images.txt",
+    "repaired_images": 0,
+    "broken_images": 0
+  },
+  "runtime_environment": {
+    "hostname": "user-Super-Server",
+    "os": {
+      "system": "Linux",
+      "release": "6.8.0-138-generic",
+      "version": "#138~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug 7 13:43:15 UTC",
+      "architecture": "x86_64"
+    },
+    "cpu": {
+      "model": "Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz",
+      "physical_cores": 32,
+      "logical_cores": 64,
+      "total_memory_bytes": 270036795392
+    },
+    "device": {
+      "requested": "auto",
+      "resolved": "cuda:0",
+      "gpu_id_argument": 0
+    },
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "total_memory_bytes": 25386352640,
+      "compute_capability": "8.9"
+    },
+    "software": {
+      "python": "3.10.13",
+      "pytorch": "2.5.1",
+      "cuda_runtime": "12.4",
+      "cudnn": 90100,
+      "nvidia_driver": "550.144.03"
+    },
+    "cuda_visible_devices": null,
+    "python_executable": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python"
+  }
+}

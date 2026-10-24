@@ -1,0 +1,112 @@
+started_at: 2026-10-23T16:10:56+08:00
+cwd: /data/yecx/RG-LNS
+command: /home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m evaluation.commands.evaluate_lsej_gallagher_rg_lns --task lsej_grid10_erode2 --split test --data-root /data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ --checkpoint /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth --start-index 0 --max-samples 0 --translation-mode all --completion-beam-width 4 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/full_rg_lns_b4 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25 --loss-type hard_triplet
+
+RG-LNS evaluation
+  Dataset    : ImageNet-LSEJ-10x10-2px
+  Split      : test
+  Samples    : 2000
+  Baseline   : ViT-T + Gallagher
+  Device     : cuda:0
+  Data root  : /data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth
+
+[25/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.00%->56.00%, AA 71.36%->90.60%, SRA 85.71%->92.33%
+[50/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.00%->60.00%, AA 72.80%->91.24%, SRA 87.80%->93.93%
+[75/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.00%->60.00%, AA 74.47%->89.40%, SRA 88.73%->93.92%
+[100/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.00%->61.00%, AA 75.07%->89.89%, SRA 88.96%->94.12%
+[125/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.80%->64.80%, AA 77.15%->90.65%, SRA 89.96%->94.78%
+[150/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.33%->64.67%, AA 76.10%->91.48%, SRA 89.19%->94.99%
+[175/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.14%->63.43%, AA 75.51%->90.13%, SRA 88.64%->94.47%
+[200/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.00%->64.50%, AA 75.64%->90.34%, SRA 88.69%->94.52%
+[225/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.33%->64.89%, AA 75.64%->90.08%, SRA 88.82%->94.70%
+[250/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.40%->64.80%, AA 75.69%->89.88%, SRA 88.62%->94.31%
+[275/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.91%->65.45%, AA 76.81%->90.10%, SRA 88.95%->94.40%
+[300/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.33%->65.00%, AA 77.16%->90.09%, SRA 89.21%->94.54%
+[325/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.31%->65.85%, AA 77.45%->89.98%, SRA 89.18%->94.34%
+[350/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 49.14%->66.00%, AA 77.56%->90.21%, SRA 89.35%->94.40%
+[375/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 49.87%->66.13%, AA 77.55%->90.30%, SRA 89.54%->94.49%
+[400/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 49.25%->65.50%, AA 76.77%->89.70%, SRA 89.30%->94.35%
+[425/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.00%->64.47%, AA 76.46%->89.17%, SRA 89.13%->94.12%
+[450/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.56%->64.00%, AA 76.80%->89.19%, SRA 89.23%->94.19%
+[475/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.95%->63.58%, AA 76.55%->89.38%, SRA 89.17%->94.21%
+[500/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.80%->63.60%, AA 76.42%->89.03%, SRA 89.35%->94.28%
+[525/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.86%->64.00%, AA 76.60%->89.40%, SRA 89.39%->94.38%
+[550/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.09%->64.55%, AA 76.75%->89.45%, SRA 89.44%->94.36%
+[575/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.13%->64.35%, AA 76.81%->89.46%, SRA 89.50%->94.29%
+[600/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.83%->64.67%, AA 76.84%->89.58%, SRA 89.55%->94.34%
+[625/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.00%->64.96%, AA 76.95%->89.72%, SRA 89.53%->94.37%
+[650/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.00%->65.38%, AA 77.12%->90.05%, SRA 89.69%->94.50%
+[675/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 48.00%->64.89%, AA 77.52%->90.03%, SRA 89.81%->94.51%
+[700/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 47.57%->64.14%, AA 77.30%->89.67%, SRA 89.67%->94.38%
+[725/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.90%->63.45%, AA 76.93%->89.07%, SRA 89.41%->94.07%
+[750/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.40%->62.53%, AA 76.35%->88.58%, SRA 89.27%->93.98%
+[775/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 46.06%->62.06%, AA 76.17%->88.20%, SRA 89.12%->93.84%
+[800/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.38%->61.38%, AA 75.97%->87.94%, SRA 88.88%->93.57%
+[825/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.97%->61.21%, AA 75.68%->87.53%, SRA 88.78%->93.45%
+[850/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.18%->60.94%, AA 76.05%->87.58%, SRA 88.91%->93.46%
+[875/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 45.49%->61.14%, AA 76.10%->87.71%, SRA 89.05%->93.56%
+[900/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.89%->60.67%, AA 75.10%->87.07%, SRA 88.78%->93.34%
+[925/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.65%->60.32%, AA 75.00%->87.04%, SRA 88.69%->93.26%
+[950/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.42%->59.79%, AA 74.76%->86.87%, SRA 88.70%->93.27%
+[975/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 44.00%->59.69%, AA 74.53%->86.66%, SRA 88.58%->93.18%
+[1000/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 43.80%->59.60%, AA 74.17%->86.35%, SRA 88.44%->93.02%
+[1025/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 43.32%->59.02%, AA 74.09%->86.16%, SRA 88.35%->92.96%
+[1050/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 42.86%->58.67%, AA 73.93%->85.97%, SRA 88.14%->92.78%
+[1075/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 42.98%->58.60%, AA 73.94%->85.86%, SRA 88.16%->92.77%
+[1100/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 42.55%->58.09%, AA 73.94%->85.93%, SRA 88.18%->92.77%
+[1125/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 42.04%->57.60%, AA 73.76%->85.73%, SRA 88.12%->92.72%
+[1150/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.57%->57.04%, AA 73.57%->85.63%, SRA 88.00%->92.64%
+[1175/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.53%->57.11%, AA 73.71%->85.64%, SRA 88.04%->92.65%
+[1200/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.50%->57.00%, AA 73.69%->85.48%, SRA 87.93%->92.52%
+[1225/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.39%->56.73%, AA 73.38%->85.39%, SRA 87.82%->92.48%
+[1250/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.04%->56.32%, AA 73.05%->85.08%, SRA 87.68%->92.32%
+[1275/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 41.02%->56.08%, AA 73.09%->85.01%, SRA 87.65%->92.26%
+[1300/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.69%->56.00%, AA 73.13%->84.98%, SRA 87.69%->92.29%
+[1325/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.68%->55.70%, AA 72.76%->84.70%, SRA 87.58%->92.22%
+[1350/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.81%->55.85%, AA 72.78%->84.76%, SRA 87.67%->92.30%
+[1375/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.65%->55.64%, AA 72.77%->84.70%, SRA 87.74%->92.35%
+[1400/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.43%->55.36%, AA 72.70%->84.60%, SRA 87.73%->92.32%
+[1425/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.49%->55.58%, AA 72.90%->84.73%, SRA 87.78%->92.36%
+[1450/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.21%->55.10%, AA 72.80%->84.60%, SRA 87.67%->92.25%
+[1475/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.27%->55.12%, AA 72.74%->84.44%, SRA 87.57%->92.12%
+[1500/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.27%->55.27%, AA 72.69%->84.49%, SRA 87.53%->92.10%
+[1525/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 40.20%->55.15%, AA 72.59%->84.36%, SRA 87.45%->92.01%
+[1550/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.87%->54.65%, AA 72.57%->84.29%, SRA 87.40%->91.98%
+[1575/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.56%->54.16%, AA 72.19%->84.00%, SRA 87.14%->91.82%
+[1600/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.44%->54.06%, AA 72.30%->84.02%, SRA 87.15%->91.82%
+[1625/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.32%->54.15%, AA 72.35%->84.12%, SRA 87.16%->91.85%
+[1650/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.39%->54.06%, AA 72.25%->84.20%, SRA 87.13%->91.88%
+[1675/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.10%->53.61%, AA 72.16%->84.05%, SRA 87.04%->91.79%
+[1700/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.18%->53.71%, AA 72.28%->84.13%, SRA 87.08%->91.83%
+[1725/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.07%->53.45%, AA 72.15%->83.88%, SRA 86.96%->91.70%
+[1750/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.97%->53.31%, AA 72.06%->83.72%, SRA 86.81%->91.61%
+[1775/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.59%->52.79%, AA 71.82%->83.50%, SRA 86.67%->91.50%
+[1800/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.11%->52.39%, AA 71.58%->83.37%, SRA 86.46%->91.31%
+[1825/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.58%->52.82%, AA 71.71%->83.55%, SRA 86.59%->91.41%
+[1850/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.76%->53.08%, AA 71.90%->83.65%, SRA 86.71%->91.50%
+[1875/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.99%->53.44%, AA 71.93%->83.75%, SRA 86.82%->91.59%
+[1900/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.00%->53.47%, AA 71.94%->83.83%, SRA 86.81%->91.60%
+[1925/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.91%->53.40%, AA 71.88%->83.80%, SRA 86.75%->91.58%
+[1950/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.51%->52.97%, AA 71.62%->83.56%, SRA 86.59%->91.45%
+[1975/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 38.78%->53.27%, AA 71.85%->83.73%, SRA 86.68%->91.52%
+[2000/2000] Cumulative: Baseline (ViT-T + Gallagher) -> Baseline + RG-LNS | PA 39.20%->53.75%, AA 72.09%->83.90%, SRA 86.79%->91.59%
+Baseline (ViT-T + Gallagher):
+  PA             = 39.2000%
+  AA             = 72.0925%
+  Horizontal SRA = 87.2272%
+  Vertical SRA   = 86.3467%
+  SRA            = 86.7869%
+
+Baseline + RG-LNS:
+  PA             = 53.7500%
+  AA             = 83.8970%
+  Horizontal SRA = 91.8833%
+  Vertical SRA   = 91.2944%
+  SRA            = 91.5889%
+
+Saved: /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/full_rg_lns_b4
+
+finished_at: 2026-10-23T17:28:40+08:00
+return_code: 0
+elapsed_seconds: 4664.304

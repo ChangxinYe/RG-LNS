@@ -1,0 +1,14 @@
+{
+  "state": "completed",
+  "updated_at": "2026-10-23T17:55:06+08:00",
+  "run_root": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350",
+  "datasets": [
+    "lsej",
+    "gap",
+    "jpwleg"
+  ],
+  "completed_runs": 6,
+  "total_runs": 6,
+  "current_run": null,
+  "error": null
+}

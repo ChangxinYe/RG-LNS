@@ -1,0 +1,198 @@
+{
+  "dataset": "gap",
+  "variant": "reliability_destroy_fixed_b1",
+  "state": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "state": "completed",
+      "signature": "c221237405284ed4a477e7c87a8520bebda1f46f18ae2e98e489fd644da2fbb3",
+      "signature_payload": {
+        "dataset": "gap",
+        "selector": "GAP-5",
+        "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/GAP_fast",
+        "checkpoint": {
+          "path": "/data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth",
+          "size": 67576684,
+          "mtime_ns": 1792421573000000000
+        },
+        "variant": {
+          "translation_mode": "fixed",
+          "completion_beam_width": 1
+        },
+        "evaluation": {
+          "split": "test",
+          "start_index": 0,
+          "max_samples": 0,
+          "partial_completion_beam_width": 2,
+          "mutual_top_k": 3,
+          "component_index": 0,
+          "min_component_size": 4,
+          "refinement_rounds": 1,
+          "score_batch_size": 128,
+          "postprocess": true,
+          "device": "auto",
+          "gpu_id": 0,
+          "save_run_artifacts": false
+        },
+        "sources": [
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/commands/evaluate_gap_gallagher_rg_lns.py",
+            "size": 40352,
+            "mtime_ns": 1792677899005627568,
+            "sha256": "38ad5c66e548f58c61691e8f743611d5ca26837e9a31fb4249fb0c782a3c70ae"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/component_search.py",
+            "size": 18054,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "42b3f22188ace65ebe449db7ed895caeefeb0e55ad4e1fd9cb19ebd353efe68e"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/beam_search.py",
+            "size": 36130,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "5d615043ac7f21568134350f0fd29b72665a3852da82d2752fdc6ed750535d7c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/partial_completion.py",
+            "size": 7138,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "4d41e4c37d4865b81fe96ee61c501399e87a8af5b4f1371c389dcacce97fd5e9"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/geometry.py",
+            "size": 3481,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "7370e4e283ad597b5b5b46fe06b11665bd567392bf5f672464ee24f2aa7606a3"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/layout_analysis.py",
+            "size": 20031,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5090bd61c260d44102e89a3aad334c98b1f3404aa997f8280cc23379b4a55bc4"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/scorer.py",
+            "size": 10213,
+            "mtime_ns": 1792677898978627546,
+            "sha256": "cbb07ad547139815ac9a3d4103b50251988ac420eaddfbc7eac2ac07b7239b17"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/transforms.py",
+            "size": 3098,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "b25107b1a81216f27fda2806e5746ce57188c14448618ecf7df612004ed38fb2"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/encoder.py",
+            "size": 13367,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "1926d535a6ce8f2905d90c1d0c3b3f14718210805e75f9105609991740bc4c6c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/vit.py",
+            "size": 11345,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "07ac7e3ca49c77bab1c1bb542757d70e65380f6ed0afe4a5556014619f6c6cde"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/gallagher/mgc.py",
+            "size": 32427,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5ad22c08e844dcece5454d194052c8aca18f503260446b70ee8ff288a6e40492"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/data_loaders/gap.py",
+            "size": 13711,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "02ef304784798bd001ac27d227e37b0fa95437e4d43299847ca99dacd50a02d5"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/gap.py",
+            "size": 15790,
+            "mtime_ns": 1792677899023627583,
+            "sha256": "1dd6eba017e61440226f322c6c1a883a68152a54cbd600c9d2e9fec178e04fa6"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/jpwleg.py",
+            "size": 20757,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "a905404223cbac886aa45fd0f801e2159c0c57e8fee60ac9135d25024253610f"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/gap_inputs.py",
+            "size": 5429,
+            "mtime_ns": 1792506771103304911,
+            "sha256": "9ba2235aed27fe1cfd3fa8c84aea7f632fd1e26784f2587b3de3d8cc43ef51ea"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/gap_search.py",
+            "size": 6706,
+            "mtime_ns": 1792506771103304911,
+            "sha256": "49dc6d5b21d04989c86f4f1229a444e476289fc5bad737cea6e539f4203323ad"
+          }
+        ]
+      },
+      "started_at": "2026-10-23T17:28:40+08:00",
+      "command": [
+        "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python",
+        "-m",
+        "evaluation.commands.evaluate_gap_gallagher_rg_lns",
+        "--dataset",
+        "GAP-5",
+        "--split",
+        "test",
+        "--data-root",
+        "/data/yecx/svn_datasets/Jigsaw_Puzzle/GAP_fast",
+        "--checkpoint",
+        "/data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth",
+        "--start-index",
+        "0",
+        "--max-samples",
+        "0",
+        "--translation-mode",
+        "fixed",
+        "--completion-beam-width",
+        "1",
+        "--partial-completion-beam-width",
+        "2",
+        "--mutual-top-k",
+        "3",
+        "--component-index",
+        "0",
+        "--min-component-size",
+        "4",
+        "--refinement-rounds",
+        "1",
+        "--score-batch-size",
+        "128",
+        "--postprocess",
+        "true",
+        "--device",
+        "auto",
+        "--gpu-id",
+        "0",
+        "--output-dir",
+        "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/gap/reliability_destroy_fixed_b1",
+        "--save-visuals",
+        "false",
+        "--visual-limit",
+        "0",
+        "--save-predictions",
+        "false",
+        "--save-completion-details",
+        "false",
+        "--progress-interval",
+        "25"
+      ],
+      "command_text": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m evaluation.commands.evaluate_gap_gallagher_rg_lns --dataset GAP-5 --split test --data-root /data/yecx/svn_datasets/Jigsaw_Puzzle/GAP_fast --checkpoint /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth --start-index 0 --max-samples 0 --translation-mode fixed --completion-beam-width 1 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/gap/reliability_destroy_fixed_b1 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25",
+      "log_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/logs/gap__reliability_destroy_fixed_b1__20261023_172840_601309.log",
+      "result_dir": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/gap/reliability_destroy_fixed_b1",
+      "metrics_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/gap/reliability_destroy_fixed_b1/metrics.json",
+      "return_code": 0,
+      "finished_at": "2026-10-23T17:35:00+08:00",
+      "elapsed_seconds": 379.9480282110162
+    }
+  ]
+}

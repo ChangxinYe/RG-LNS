@@ -1,0 +1,130 @@
+{
+  "experiment": "table5_cumulative_rg_lns_ablation",
+  "state": "completed",
+  "complete": true,
+  "updated_at": "2026-10-23T17:55:06+08:00",
+  "output_root": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350",
+  "datasets": [
+    {
+      "key": "lsej",
+      "display_name": "ImageNet-LSEJ-10x10-2px",
+      "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ",
+      "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth",
+      "expected_samples": 2000
+    },
+    {
+      "key": "gap",
+      "display_name": "GAP-5",
+      "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/GAP_fast",
+      "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth",
+      "expected_samples": 3000
+    },
+    {
+      "key": "jpwleg",
+      "display_name": "JPwLEG-5",
+      "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/JPwLEG",
+      "checkpoint": "/data/yecx/RG-LNS/checkpoints/compatibility/jpwleg5_best.pth",
+      "expected_samples": 2000
+    }
+  ],
+  "configuration": {
+    "initial_solver": "Gallagher",
+    "max_samples": 0,
+    "mutual_top_k": 3,
+    "component_index": 0,
+    "min_component_size": 4,
+    "refinement_rounds": 1,
+    "partial_completion_beam_width": 2,
+    "score_batch_size": 128,
+    "device": "auto",
+    "gpu_id": 0
+  },
+  "variants": [
+    {
+      "key": "reliability_destroy_fixed_b1",
+      "label": "Reliability-Guided Destroy",
+      "translation_mode": "fixed",
+      "completion_beam_width": 1
+    },
+    {
+      "key": "full_rg_lns_b4",
+      "label": "Full RG-LNS (B=4)",
+      "translation_mode": "all",
+      "completion_beam_width": 4
+    }
+  ],
+  "rows": [
+    {
+      "key": "vit_t_gallagher",
+      "label": "ViT-T + Gallagher",
+      "pa": {
+        "lsej": {
+          "fraction": 0.392,
+          "percent": 39.2
+        },
+        "gap": {
+          "fraction": 0.15233333333333332,
+          "percent": 15.233333333333333
+        },
+        "jpwleg": {
+          "fraction": 0.3965,
+          "percent": 39.65
+        }
+      }
+    },
+    {
+      "key": "reliability_guided_destroy",
+      "label": "+ Reliability-Guided Destroy",
+      "pa": {
+        "lsej": {
+          "fraction": 0.4665,
+          "percent": 46.650000000000006
+        },
+        "gap": {
+          "fraction": 0.18966666666666668,
+          "percent": 18.96666666666667
+        },
+        "jpwleg": {
+          "fraction": 0.435,
+          "percent": 43.5
+        }
+      }
+    },
+    {
+      "key": "component_translations",
+      "label": "+ Component Translations",
+      "pa": {
+        "lsej": {
+          "fraction": 0.489,
+          "percent": 48.9
+        },
+        "gap": {
+          "fraction": 0.23533333333333334,
+          "percent": 23.533333333333335
+        },
+        "jpwleg": {
+          "fraction": 0.4795,
+          "percent": 47.949999999999996
+        }
+      }
+    },
+    {
+      "key": "beam_search_completion",
+      "label": "+ Beam-Search Completion",
+      "pa": {
+        "lsej": {
+          "fraction": 0.5375,
+          "percent": 53.75
+        },
+        "gap": {
+          "fraction": 0.30866666666666664,
+          "percent": 30.866666666666664
+        },
+        "jpwleg": {
+          "fraction": 0.508,
+          "percent": 50.8
+        }
+      }
+    }
+  ]
+}

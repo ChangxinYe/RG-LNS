@@ -1,0 +1,89 @@
+Run Configuration
+  Dataset    : GAP-5
+  Split      : test
+  Samples    : 3000
+  Baseline   : ViT-T + Gallagher
+  Device     : cuda:0
+  Data root  : /data/yecx/svn_datasets/Jigsaw_Puzzle/GAP_fast
+  Checkpoint : /data/yecx/RG-LNS/checkpoints/compatibility/gap5_best.pth
+
+Baseline (ViT-T + Gallagher):
+  PA  = 15.2333%
+  AA  = 30.6573%
+  HA  = 60.9333%
+  VA  = 63.9450%
+  SRA = 62.4392%
+  NA  = 66.0767%
+
+Baseline + RG-LNS:
+  PA  = 18.9667%
+  AA  = 31.8453%
+  HA  = 64.5567%
+  VA  = 67.6300%
+  SRA = 66.0933%
+  NA  = 69.7383%
+
+Improvement Summary (relative to Baseline)
+  PA gain                   : +3.7333 percentage points
+  AA gain                   : +1.1880 percentage points
+  SRA gain                  : +3.6542 percentage points
+  Puzzles with higher AA    : 515
+  Puzzles with lower AA     : 310
+  Puzzles with unchanged AA : 2175
+  Changed layouts           : 1551
+  Failed to perfect layouts : 114
+  Perfect to failed layouts : 2
+
+Neighbor Retrieval (raw ViT-T compatibility)
+  True-Neighbor MRR       : 0.778622
+  Mean True-Neighbor Rank : 2.163
+  True-Neighbor Recall@1  : 66.9142%
+  True-Neighbor Recall@3  : 86.3962%
+  True-Neighbor Recall@5  : 92.0296%
+  True-Neighbor Recall@10 : 97.2408%
+  True-Neighbor Recall@15 : 99.0829%
+
+Runtime
+  Unit: seconds per puzzle | warmup=20 | measured=2980
+  Compatibility scoring: mean=0.087361 | median=0.083787 | std=0.010317 | p95=0.100955 | total=260.335145
+  Initial solver       : mean=0.018459 | median=0.017692 | std=0.004649 | p95=0.027309 | total=55.008995
+  RG-LNS refinement    : mean=0.006466 | median=0.005196 | std=0.004425 | p95=0.014443 | total=19.268386
+  Total inference      : mean=0.112286 | median=0.106831 | std=0.015710 | p95=0.141530 | total=334.612527
+  RG-LNS refinement includes automatic partial-layout completion.
+  Evaluation elapsed: 376.957149 seconds (includes loop overhead).
+
+Output Files
+  Directory: /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/gap/reliability_destroy_fixed_b1
+  summary.txt
+  metrics.json
+  sample_results.csv
+  pa_repaired_images.txt (114 samples)
+  pa_broken_images.txt (2 samples)
+
+Evaluation Settings
+  Sample range                         : [0, 3000) (zero-based, end exclusive)
+  Completion beam width                : 1
+  Partial-layout completion beam width : 2
+  Mutual Top-K                         : 3
+  Translation mode                     : fixed
+  Component index                      : 0
+  Minimum component size               : 4
+  Maximum refinement rounds            : 1
+  Score postprocessing                 : True
+  Score batch size                     : 128
+  Configured warmup samples            : 20
+  Save visualizations                  : False
+  Visualization limit                  : 0
+  Save predictions                     : False
+  Save search diagnostics              : False
+
+Runtime Environment
+-------------------
+Host: user-Super-Server
+OS: Linux 6.8.0-138-generic (x86_64)
+CPU: Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz | 32 physical / 64 logical cores | RAM 251.49 GiB
+Device: requested=auto | resolved=cuda:0
+GPU: NVIDIA GeForce RTX 4090 | index=0 | VRAM=23.64 GiB
+Software: Python 3.10.13 | PyTorch 2.5.1
+CUDA: 12.4 | cuDNN 90100 | NVIDIA driver 550.144.03
+CUDA_VISIBLE_DEVICES: not set

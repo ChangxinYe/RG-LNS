@@ -1,0 +1,8 @@
+sample_000699_LSEJ_004224.png
+sample_000930_LSEJ_005605.png
+sample_001039_LSEJ_006242.png
+sample_001099_LSEJ_006599.png
+sample_001223_LSEJ_007352.png
+sample_001424_LSEJ_008554.png
+sample_001449_LSEJ_008707.png
+sample_001584_LSEJ_009489.png

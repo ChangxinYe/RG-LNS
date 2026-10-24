@@ -1,0 +1,200 @@
+{
+  "dataset": "lsej",
+  "variant": "reliability_destroy_fixed_b1",
+  "state": "completed",
+  "attempts": [
+    {
+      "attempt": 1,
+      "state": "completed",
+      "signature": "2c66615a7125346770e35d950b1c0af7f2301ffee5572a932c11dfd8326f90e1",
+      "signature_payload": {
+        "dataset": "lsej",
+        "selector": "lsej_grid10_erode2",
+        "data_root": "/data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ",
+        "checkpoint": {
+          "path": "/data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth",
+          "size": 67558484,
+          "mtime_ns": 1792421573000000000
+        },
+        "variant": {
+          "translation_mode": "fixed",
+          "completion_beam_width": 1
+        },
+        "evaluation": {
+          "split": "test",
+          "start_index": 0,
+          "max_samples": 0,
+          "partial_completion_beam_width": 2,
+          "mutual_top_k": 3,
+          "component_index": 0,
+          "min_component_size": 4,
+          "refinement_rounds": 1,
+          "score_batch_size": 128,
+          "postprocess": true,
+          "device": "auto",
+          "gpu_id": 0,
+          "save_run_artifacts": false
+        },
+        "sources": [
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/commands/evaluate_lsej_gallagher_rg_lns.py",
+            "size": 51726,
+            "mtime_ns": 1792677899006627569,
+            "sha256": "79e77e2a391bdbc1dc358b2c82165cb2ca33bf7608000a1758e09097bd4fa35a"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/component_search.py",
+            "size": 18054,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "42b3f22188ace65ebe449db7ed895caeefeb0e55ad4e1fd9cb19ebd353efe68e"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/rg_lns/beam_search.py",
+            "size": 36130,
+            "mtime_ns": 1792421576000000000,
+            "sha256": "5d615043ac7f21568134350f0fd29b72665a3852da82d2752fdc6ed750535d7c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/partial_completion.py",
+            "size": 7138,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "4d41e4c37d4865b81fe96ee61c501399e87a8af5b4f1371c389dcacce97fd5e9"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/geometry.py",
+            "size": 3481,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "7370e4e283ad597b5b5b46fe06b11665bd567392bf5f672464ee24f2aa7606a3"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/layout_analysis.py",
+            "size": 20031,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5090bd61c260d44102e89a3aad334c98b1f3404aa997f8280cc23379b4a55bc4"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/scorer.py",
+            "size": 10213,
+            "mtime_ns": 1792677898978627546,
+            "sha256": "cbb07ad547139815ac9a3d4103b50251988ac420eaddfbc7eac2ac07b7239b17"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/transforms.py",
+            "size": 3098,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "b25107b1a81216f27fda2806e5746ce57188c14448618ecf7df612004ed38fb2"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/encoder.py",
+            "size": 13367,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "1926d535a6ce8f2905d90c1d0c3b3f14718210805e75f9105609991740bc4c6c"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/compatibility/vit.py",
+            "size": 11345,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "07ac7e3ca49c77bab1c1bb542757d70e65380f6ed0afe4a5556014619f6c6cde"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/initial_solvers/gallagher/mgc.py",
+            "size": 32427,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "5ad22c08e844dcece5454d194052c8aca18f503260446b70ee8ff288a6e40492"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/data_loaders/lsej.py",
+            "size": 11954,
+            "mtime_ns": 1792421574000000000,
+            "sha256": "d917d98eed1304d2bc7b609da7935c90bb0b502c3a76e5bdcdb9d9d41156af1f"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/lsej.py",
+            "size": 31368,
+            "mtime_ns": 1792677899024627584,
+            "sha256": "2e4e7ba2227aeeb03faa9c39f6e2b468d3037bbeb2cf8583b5fb231b9c8f6d05"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/lsej_inputs.py",
+            "size": 6118,
+            "mtime_ns": 1792506771104304937,
+            "sha256": "35f859f0dec27c9a8b78c90bd133279f8a73990f0f4965e1eb7d864cd3af81df"
+          },
+          {
+            "path": "/data/yecx/RG-LNS/evaluation/common/lsej_metrics.py",
+            "size": 3188,
+            "mtime_ns": 1792506771104304937,
+            "sha256": "ed37978a53f6cf731f7c2ae424d0603f1e56ae4b6e3b189c2be94c460d6af73d"
+          },
+          {
+            "path": "/data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ/lsej_dataloader.py",
+            "size": 14010,
+            "mtime_ns": 1783755782000000000,
+            "sha256": "6b51b646bb5f6cfde7ae48d99fda955d8eab984dbde403a328e4ca3fcde509d4"
+          }
+        ]
+      },
+      "started_at": "2026-10-23T15:52:58+08:00",
+      "command": [
+        "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python",
+        "-m",
+        "evaluation.commands.evaluate_lsej_gallagher_rg_lns",
+        "--task",
+        "lsej_grid10_erode2",
+        "--split",
+        "test",
+        "--data-root",
+        "/data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ",
+        "--checkpoint",
+        "/data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth",
+        "--start-index",
+        "0",
+        "--max-samples",
+        "0",
+        "--translation-mode",
+        "fixed",
+        "--completion-beam-width",
+        "1",
+        "--partial-completion-beam-width",
+        "2",
+        "--mutual-top-k",
+        "3",
+        "--component-index",
+        "0",
+        "--min-component-size",
+        "4",
+        "--refinement-rounds",
+        "1",
+        "--score-batch-size",
+        "128",
+        "--postprocess",
+        "true",
+        "--device",
+        "auto",
+        "--gpu-id",
+        "0",
+        "--output-dir",
+        "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/reliability_destroy_fixed_b1",
+        "--save-visuals",
+        "false",
+        "--visual-limit",
+        "0",
+        "--save-predictions",
+        "false",
+        "--save-completion-details",
+        "false",
+        "--progress-interval",
+        "25",
+        "--loss-type",
+        "hard_triplet"
+      ],
+      "command_text": "/home/jaxon/anaconda3/envs/jigsaw_puzzle/bin/python -m evaluation.commands.evaluate_lsej_gallagher_rg_lns --task lsej_grid10_erode2 --split test --data-root /data/yecx/svn_datasets/Jigsaw_Puzzle/ImageNet_LSEJ --checkpoint /data/yecx/RG-LNS/checkpoints/compatibility/lsej_grid10_erode2_best.pth --start-index 0 --max-samples 0 --translation-mode fixed --completion-beam-width 1 --partial-completion-beam-width 2 --mutual-top-k 3 --component-index 0 --min-component-size 4 --refinement-rounds 1 --score-batch-size 128 --postprocess true --device auto --gpu-id 0 --output-dir /data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/reliability_destroy_fixed_b1 --save-visuals false --visual-limit 0 --save-predictions false --save-completion-details false --progress-interval 25 --loss-type hard_triplet",
+      "log_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/logs/lsej__reliability_destroy_fixed_b1__20261023_155258_767908.log",
+      "result_dir": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/reliability_destroy_fixed_b1",
+      "metrics_path": "/data/yecx/RG-LNS/results/runs/ablation/table5_20261023_155258_698350/runs/lsej/reliability_destroy_fixed_b1/metrics.json",
+      "return_code": 0,
+      "finished_at": "2026-10-23T16:10:56+08:00",
+      "elapsed_seconds": 1077.4379341341555
+    }
+  ]
+}
