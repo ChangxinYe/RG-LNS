@@ -16,6 +16,21 @@ JPwLEG-5, and ImageNet-LSEJ.
 
 <p align="center"><em>Overview of the two-stage RG-LNS framework.</em></p>
 
+## Qualitative Results
+
+Selected examples from GAP-3, GAP-5, JPwLEG-5, and ImageNet-LSEJ, respectively.
+Each row shows **Input**, **Baseline (ViT-T + Gallagher)**,
+**Baseline + RG-LNS**, and **Ground truth** from left to right.
+Green/red boxes mark correct/incorrect absolute piece positions.
+
+![GAP-3: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-3-sample_000043.png)
+
+![GAP-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-5-sample_000231.png)
+
+![JPwLEG-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/JPwLEG-5-sample_000137.png)
+
+![ImageNet-LSEJ-10x10-2px: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/ImageNet-LSEJ-sample_000285_LSEJ_001772.png)
+
 ## Installation
 
 The verified development environment uses Python 3.10 and the package versions
@@ -360,21 +375,6 @@ records for our reported runs are inventoried in
 On the ImageNet-LSEJ failures used for our analysis, RG-LNS repairs
 19.3–42.1% of failures attributed to region shift and 13.9–26.8% of those
 attributed to local ambiguity across the three baselines.
-
-## Qualitative Results
-
-Selected examples from GAP-3, GAP-5, JPwLEG-5, and ImageNet-LSEJ, respectively.
-Each row shows **Input**, **Baseline (ViT-T + Gallagher)**,
-**Baseline + RG-LNS**, and **Ground truth** from left to right.
-Green/red boxes mark correct/incorrect absolute piece positions.
-
-![GAP-3: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-3-sample_000043.png)
-
-![GAP-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/GAP-5-sample_000231.png)
-
-![JPwLEG-5: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/JPwLEG-5-sample_000137.png)
-
-![ImageNet-LSEJ-10x10-2px: input, Gallagher baseline, Baseline + RG-LNS, and ground truth.](assets/ImageNet-LSEJ-sample_000285_LSEJ_001772.png)
 
 ## Citation
 
